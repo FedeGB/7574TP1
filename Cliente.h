@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-struct cliente {
+typedef struct cliente {
     int pid;
 } client_st;
 
