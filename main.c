@@ -9,6 +9,6 @@
 #include "Semaforo.h"
 
 int main() {
-
+    printf("Comienza heladeria");
     return 0;
 }
