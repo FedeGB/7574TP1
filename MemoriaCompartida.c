@@ -4,56 +4,53 @@
 
 #include "MemoriaCompartida.h"
 
-
-shm_st* crear ( const char* archivo, const char letra , size_t size) {
-    key_t clave = ftok ( archivo,letra );
-    shm_st* memoria = (shm_st*)malloc(sizeof(shm_st));
-    if ( clave > 0 ) {
-        memoria->shmId = shmget ( clave, size, 0644 | IPC_CREAT );
-
-        if ( memoria->shmId > 0 ) {
-            void* tmpPtr = shmat ( memoria->shmId , NULL, 0 );
-            if ( tmpPtr != (void*) -1 ) {
-                memoria->ptrDatos = tmpPtr;
-            } else {
-                perror("Error en shmat()");
-            }
-        } else {
-            perror("Error en shmget()");
-        }
-    } else {
-        perror("Error en ftok()");
+int creashm(int id, int size, const char* path) {
+    key_t clave;
+    clave = ftok(path, id);
+    int idShm = (shmget(clave, size, IPC_CREAT | IPC_EXCL | 0660));
+    if(idShm < 0) {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer), "Fallo al crear memoria compartida con id %d y tamaño %d", id, size);
+        perror(buffer);
     }
-    return memoria;
+    return idShm;
 }
 
-
-void liberar(shm_st* memoria) {
-
-    int errorDt = shmdt ( memoria->ptrDatos );
-
-    if ( errorDt != -1 ) {
-        int procAdosados = cantidadProcesosAdosados (memoria);
-        if ( procAdosados == 0 ) {
-            shmctl ( memoria->shmId, IPC_RMID, NULL );
-            free(memoria);
-        }
-    } else {
-        perror("Error en shmdt()");
+int getshm(int id, const char* path) {
+    key_t clave;
+    clave = ftok(path, id);
+    int resultado = (shmget(clave, 1, 0660));
+    if(resultado < 0) {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer), "No se pudo obtener la memoria compartida de id %d", id);
+        perror(buffer);
     }
+    return resultado;
 }
 
-int cantidadProcesosAdosados (shm_st* memoria) {
-    struct shmid_ds estado;
-    shmctl ( memoria->shmId, IPC_STAT, &estado );
-    return estado.shm_nattch;
+void* map(int id) {
+    void*addr = shmat(id, NULL, 0);
+    if(addr==(void*)-1){
+        perror("No se pudo mapear la memoria");
+        return NULL;
+    }
+    return addr;
 }
 
-
-void escribir (shm_st* memoria, void* dato ) {
-    memoria->ptrDatos = dato;
+int unmap(void* addr) {
+    int resultado = shmdt(addr);
+    if(resultado < 0) {
+        perror("No se pudo desattachear la memoria");
+    }
+    return resultado;
 }
 
-void* leer(shm_st* memoria) {
-    return memoria->ptrDatos;
+int elishm(int id) {
+    int resultado = (shmctl(id, IPC_RMID, (struct shmid_ds *) 0));
+    if(resultado < 0) {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer), "No se pudo eliminar la memoria con id %d", id);
+        perror(buffer);
+    }
+    return resultado;
 }

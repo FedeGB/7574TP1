@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=main.c MemoriaCompartida.c
+SOURCES=main.c MemoriaCompartida.c ColaMensajes.c Semaforo.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

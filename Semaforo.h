@@ -8,24 +8,20 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/types.h>
-#include <string>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
 
-struct Semaforo {
-    int id;
-    int valorInicial;
-} semaforo_st;
-
-
-semaforo_st crearSemaforo ( const char*, const int);
+int crearSemaforo ( const char*, const int);
 
 int inicializar (int , int);
 
 // Restar al semaforo
-int p (const semaforo_st);
+int p (const int);
 
 // Sumar al semaforo
-int v (const semaforo_st);
+int v (const int);
 
-void eliminar (const semaforo_st);
+void eliminarSemaforo (const int);
 
 #endif //INC_7574TP1_SEMAFORO_H

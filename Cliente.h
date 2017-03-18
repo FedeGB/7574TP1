@@ -6,6 +6,7 @@
 #define INC_7574TP1_CLIENTE_H
 
 #include <stdio.h>
+#include <unistd.h>
 
 typedef struct cliente {
     int pid;

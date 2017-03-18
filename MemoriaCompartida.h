@@ -13,20 +13,14 @@
 #include <errno.h>
 #include <stdlib.h>
 
-typedef struct MemoriaCompartida {
-    int shmId;
-    void* ptrDatos;
-} shm_st;
+int getshm(int, const char*);
 
+int creashm(int, int, const char*);
 
-shm_st* crear(const char*, const char, size_t);
+void* map(int);
 
-void liberar(shm_st*);
+int unmap(void*);
 
-int cantidadProcesosAdosados (shm_st*);
-
-void escribir (shm_st*, void*);
-
-void* leer(shm_st*);
+int elishm(int);
 
 #endif //INC_7574TP1_MEMORIACOMPARTIDA_H
