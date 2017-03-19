@@ -23,7 +23,7 @@ int getmsg(int, const char*);
 
 void enviarmsg(int, const void*, size_t);
 
-void recibirmsg(int, void*, size_t, long);
+int recibirmsg(int, void*, size_t, long);
 
 int elimsg(int);
 

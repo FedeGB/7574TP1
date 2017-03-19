@@ -15,3 +15,6 @@ pid_t generarClientes(int cantClientes) {
         return pid;
     }
 }
+
+
+

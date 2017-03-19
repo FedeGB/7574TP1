@@ -35,11 +35,12 @@ void enviarmsg(int id, const void *msgp, size_t msgsz) {
     }
 }
 
-void recibirmsg(int id, void *msgp, size_t msgsz, long type) {
-    if(msgrcv(id,msgp,msgsz-sizeof(long),type,0) == -1){
+int recibirmsg(int id, void *msgp, size_t msgsz, long type) {
+    int result = msgrcv(id,msgp,msgsz-sizeof(long),type,0);
+    if(result == -1){
         perror("No se puede recibir el mensaje");
-        exit(-1);
     }
+    return result;
 }
 
 int elimsg(int id) {

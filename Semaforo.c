@@ -4,8 +4,8 @@
 
 #include "Semaforo.h"
 
-int crearSemaforo ( const char* nombre, const int valorInicial ) {
-    key_t clave = ftok ( nombre, 'a' );
+int crearSemaforo ( const char* nombre, int id, const int valorInicial ) {
+    key_t clave = ftok ( nombre, id);
     int idSem = semget ( clave, 1, 0666 | IPC_CREAT );
     if(idSem) {
         return idSem;

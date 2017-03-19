@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-int crearSemaforo ( const char*, const int);
+int crearSemaforo ( const char*, int, const int);
 
 int inicializar (int , int);
 
