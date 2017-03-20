@@ -2,13 +2,18 @@
 // Created by fedenote on 3/13/17.
 //
 
-#include "MemoriaCompartida.h"
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "MemoriaCompartida.h"
 #include "ColaMensajes.h"
 #include "Semaforo.h"
 #include "Constantes.h"
 #include "Cajero.h"
+#include "Heladero.h"
+#include "Cliente.h"
+#include <vector>
 
 int main() {
     printf("Comienza heladeria");
@@ -26,9 +31,35 @@ int main() {
     int semCrema = crearSemaforo(SEMGUSTOS, CREMAAMERICANA, 1);
     int semMenta = crearSemaforo(SEMGUSTOS, MENTAGRANIZADA, 1);
 
+    std::vector<pid_t> pid_clientes;
     pid_t cajero = crearCajero();
+    printf("Se creo cajero");
+    pid_t heladero1 = crearHeladero();
+    printf("Se creo heladero 1");
+    pid_t heladero2 = crearHeladero();
+    printf("Se creo heladero 2");
 
-//    waitpid(cajero);
+    char input = '1';
+    while(input != 'x') {
+        input = getchar();
+        if(input == 'c'){
+            pid_t cliente = generarCliente();
+            printf("Se creo cliente");
+            if(cliente == 0) {
+                return 0;
+            } else if (cliente > 0) {
+                pid_clientes.push_back(cliente);
+            }
+        }
+    }
+
+    waitpid(cajero, NULL, 0);
+    waitpid(heladero1, NULL, 0);
+    waitpid(heladero2, NULL, 0);
+    for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
+        waitpid(*it, NULL, 0);
+    }
+//    waitpid(pid_clientes, NULL, 0);
 
     elimsg(queueCajero);
     elimsg(queueHeladeros);

@@ -30,6 +30,9 @@ void realizarPedido() {
     Message msgSnd;
     msgSnd.mtype = getpid();
     strncpy(msgSnd.data, pedido, 4);
+    if(pedido) {
+        free(pedido);
+    }
     enviarmsg(queueCliente, &msgSnd, sizeof(msgSnd));
 }
 
@@ -54,7 +57,7 @@ void retirarPedido() {
 
 // TODO
 char* getPedido() {
-    char pedido[4];
+    char* pedido = (char*)malloc(sizeof(char)*4);
     pedido[0] = DULCEDELECHE;
     pedido[1] = VAINILLA;
     pedido[2]= FRUTILLA;
