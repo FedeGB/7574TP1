@@ -16,6 +16,8 @@ int crearSemaforo ( const char*, int, const int);
 
 int inicializar (int , int);
 
+int getSemaforo(int, const char*);
+
 // Restar al semaforo
 int p (const int);
 

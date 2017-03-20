@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=main.c MemoriaCompartida.c ColaMensajes.c Semaforo.c Cajero.c
+SOURCES=main.c MemoriaCompartida.c ColaMensajes.c Semaforo.c Cajero.c Heladero.c Cliente.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

@@ -36,6 +36,18 @@ int inicializar (int idSem, int valorInicial) {
     return resultado;
 }
 
+int getSemaforo(int id, const char* path) {
+    key_t clave;
+    clave = ftok(path, id);
+    int result = (semget(clave, 1, 0660));
+    if(result < 0) {
+        char buffer[256];
+        snprintf(buffer, sizeof(buffer), "El semaforo con ID %d y path %s fallo en el get", id, path);
+        perror(buffer);
+    }
+    return  result;
+}
+
 int p (const int semaforo) {
 
     struct sembuf operacion;

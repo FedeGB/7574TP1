@@ -10,8 +10,8 @@
 //}
 
 
-void esperarAleatorio() {
-    sleep(2);
-}
+//void esperarAleatorio() {
+//    sleep(2);
+//}
 
 #endif //INC_7574TP1_UTILITIES_H

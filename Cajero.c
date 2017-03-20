@@ -5,11 +5,11 @@
 #include "Cajero.h"
 
 
-pid_t crearCajero(int queueId, int semQueueId, int queueHeladeros) {
+pid_t crearCajero() {
     pid_t cajeroId = fork();
 
     if(cajeroId == 0) {
-        atenderCajero(queueId, semQueueId, queueHeladeros);
+        atenderCajero();
         return 0;
     } else {
         return cajeroId;
@@ -17,7 +17,11 @@ pid_t crearCajero(int queueId, int semQueueId, int queueHeladeros) {
 }
 
 
-void atenderCajero(int queueCliente, int semQueueId, int queueHeladeros) {
+void atenderCajero() {
+    int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
+    int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
+    int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
+
     bool flag = true;
     while(flag) {
         v(semQueueId);

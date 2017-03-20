@@ -14,7 +14,7 @@
 
 typedef struct Message {
     long mtype;
-    char data[100];
+    char data[4];
 } Message;
 
 int creamsg(int, const char*);

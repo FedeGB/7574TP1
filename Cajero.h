@@ -10,9 +10,10 @@
 #include "Semaforo.h"
 #include "ColaMensajes.h"
 #include "Utilities.h"
+#include "Constantes.h"
 
-pid_t crearCajero(int, int, int);
+pid_t crearCajero();
 
-void atenderCajero(int, int, int);
+void atenderCajero();
 
 #endif //INC_7574TP1_CAJERO_H
