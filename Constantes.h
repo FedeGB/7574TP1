@@ -19,6 +19,12 @@
 #define SEMLUGARESID 12
 #define LUGARESPATH "/bin/ls"
 #define LUGARESID 13
+#define LUGARESCAJEROID 14
+#define LUGARESCAJEROPATH "/bin/ls"
+#define SEMLUGARESCAJID 15
+#define SEMLUGARESCAJPATH "/bin/ls"
+#define MAXCOLACAJER 4
+#define ESPACIOHELADERIA 10
 
 // Gustos
 #define VAINILLA '1'

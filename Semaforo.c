@@ -7,7 +7,7 @@
 int crearSemaforo ( const char* nombre, int id, const int valorInicial ) {
     key_t clave = ftok ( nombre, id);
     int idSem = semget ( clave, 1, 0666 | IPC_CREAT );
-    if(idSem) {
+    if(idSem < 0) {
         return idSem;
     }
     int status = inicializar (idSem, valorInicial);
@@ -19,13 +19,16 @@ int crearSemaforo ( const char* nombre, int id, const int valorInicial ) {
 
 int inicializar (int idSem, int valorInicial) {
 
-    union semnum {
+    union semun {
         int val;
-        struct semid_ds* buf;
-        ushort* array;
-    };
+        /* Value for SETVAL */
+        struct semid_ds *buf;
+        /* Buffer for IPC_STAT, IPC_SET */
+        unsigned short *array; /* Array for GETALL, SETALL */
+        struct seminfo *__buf; /* Buffer for IPC_INFO(Linux specific)*/
+    } init;
 
-    union semnum init;
+//    union semnum init;
     init.val = valorInicial;
     int resultado = semctl ( idSem, 0, SETVAL, init );
     if(resultado < 0) {
@@ -59,7 +62,7 @@ int p (const int semaforo) {
     int resultado = semop ( semaforo, &operacion, 1 )                                    ;
     if(resultado < 0) {
         char buffer[256];
-        snprintf(buffer, sizeof(buffer), "Error al sumar en el semaforo %d", semaforo);
+        snprintf(buffer, sizeof(buffer), "Error al resta en el semaforo %d", semaforo);
         perror(buffer);
     }
     return resultado;
@@ -76,7 +79,7 @@ int v (const int semaforo) {
     int resultado = semop ( semaforo, &operacion, 1 );
     if(resultado < 0) {
         char buffer[256];
-        snprintf(buffer, sizeof(buffer), "Error al restar en el semaforo %d", semaforo);
+        snprintf(buffer, sizeof(buffer), "Error al sumar en el semaforo %d", semaforo);
         perror(buffer);
     }
     return resultado;

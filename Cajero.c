@@ -26,11 +26,23 @@ void atenderCajero() {
     while(flag) {
         v(semQueueId);
 //        esperarAleatorio();
+        printf("Cajero: Atiendo cliente.\n");
         sleep(2);
         Message msgRcv;
         int status = recibirmsg(queueCliente, &msgRcv, sizeof(msgRcv), 0);
+        printf("Cajero: Atiendo pedido %s de %l.\n", msgRcv.data, msgRcv.mtype);
         if(status >= 0) {
             enviarmsg(queueHeladeros, &msgRcv, sizeof(msgRcv));
+            printf("Cajero: Envie mensaje a heladeros.\n");
+            int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
+            if(lugaresCajero > 0) {
+                int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+                p(semLugaresCaj);
+                int *queue = (int *) map(lugaresCajero);
+                (*queue)++;
+                unmap(queue);
+                v(semLugaresCaj);
+            }
         }
     }
 }

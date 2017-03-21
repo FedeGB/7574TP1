@@ -11,6 +11,7 @@
 #include "ColaMensajes.h"
 #include "Utilities.h"
 #include "Constantes.h"
+#include "MemoriaCompartida.h"
 
 pid_t crearCajero();
 

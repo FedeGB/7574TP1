@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -ggdb
 LDFLAGS=
 SOURCES=main.c MemoriaCompartida.c ColaMensajes.c Semaforo.c Cajero.c Heladero.c Cliente.c
 OBJECTS=$(SOURCES:.cpp=.o)
