@@ -6,10 +6,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "MemoriaCompartida.h"
 #include "ColaMensajes.h"
-#include "Semaforo.h"
-#include "Constantes.h"
 #include "Cajero.h"
 #include "Heladero.h"
 #include "Cliente.h"
@@ -22,6 +19,7 @@ int main() {
     int queueRetirar = creamsg(QRETIRARID, QRETIRARPATH);
     int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
+    int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
     int semLugares = crearSemaforo(SEMLUGARESPATH, SEMLUGARESID, 2);
     int semCajero = crearSemaforo(SEMCAJEROPATH, SEMCAJEROID, 0);
     int semVainilla = crearSemaforo(SEMGUSTOS, VAINILLA, 1);
@@ -32,17 +30,28 @@ int main() {
     int semCrema = crearSemaforo(SEMGUSTOS, CREMAAMERICANA, 1);
     int semMenta = crearSemaforo(SEMGUSTOS, MENTAGRANIZADA, 1);
     int semLugaresCaj = crearSemaforo(SEMLUGARESCAJPATH, SEMLUGARESCAJID, 1);
+    int semEntrada = crearSemaforo(SEMENTRADAPATH, SEMENTRADAID, 1);
     printf("Se generaron ipcs.\n");
+
     p(semLugares);
-    printf("Pido escribir en memoria.\n");
     int* lugaresH = (int*)map(lugaresHeladeria);
     *lugaresH = ESPACIOHELADERIA;
+    unmap(lugaresH);
     v(semLugares);
+    p(semEntrada);
+    bool* entrada = (bool*)map(entradaShm);
+    *entrada = true;
+    unmap(entrada);
+    v(semEntrada);
+    printf("Se incializaron variables de memoria compartida.\n");
     std::vector<pid_t> pid_clientes;
+
     pid_t cajero = crearCajero();
     printf("Se creo cajero\n");
+
     pid_t heladero1 = crearHeladero();
     printf("Se creo heladero 1\n");
+
     pid_t heladero2 = crearHeladero();
     printf("Se creo heladero 2\n");
 
@@ -61,6 +70,15 @@ int main() {
         }
     }
 
+    printf("Se termino, esperando a que terminen todos.\n");
+    p(semEntrada);
+    entrada = (bool*)map(entradaShm);
+    *entrada = false;
+    unmap(entrada);
+    v(semEntrada);
+
+    elimsg(queueCajero);
+    elimsg(queueHeladeros);
     waitpid(cajero, NULL, 0);
     waitpid(heladero1, NULL, 0);
     waitpid(heladero2, NULL, 0);
@@ -69,11 +87,10 @@ int main() {
     }
 //    waitpid(pid_clientes, NULL, 0);
 
-    elimsg(queueCajero);
-    elimsg(queueHeladeros);
     elimsg(queueRetirar);
     elishm(lugaresHeladeria);
     elishm(lugaresCajero);
+    elishm(entradaShm);
     eliminarSemaforo(semLugaresCaj);
     eliminarSemaforo(semLugares);
     eliminarSemaforo(semCajero);
@@ -84,6 +101,6 @@ int main() {
     eliminarSemaforo(semSambayon);
     eliminarSemaforo(semCrema);
     eliminarSemaforo(semMenta);
-
+    eliminarSemaforo(semEntrada);
     return 0;
 }

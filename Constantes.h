@@ -23,8 +23,10 @@
 #define LUGARESCAJEROPATH "/bin/ls"
 #define SEMLUGARESCAJID 15
 #define SEMLUGARESCAJPATH "/bin/ls"
-#define MAXCOLACAJER 4
-#define ESPACIOHELADERIA 10
+#define SEMENTRADAID 16
+#define SEMENTRADAPATH "/bin/ls"
+#define ENTRADAID 17
+#define ENTRADAPATH "/bin/ls"
 
 // Gustos
 #define VAINILLA '1'
@@ -36,7 +38,11 @@
 #define MENTAGRANIZADA '7'
 
 // TIPO ÞEDIDO
-#define LLEVAR 1
-#define ENLUGAR 2
+#define LLEVAR '1'
+#define ENLUGAR '2'
+
+// Variables heladeria
+#define ESPACIOHELADERIA 10
+#define MAXCOLACAJER 4
 
 #endif //INC_7574TP1_CONSTANTES_H

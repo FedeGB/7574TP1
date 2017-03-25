@@ -32,12 +32,20 @@ void realizarPedido() {
     }
     printf("Cliente %d: envio pedido.\n", getpid());
     enviarmsg(queueCliente, &msgSnd, sizeof(msgSnd));
+    int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+    int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
+    p(semLugaresCaj);
+    int* queue = (int*)map(lugaresCajero);
+    (*queue)--;
+    printf("Cliente %d: Libero lugar en cola.\n", getpid());
+    unmap(queue);
+    v(semLugaresCaj);
 }
 
 void retirarPedido() {
     int queueRetirar = getmsg(QRETIRARID, QRETIRARPATH);
     Message msgRcv;
-    printf("Cliente %d: Estoy esperando mi pedido.\n");
+    printf("Cliente %d: Estoy esperando mi pedido.\n", getpid());
     int status = recibirmsg(queueRetirar, &msgRcv, sizeof(msgRcv), getpid());
     printf("Cliente %d: Recibi mi pedido.\n", getpid());
     if(status > 0) {
@@ -70,6 +78,19 @@ char* getPedido() {
 
 
 bool todoOcupado() {
+    int semEntrada = getSemaforo(SEMENTRADAID, SEMENTRADAPATH);
+    int entradaShm = getshm(ENTRADAID,ENTRADAPATH);
+    p(semEntrada);
+    bool* entrada = (bool*)map(entradaShm);
+    if(!*entrada) {
+        unmap(entrada);
+        v(semEntrada);
+        printf("Cliente %d: Heladeria cerrada, me voy\n", getpid());
+        return true;
+    }
+    unmap(entrada);
+    v(semEntrada);
+
     bool ocupadoHeladeria = false;
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     if(lugaresCajero > 0) {

@@ -7,10 +7,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "Semaforo.h"
 #include "ColaMensajes.h"
 #include "Utilities.h"
-#include "Constantes.h"
 
 pid_t crearHeladero();
 

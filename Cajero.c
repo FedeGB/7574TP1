@@ -16,13 +16,15 @@ pid_t crearCajero() {
     }
 }
 
-
 void atenderCajero() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
     int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
+    int semEntrada = getSemaforo(SEMENTRADAID, SEMENTRADAPATH);
+    int entradaShm = getshm(ENTRADAID, ENTRADAPATH);
 
-    bool flag = true;
+    bool flag = seguirAtendiendo();
+
     while(flag) {
         v(semQueueId);
 //        esperarAleatorio();
@@ -30,7 +32,7 @@ void atenderCajero() {
         sleep(2);
         Message msgRcv;
         int status = recibirmsg(queueCliente, &msgRcv, sizeof(msgRcv), 0);
-        printf("Cajero: Atiendo pedido %s de %l.\n", msgRcv.data, msgRcv.mtype);
+        printf("Cajero: Atiendo pedido %s.\n", msgRcv.data);
         if(status >= 0) {
             enviarmsg(queueHeladeros, &msgRcv, sizeof(msgRcv));
             printf("Cajero: Envie mensaje a heladeros.\n");
@@ -44,5 +46,6 @@ void atenderCajero() {
                 v(semLugaresCaj);
             }
         }
+        flag = seguirAtendiendo();
     }
 }
