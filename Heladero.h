@@ -12,7 +12,7 @@
 
 pid_t crearHeladero();
 
-void atenderPedido(int, int);
+bool atenderPedido(int, int);
 
 void prepararHelado(char*);
 

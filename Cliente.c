@@ -21,15 +21,13 @@ pid_t generarCliente() {
 void realizarPedido() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
-    sleep(3);
+    esperarAleatorio();
     p(semQueueId);
-    char* pedido = getPedido();
+    char pedido[4];
+    getPedido(pedido);
     Message msgSnd;
     msgSnd.mtype = getpid();
     strncpy(msgSnd.data, pedido, 4);
-    if(pedido) {
-        free(pedido);
-    }
     printf("Cliente %d: envio pedido.\n", getpid());
     enviarmsg(queueCliente, &msgSnd, sizeof(msgSnd));
     int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
@@ -54,7 +52,7 @@ void retirarPedido() {
             return;
         }
         printf("Cliente %d: Como el helado adentro.\n", getpid());
-        sleep(3);
+        esperarAleatorio();
         int lugaresMem = getshm(LUGARESID, LUGARESPATH);
         int lugaresSem = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
         printf("Cliente %d: Libero lugar y me voy.\n", getpid());
@@ -67,13 +65,13 @@ void retirarPedido() {
 }
 
 // TODO
-char* getPedido() {
-    char* pedido = (char*)malloc(sizeof(char)*4);
-    pedido[0] = DULCEDELECHE;
-    pedido[1] = VAINILLA;
-    pedido[2]= FRUTILLA;
-    pedido[3] = ENLUGAR;
-    return pedido;
+void getPedido(char* pedido) {
+    char pedidoNuevo[4];
+    pedidoNuevo[0] = DULCEDELECHE;
+    pedidoNuevo[1] = VAINILLA;
+    pedidoNuevo[2]= FRUTILLA;
+    pedidoNuevo[3] = ENLUGAR;
+    strncpy(pedido, pedidoNuevo, 4);
 }
 
 
@@ -97,7 +95,7 @@ bool todoOcupado() {
         int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
         p(semLugaresCaj);
         int* queue = (int*)map(lugaresCajero);
-        if(*queue >= MAXCOLACAJER) {
+        if((*queue) >= MAXCOLACAJER) {
             printf("Cliente %d: Cola esta llena, me voy.\n", getpid());
             unmap(queue);
             v(semLugaresCaj);

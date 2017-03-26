@@ -20,32 +20,29 @@ void atenderCajero() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
     int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
-    int semEntrada = getSemaforo(SEMENTRADAID, SEMENTRADAPATH);
-    int entradaShm = getshm(ENTRADAID, ENTRADAPATH);
 
-    bool flag = seguirAtendiendo();
-
+    bool flag = true;
+    int i = 1;
+    int j = 0;
     while(flag) {
         v(semQueueId);
-//        esperarAleatorio();
         printf("Cajero: Atiendo cliente.\n");
-        sleep(2);
+        esperarAleatorio();
         Message msgRcv;
         int status = recibirmsg(queueCliente, &msgRcv, sizeof(msgRcv), 0);
         printf("Cajero: Atiendo pedido %s.\n", msgRcv.data);
         if(status >= 0) {
-            enviarmsg(queueHeladeros, &msgRcv, sizeof(msgRcv));
-            printf("Cajero: Envie mensaje a heladeros.\n");
-            int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
-            if(lugaresCajero > 0) {
-                int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
-                p(semLugaresCaj);
-                int *queue = (int *) map(lugaresCajero);
-                (*queue)++;
-                unmap(queue);
-                v(semLugaresCaj);
+            if(msgRcv.data[0] == '0') {
+                flag = false;
+                i = 2;
             }
+            while(j < i) {
+                enviarmsg(queueHeladeros, &msgRcv, sizeof(msgRcv));
+                j++;
+            }
+            printf("Cajero: Envie mensaje a heladeros.\n");
         }
-        flag = seguirAtendiendo();
+        j = 0;
+        i = 1;
     }
 }

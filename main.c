@@ -10,7 +10,6 @@
 #include "Cajero.h"
 #include "Heladero.h"
 #include "Cliente.h"
-#include <vector>
 
 int main() {
     printf("Comienza heladeria\n");
@@ -40,32 +39,42 @@ int main() {
     v(semLugares);
     p(semEntrada);
     bool* entrada = (bool*)map(entradaShm);
-    *entrada = true;
+    (*entrada) = true;
     unmap(entrada);
     v(semEntrada);
     printf("Se incializaron variables de memoria compartida.\n");
-    std::vector<pid_t> pid_clientes;
 
-    pid_t cajero = crearCajero();
-    printf("Se creo cajero\n");
-
-    pid_t heladero1 = crearHeladero();
-    printf("Se creo heladero 1\n");
-
-    pid_t heladero2 = crearHeladero();
-    printf("Se creo heladero 2\n");
-
+    pid_t cajero;
+    pid_t heladero1;
+    pid_t heladero2;
     char input = '1';
+    cajero = crearCajero();
+    printf("Se creo cajero\n");
+    if(cajero == 0) {
+        return 0;
+    }
+
+    heladero1 = crearHeladero();
+    printf("Se creo heladero 1\n");
+    if (heladero1 == 0) {
+        return 0;
+    }
+    heladero2 = crearHeladero();
+    printf("Se creo heladero 2\n");
+    if (heladero2 == 0) {
+        return 0;
+    }
+
+
     while(input != 'x') {
         input = getchar();
         if(input == 'c'){
             pid_t cliente = generarCliente();
-            printf("Se creo cliente\n");
             if(cliente == 0) {
                 return 0;
             } else if (cliente > 0) {
-                printf("Meto cliente a vector.\n");
-                pid_clientes.push_back(cliente);
+                printf("Se creo cliente.\n");
+//                pid_clientes.push_back(cliente);
             }
         }
     }
@@ -77,15 +86,18 @@ int main() {
     unmap(entrada);
     v(semEntrada);
 
-    elimsg(queueCajero);
-    elimsg(queueHeladeros);
+    char cierre[4];
+    Message msg;
+    getPedidoCierre(cierre);
+    msg.mtype = getpid();
+    strncpy(msg.data, cierre, 4);
+    printf("Envio mensaje de cierre a cajero y heladeros");
+    enviarmsg(queueCajero,&msg, sizeof(msg));
     waitpid(cajero, NULL, 0);
+    elimsg(queueCajero);
     waitpid(heladero1, NULL, 0);
     waitpid(heladero2, NULL, 0);
-    for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
-        waitpid(*it, NULL, 0);
-    }
-//    waitpid(pid_clientes, NULL, 0);
+    elimsg(queueHeladeros);
 
     elimsg(queueRetirar);
     elishm(lugaresHeladeria);

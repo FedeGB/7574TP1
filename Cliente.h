@@ -13,6 +13,7 @@
 #include "Semaforo.h"
 #include "ColaMensajes.h"
 #include "MemoriaCompartida.h"
+#include "Utilities.h"
 
 typedef struct cliente {
     int pid;
@@ -24,7 +25,7 @@ void realizarPedido();
 
 void retirarPedido();
 
-char* getPedido();
+void getPedido(char*);
 
 bool todoOcupado();
 

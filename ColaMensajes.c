@@ -22,7 +22,7 @@ int getmsg(int id, const char* path) {
     int resultado = (msgget(clave, 0660));
     if(resultado < 0) {
         char buffer[256];
-        snprintf(buffer, sizeof(buffer), "No se pudo obgtener la cola de mensaje con id %d", id);
+        snprintf(buffer, sizeof(buffer), "No se pudo obtener la cola de mensaje con id %d", id);
         perror(buffer);
     }
     return resultado;

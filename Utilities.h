@@ -8,16 +8,18 @@
 #include "Semaforo.h"
 #include "MemoriaCompartida.h"
 #include "Constantes.h"
+#include <time.h>
+#include <unistd.h>
+
 
 //int* parsearPedido(char* pedido) {
 //
 //}
 
-
-//void esperarAleatorio() {
-//    sleep(2);
-//}
-
 bool seguirAtendiendo();
+
+void esperarAleatorio();
+
+void getPedidoCierre(char*);
 
 #endif //INC_7574TP1_UTILITIES_H

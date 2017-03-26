@@ -9,28 +9,31 @@ pid_t crearHeladero() {
     if(proceso == 0) {
         int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
         int queueRetirar = getmsg(QRETIRARID, QRETIRARPATH);
-        bool flag = seguirAtendiendo();
+        bool flag = true;
         while(flag) {
-            atenderPedido(queueHeladeros, queueRetirar);
-            flag = seguirAtendiendo();
+            flag = atenderPedido(queueHeladeros, queueRetirar);
         }
-//        return  0;
+        return 0;
     } else {
         return proceso;
     }
 }
 
-void atenderPedido(int queueHeladeros, int queueRetirar) {
+bool atenderPedido(int queueHeladeros, int queueRetirar) {
     Message msgRcv;
     printf("Heladero %d: Espero pedido.\n", getpid());
     int status = recibirmsg(queueHeladeros, &msgRcv, sizeof(msgRcv), 0);
     if(status < 0) {
-        return;
+        return false;
+    }
+    if(msgRcv.data[0] == '0') {
+        return false;
     }
     printf("Heladero %d: Recibi pedido.\n", getpid());
     prepararHelado(msgRcv.data);
     printf("Heladero %d: Devuelvo helado a cliente.\n", getpid());
     enviarmsg(queueRetirar, &msgRcv, sizeof(msgRcv));
+    return true;
 }
 
 void prepararHelado(char* gustos) {
