@@ -9,7 +9,10 @@ pid_t crearCajero() {
     pid_t cajeroId = fork();
 
     if(cajeroId == 0) {
+        time_t t;
+        srand((unsigned)time(&t));
         atenderCajero();
+        printf("Cajero: Termine de atender\n");
         return 0;
     } else {
         return cajeroId;

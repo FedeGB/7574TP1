@@ -17,13 +17,14 @@ bool seguirAtendiendo() {
 
 
 void esperarAleatorio() {
-    time_t t;
-    srand((unsigned)time(&t));
-    int random = rand();
-    int sleepingTime = (random % 5) + 1; // Entre 1 y 4 segundo
+    int sleepingTime = numeroAleatorioRango(1, 4); // Entre 1 y 4 segundo
     sleep(sleepingTime);
 }
 
+int numeroAleatorioRango(int min, int max) {
+    int random = rand();
+    return ((random % (max - min + 1)) + min);
+}
 
 void getPedidoCierre(char* cierre) {
     char lastDelivery[4];

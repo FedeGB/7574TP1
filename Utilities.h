@@ -20,6 +20,8 @@ bool seguirAtendiendo();
 
 void esperarAleatorio();
 
+int numeroAleatorioRango(int, int);
+
 void getPedidoCierre(char*);
 
 #endif //INC_7574TP1_UTILITIES_H

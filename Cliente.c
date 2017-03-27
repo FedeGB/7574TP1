@@ -10,6 +10,8 @@ pid_t generarCliente() {
         if(todoOcupado()) {
             return 0;
         }
+        time_t t;
+        srand((unsigned)time(&t));
         realizarPedido();
         retirarPedido();
         return 0;
@@ -21,7 +23,6 @@ pid_t generarCliente() {
 void realizarPedido() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
-    esperarAleatorio();
     p(semQueueId);
     char pedido[4];
     getPedido(pedido);
@@ -64,13 +65,13 @@ void retirarPedido() {
     }
 }
 
-// TODO
 void getPedido(char* pedido) {
     char pedidoNuevo[4];
-    pedidoNuevo[0] = DULCEDELECHE;
-    pedidoNuevo[1] = VAINILLA;
-    pedidoNuevo[2]= FRUTILLA;
-    pedidoNuevo[3] = ENLUGAR;
+    pedidoNuevo[0] = numeroAleatorioRango(1, 7) + '0';
+    pedidoNuevo[1] = numeroAleatorioRango(1, 7) + '0';
+    pedidoNuevo[2]= numeroAleatorioRango(1, 7) + '0';
+    pedidoNuevo[3] = numeroAleatorioRango(1, 2) + '0';
+
     strncpy(pedido, pedidoNuevo, 4);
 }
 

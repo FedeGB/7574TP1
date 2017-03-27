@@ -7,12 +7,15 @@
 pid_t crearHeladero() {
     pid_t proceso = fork();
     if(proceso == 0) {
+        time_t t;
+        srand((unsigned)time(&t));
         int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
         int queueRetirar = getmsg(QRETIRARID, QRETIRARPATH);
         bool flag = true;
         while(flag) {
             flag = atenderPedido(queueHeladeros, queueRetirar);
         }
+        printf("Heladero %d: Termine de atender\n", getpid());
         return 0;
     } else {
         return proceso;
