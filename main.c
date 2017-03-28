@@ -38,6 +38,11 @@ int main() {
     *lugaresH = ESPACIOHELADERIA;
     unmap(lugaresH);
     v(semLugares);
+    p(semLugaresCaj);
+    int* lugaresC = (int*)map(lugaresCajero);
+    *lugaresC = 0;
+    unmap(lugaresC);
+    v(semLugaresCaj);
     p(semEntrada);
     bool* entrada = (bool*)map(entradaShm);
     (*entrada) = true;
@@ -76,7 +81,7 @@ int main() {
             if(cliente == 0) {
                 return 0;
             } else if (cliente > 0) {
-                printf("Se creo cliente.\n");
+                printf("Se creo cliente %d.\n", cliente);
                 pid_clientes.push_back(cliente);
             }
         }
@@ -88,6 +93,17 @@ int main() {
     *entrada = false;
     unmap(entrada);
     v(semEntrada);
+
+    p(semLugares);
+    lugaresH = (int*)map(lugaresHeladeria);
+    *lugaresH = 0;
+    unmap(lugaresH);
+    v(semLugares);
+    p(semLugaresCaj);
+    lugaresC = (int*)map(lugaresCajero);
+    *lugaresC = MAXCOLACAJER;
+    unmap(lugaresC);
+    v(semLugaresCaj);
 
     char cierre[4];
     Message msg;
