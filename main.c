@@ -2,52 +2,32 @@
 // Created by fedenote on 3/13/17.
 //
 
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <unistd.h>
-#include "ColaMensajes.h"
-#include "Cajero.h"
-#include "Heladero.h"
-#include "Cliente.h"
-#include <vector>
+#include "Controlador.h"
 
 int main() {
     printf("Comienza heladeria\n");
-    int queueCajero = creamsg(QCAJEROID, QCAJEROPATH);
-    int queueHeladeros = creamsg(QHELADEROID, QHELADEROPATH);
-    int queueRetirar = creamsg(QRETIRARID, QRETIRARPATH);
-    int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
-    int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
-    int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
-    int semLugares = crearSemaforo(SEMLUGARESPATH, SEMLUGARESID, 2);
-    int semCajero = crearSemaforo(SEMCAJEROPATH, SEMCAJEROID, 0);
-    int semVainilla = crearSemaforo(SEMGUSTOS, VAINILLA, 1);
-    int semFrutilla = crearSemaforo(SEMGUSTOS, FRUTILLA, 1);
-    int semDulce = crearSemaforo(SEMGUSTOS, DULCEDELECHE, 1);
-    int semLimon = crearSemaforo(SEMGUSTOS, LIMON, 1);
-    int semSambayon = crearSemaforo(SEMGUSTOS, SAMBAYON, 1);
-    int semCrema = crearSemaforo(SEMGUSTOS, CREMAAMERICANA, 1);
-    int semMenta = crearSemaforo(SEMGUSTOS, MENTAGRANIZADA, 1);
-    int semLugaresCaj = crearSemaforo(SEMLUGARESCAJPATH, SEMLUGARESCAJID, 1);
-    int semEntrada = crearSemaforo(SEMENTRADAPATH, SEMENTRADAID, 1);
+    int queues[3], sharedMem[3], semaforos[11];
+    pid_t controlador = start(queues, sharedMem, semaforos);
+    if(controlador == 0) {
+        return 0;
+    }
     printf("Se generaron ipcs.\n");
 
-    p(semLugares);
-    int* lugaresH = (int*)map(lugaresHeladeria);
+    p(semaforos[0]);
+    int* lugaresH = (int*)map(sharedMem[0]);
     *lugaresH = ESPACIOHELADERIA;
     unmap(lugaresH);
-    v(semLugares);
-    p(semLugaresCaj);
-    int* lugaresC = (int*)map(lugaresCajero);
+    v(semaforos[0]);
+    p(semaforos[9]);
+    int* lugaresC = (int*)map(sharedMem[1]);
     *lugaresC = 0;
     unmap(lugaresC);
-    v(semLugaresCaj);
-    p(semEntrada);
-    bool* entrada = (bool*)map(entradaShm);
+    v(semaforos[9]);
+    p(semaforos[10]);
+    bool* entrada = (bool*)map(sharedMem[2]);
     (*entrada) = true;
     unmap(entrada);
-    v(semEntrada);
+    v(semaforos[10]);
     printf("Se incializaron variables de memoria compartida.\n");
 
     pid_t cajero;
@@ -88,22 +68,22 @@ int main() {
     }
 
     printf("Se termino, esperando a que terminen todos.\n");
-    p(semEntrada);
-    entrada = (bool*)map(entradaShm);
+    p(semaforos[10]);
+    entrada = (bool*)map(sharedMem[2]);
     *entrada = false;
     unmap(entrada);
-    v(semEntrada);
+    v(semaforos[10]);
 
-    p(semLugares);
-    lugaresH = (int*)map(lugaresHeladeria);
+    p(semaforos[0]);
+    lugaresH = (int*)map(sharedMem[0]);
     *lugaresH = 0;
     unmap(lugaresH);
-    v(semLugares);
-    p(semLugaresCaj);
-    lugaresC = (int*)map(lugaresCajero);
+    v(semaforos[0]);
+    p(semaforos[9]);
+    lugaresC = (int*)map(sharedMem[1]);
     *lugaresC = MAXCOLACAJER;
     unmap(lugaresC);
-    v(semLugaresCaj);
+    v(semaforos[9]);
 
     char cierre[4];
     Message msg;
@@ -112,29 +92,13 @@ int main() {
     strncpy(msg.data, cierre, 4);
 
     printf("Envio mensaje de cierre a cajero y heladeros");
-    enviarmsg(queueCajero,&msg, sizeof(msg));
+    enviarmsg(queues[0],&msg, sizeof(msg));
     waitpid(cajero, NULL, 0);
     waitpid(heladero1, NULL, 0);
     waitpid(heladero2, NULL, 0);
     for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
         waitpid(*it, NULL, 0);
     }
-    elimsg(queueHeladeros);
-    elimsg(queueCajero);
-    elimsg(queueRetirar);
-    elishm(lugaresHeladeria);
-    elishm(lugaresCajero);
-    elishm(entradaShm);
-    eliminarSemaforo(semLugaresCaj);
-    eliminarSemaforo(semLugares);
-    eliminarSemaforo(semCajero);
-    eliminarSemaforo(semVainilla);
-    eliminarSemaforo(semFrutilla);
-    eliminarSemaforo(semDulce);
-    eliminarSemaforo(semLimon);
-    eliminarSemaforo(semSambayon);
-    eliminarSemaforo(semCrema);
-    eliminarSemaforo(semMenta);
-    eliminarSemaforo(semEntrada);
+    cerrarIPCs(queues, sharedMem, semaforos);
     return 0;
 }

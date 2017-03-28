@@ -23,7 +23,6 @@ void atenderCajero() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
     int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
-
     bool flag = true;
     int i = 1;
     int j = 0;
@@ -49,3 +48,18 @@ void atenderCajero() {
         i = 1;
     }
 }
+
+
+//bool hayClientesEnCola() {
+//    int semCajero = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
+//    int shQCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
+//    bool hay = true;
+//    p(semCajero);
+//    int* enCola = (int*)map(shQCajero);
+//    if(*enCola <= 0) {
+//        hay = false;
+//    }
+//    unmap(enCola);
+//    v(semCajero);
+//    return hay;
+//}

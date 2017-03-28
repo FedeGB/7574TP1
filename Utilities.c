@@ -17,7 +17,7 @@ bool seguirAtendiendo() {
 
 
 void esperarAleatorio() {
-    int sleepingTime = numeroAleatorioRango(1, 4); // Entre 1 y 4 segundo
+    int sleepingTime = numeroAleatorioRango(3, 7); // Entre 1 y 4 segundo
     sleep(sleepingTime);
 }
 
