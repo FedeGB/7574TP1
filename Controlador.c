@@ -94,6 +94,66 @@ bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros) {
     return true;
 }
 
+
+pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros) {
+    pid_t simulador = fork();
+
+    if(simulador == 0) {
+        std::vector<pid_t> pid_clientes;
+        char input = '1';
+
+        while(input != 'x') {
+            input = getchar();
+            if(input == 'c'){
+                pid_t cliente = generarCliente();
+                if(cliente == 0) {
+                    return 0;
+                } else if (cliente > 0) {
+                    printf("Se creo cliente %d.\n", cliente);
+                    pid_clientes.push_back(cliente);
+                }
+            }
+        }
+
+        printf("Se cierra heladeria, se espera a que terminen los clientes.\n");
+        p(semaforos[10]);
+        bool* entrada = (bool*)map(sharedMem[2]);
+        *entrada = false;
+        unmap(entrada);
+        v(semaforos[10]);
+
+        p(semaforos[0]);
+        int* lugaresH = (int*)map(sharedMem[0]);
+        *lugaresH = 0;
+        unmap(lugaresH);
+        v(semaforos[0]);
+        p(semaforos[9]);
+        int* lugaresC = (int*)map(sharedMem[1]);
+        *lugaresC = MAXCOLACAJER + 100;
+        unmap(lugaresC);
+        v(semaforos[9]);
+
+        char cierre[4];
+        Message msg;
+        getPedidoCierre(cierre);
+        msg.mtype = getpid();
+        strncpy(msg.data, cierre, 4);
+
+        p(semaforos[1]);
+        enviarmsg(queues[0],&msg, sizeof(msg));
+        waitpid(*cajero, NULL, 0);
+        for(int hel = 0; hel < 2; hel++) {
+            waitpid(heladeros[hel], NULL, 0);
+        }
+        for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
+            waitpid(*it, NULL, 0);
+        }
+        return 0;
+    } else {
+        return simulador;
+    }
+}
+
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
     for(int q = 0; q < 3; q++) {
         elimsg(queues[q]);

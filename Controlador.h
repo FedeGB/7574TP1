@@ -23,6 +23,8 @@ void iniciarSharedMemories(int*, int*);
 
 bool iniciarTrabajadores(pid_t*, pid_t*);
 
+pid_t simular(int*, int*, int*, pid_t*, pid_t*);
+
 void cerrarIPCs(int*, int*, int*);
 
 #endif //INC_7574TP1_CONTROLADOR_H
