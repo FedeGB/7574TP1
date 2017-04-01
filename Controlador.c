@@ -5,18 +5,14 @@
 #include "Controlador.h"
 
 
-pid_t start(int* queues, int* sharedMem, int* semaforos) {
-    pid_t controlador = fork();
-
-    if(controlador == 0) {
-        return 0;
+int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros) {
+    iniciarIPCs(queues, sharedMem, semaforos);
+    iniciarSharedMemories(sharedMem, semaforos);
+    bool trabajador = iniciarTrabajadores(cajero, heladeros);
+    if(trabajador) {
+        return 1;
     } else {
-        iniciarIPCs(queuesm, sharedMem, semaforos);
-        iniciarSharedMemories(sharedMem, semaforos);
-        pid_t cajero;
-        pid_t heladeros[2];
-        iniciarTrabajadores(&cajero, heladeros);
-        return controlador;
+        return 0;
     }
 }
 
@@ -79,23 +75,23 @@ void iniciarSharedMemories(int* sharedMem, int* semaforos) {
 }
 
 
-void iniciarTrabajadores(pid_t cajero, pid_t* heladeros) {
-    pid_t cajero;
-    pid_t heladero1;
-    pid_t heladero2;
-    cajero = crearCajero();
-    if(cajero == 0) {
-        return;
+bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros) {
+    pid_t cajeroHel = crearCajero();
+    if(cajeroHel == 0) {
+        return false;
     }
+    cajero = &cajeroHel;
     printf("Se creo cajero.\n");
 
     for(int hel = 0; hel < 2; hel++) {
-        heladeros[hel] = crearHeladero();
-        if (heladeros[hel] == 0) {
-            return;
+        pid_t helade = crearHeladero();
+        if (helade == 0) {
+            return false;
         }
+        heladeros[hel] = helade;
     }
     printf("Se crearon 2 heladeros.\n");
+    return true;
 }
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {

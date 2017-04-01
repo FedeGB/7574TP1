@@ -15,13 +15,13 @@
 #ifndef INC_7574TP1_CONTROLADOR_H
 #define INC_7574TP1_CONTROLADOR_H
 
-pid_t start(int*, int*, int*, pid_t, pid_t*);
+int start(int*, int*, int*, pid_t*, pid_t*);
 
 void iniciarIPCs(int*, int*, int*);
 
 void iniciarSharedMemories(int*, int*);
 
-void iniciarTrabajadores(pid_t  , pid_t*);
+bool iniciarTrabajadores(pid_t*, pid_t*);
 
 void cerrarIPCs(int*, int*, int*);
 
