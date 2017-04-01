@@ -10,7 +10,7 @@ int main() {
     pid_t cajero;
     pid_t heladeros[2];
 
-    pid_t controlador = start(queues, sharedMem, semaforos, &cajero,  heladeros);
+    int controlador = start(queues, sharedMem, semaforos, &cajero,  heladeros);
     if(controlador == 0) {
         return 0;
     }
