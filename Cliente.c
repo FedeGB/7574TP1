@@ -104,6 +104,7 @@ bool todoOcupado() {
         }
         (*queue)++;
         unmap(queue);
+        v(semLugaresCaj);
         int lugaresHeladeria = getshm(LUGARESID,LUGARESPATH);
         int semLugares = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
         p(semLugares);
@@ -116,7 +117,6 @@ bool todoOcupado() {
         }
         unmap(lugares);
         v(semLugares);
-        v(semLugaresCaj);
     }
     return ocupadoHeladeria;
 }

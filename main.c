@@ -45,17 +45,18 @@ int main() {
     v(semaforos[0]);
     p(semaforos[9]);
     int* lugaresC = (int*)map(sharedMem[1]);
-    *lugaresC = MAXCOLACAJER;
+    *lugaresC = MAXCOLACAJER + 100;
     unmap(lugaresC);
     v(semaforos[9]);
 
     char cierre[4];
     Message msg;
     getPedidoCierre(cierre);
-    msg.mtype = getpid();
+    msg.mtype = 1000000;
     strncpy(msg.data, cierre, 4);
 
     printf("Envio mensaje de cierre a cajero y heladeros\n");
+    p(semaforos[1]);
     enviarmsg(queues[0],&msg, sizeof(msg));
     waitpid(cajero, NULL, 0);
     printf("Llego cajero\n");
