@@ -29,7 +29,7 @@ int numeroAleatorioRango(int min, int max) {
 void getPedidoCierre(char* cierre) {
     char lastDelivery[4];
     lastDelivery[0] = '0';
-    lastDelivery[1] = '0';
+    lastDelivery[1] = '2';
     lastDelivery[2] = '0';
     lastDelivery[3] = '0';
     strncpy(cierre, lastDelivery, 4);

@@ -7,26 +7,28 @@
 
 // IPCS
 #define SEMGUSTOS "/bin/ls"
-#define QCAJEROPATH "/bin/ls"
-#define QCAJEROID 8
-#define QHELADEROPATH "/bin/ls"
-#define QHELADEROID 9
-#define QRETIRARID 10
-#define QRETIRARPATH "/bin/ls"
-#define SEMCAJEROID 11
-#define SEMCAJEROPATH "/bin/ls"
-#define SEMLUGARESPATH "/bin/ls"
-#define SEMLUGARESID 12
-#define LUGARESPATH "/bin/ls"
-#define LUGARESID 13
-#define LUGARESCAJEROID 14
-#define LUGARESCAJEROPATH "/bin/ls"
-#define SEMLUGARESCAJID 15
-#define SEMLUGARESCAJPATH "/bin/ls"
-#define SEMENTRADAID 16
-#define SEMENTRADAPATH "/bin/ls"
-#define ENTRADAID 17
-#define ENTRADAPATH "/bin/ls"
+#define QCAJEROPATHIN "/bin/sh"
+#define QCAJEROIDIN 1
+#define QCAJEROPATHOUT "/bin/sh"
+#define QCAJEROIDOUT 2
+#define QHELADEROPATH "/bin/sh"
+#define QHELADEROID 3
+#define QRETIRARID 4
+#define QRETIRARPATH "/bin/sh"
+#define SEMCAJEROID 5
+#define SEMCAJEROPATH "/bin/sh"
+#define SEMLUGARESPATH "/bin/sh"
+#define SEMLUGARESID 6
+#define LUGARESPATH "/bin/sh"
+#define LUGARESID 7
+#define LUGARESCAJEROID 8
+#define LUGARESCAJEROPATH "/bin/sh"
+#define SEMLUGARESCAJID 9
+#define SEMLUGARESCAJPATH "/bin/sh"
+#define SEMENTRADAID 10
+#define SEMENTRADAPATH "/bin/sh"
+#define ENTRADAID 11
+#define ENTRADAPATH "/bin/sh"
 
 // Gustos
 #define VAINILLA '1'
