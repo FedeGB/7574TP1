@@ -6,7 +6,7 @@
 #define INC_7574TP1_CONSTANTES_H
 
 // IPCS
-#define SEMGUSTOS "/bin/ls"
+// Queues
 #define QCAJEROPATHIN "/bin/sh"
 #define QCAJEROIDIN 1
 #define QCAJEROPATHOUT "/bin/sh"
@@ -15,20 +15,21 @@
 #define QHELADEROID 3
 #define QRETIRARID 4
 #define QRETIRARPATH "/bin/sh"
+#define QREGISTROCAJINPATH "/bin/sh"
+#define QREGISTROCAJINID 11
+#define QREGISTROCAJOUTPATH "/bin/sh"
+#define QREGISTROCAJOUTID 12
+
+// Semaforos
 #define SEMCAJEROID 5
 #define SEMCAJEROPATH "/bin/sh"
 #define SEMLUGARESPATH "/bin/sh"
 #define SEMLUGARESID 6
-#define LUGARESPATH "/bin/sh"
-#define LUGARESID 7
-#define LUGARESCAJEROID 8
-#define LUGARESCAJEROPATH "/bin/sh"
 #define SEMLUGARESCAJID 9
 #define SEMLUGARESCAJPATH "/bin/sh"
 #define SEMENTRADAID 10
 #define SEMENTRADAPATH "/bin/sh"
-#define ENTRADAID 11
-#define ENTRADAPATH "/bin/sh"
+#define SEMGUSTOS "/bin/ls"
 
 // Gustos
 #define VAINILLA '1'
@@ -38,6 +39,14 @@
 #define SAMBAYON '5'
 #define CREMAAMERICANA '6'
 #define MENTAGRANIZADA '7'
+
+// Shared Memory
+#define ENTRADAID 11
+#define ENTRADAPATH "/bin/sh"
+#define LUGARESPATH "/bin/sh"
+#define LUGARESID 7
+#define LUGARESCAJEROID 8
+#define LUGARESCAJEROPATH "/bin/sh"
 
 // TIPO ÞEDIDO
 #define LLEVAR '1'

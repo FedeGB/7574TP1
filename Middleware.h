@@ -10,14 +10,10 @@
 #include "Semaforo.h"
 #include "Constantes.h"
 
-pid_t startMiddleWare(int*, int*, char*, int, char*, int);
+pid_t startMiddleWare(int, char*, int, char*, char*, int, char*, int);
 
-void work(int, int);
+pid_t work(int, int);
 
-pid_t startCajero(int*, int*);
-
-void enviarPedido(int, char*, int);
-
-void recibirPedido(int, char*, int*);
+pid_t registerer(int, int);
 
 #endif //INC_7574TP1_MIDDLEWARE_H
