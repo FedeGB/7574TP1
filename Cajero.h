@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include "ColaMensajes.h"
 #include "Utilities.h"
+#include "CajeroMOM.h"
 
 pid_t crearCajero();
 

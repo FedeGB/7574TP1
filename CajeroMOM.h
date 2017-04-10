@@ -9,9 +9,8 @@
 
 pid_t startCajeroMOM();
 
-//void enviarPedido(int, char*, int);
-//
-//void recibirPedido(int, char*, int*);
+void enviarPedido(char*, int);
 
+void recibirPedido(char*, int*);
 
 #endif //INC_7574TP1_CAJEROMOM_H

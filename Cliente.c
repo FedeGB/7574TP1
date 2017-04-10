@@ -22,15 +22,10 @@ pid_t generarCliente() {
 
 void realizarPedido() {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
-    int queueCliente = getmsg(QCAJEROID, QCAJEROPATH);
     p(semQueueId);
     char pedido[4];
     getPedido(pedido);
-    Message msgSnd;
-    msgSnd.mtype = getpid();
-    strncpy(msgSnd.data, pedido, 4);
-    printf("Cliente %d: envio pedido.\n", getpid());
-    enviarmsg(queueCliente, &msgSnd, sizeof(msgSnd));
+    enviarPedido(pedido, (int)getpid());
     int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     p(semLugaresCaj);

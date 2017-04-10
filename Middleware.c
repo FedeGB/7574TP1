@@ -9,11 +9,11 @@ pid_t startMiddleWare(int regIn, char* pathRegIn, int regOut, char* pathRegOut,
                       char* pathIn, int varIn, char* pathOut, int varOut) {
     pid_t middle = fork();
     if(middle == 0) {
-        int registroIn = creamsg(regIn, pathRegIn);
-        int registroOut = creamsg(regOut, pathRegOut);
-        int input = creamsg(varIn, pathIn);
-        int output = creamsg(varOut, pathOut);
-        pid_t registerer = registerer(registroIn, registroOut);
+        int registroIn = getmsg(regIn, pathRegIn);
+        int registroOut = getmsg(regOut, pathRegOut);
+        int input = getmsg(varIn, pathIn);
+        int output = getmsg(varOut, pathOut);
+        pid_t registering = registerer(registroIn, registroOut);
         if(registerer == 0) {
             return 0;
         }
@@ -21,7 +21,7 @@ pid_t startMiddleWare(int regIn, char* pathRegIn, int regOut, char* pathRegOut,
         if(working == 0) {
             return 0;
         }
-        waitpid(registerer, NULL, 0);
+        waitpid(registering, NULL, 0);
         waitpid(working, NULL, 0);
 
         elimsg(registroIn);

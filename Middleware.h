@@ -6,6 +6,7 @@
 #define INC_7574TP1_MIDDLEWARE_H
 
 #include <unistd.h>
+#include <sys/wait.h>
 #include "ColaMensajes.h"
 #include "Semaforo.h"
 #include "Constantes.h"
