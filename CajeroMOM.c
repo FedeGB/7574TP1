@@ -11,7 +11,7 @@ pid_t startCajeroMOM() {
             , QREGISTROCAJOUTID, QREGISTROCAJOUTPATH, QCAJEROPATHIN, QCAJEROIDIN, QCAJEROPATHOUT, QCAJEROIDOUT);
 }
 
-void enviarPedido(char* pedido, int id) {
+void enviarPedido(char* pedido, long id) {
     int input = getmsg(QCAJEROIDIN, QCAJEROPATHIN);
     Message msgSend;
     msgSend.mtype = id;
@@ -19,7 +19,7 @@ void enviarPedido(char* pedido, int id) {
     enviarmsg(input, &msgSend, sizeof(msgSend));
 }
 
-void recibirPedido(char* pedido, int* idRcv) {
+void recibirPedido(char* pedido, long* idRcv) {
     int output = getmsg(QCAJEROIDOUT, QCAJEROPATHOUT);
     Message msgRcv;
     recibirmsg(output, &msgRcv, sizeof(msgRcv), 0);

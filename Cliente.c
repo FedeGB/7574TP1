@@ -25,7 +25,7 @@ void realizarPedido() {
     p(semQueueId);
     char pedido[4];
     getPedido(pedido);
-    enviarPedido(pedido, (int)getpid());
+    enviarPedido(pedido, (long)getpid());
     int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     p(semLugaresCaj);

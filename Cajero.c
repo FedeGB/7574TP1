@@ -30,7 +30,7 @@ void atenderCajero() {
         printf("Cajero: Atiendo cliente.\n");
         esperarAleatorio();
         char pedido[4];
-        int* idCliente;
+        long* idCliente;
         recibirPedido(pedido, idCliente);
         printf("Cajero: Atiendo pedido %s.\n", pedido);
         if(pedido[0] == '0') {

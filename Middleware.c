@@ -5,8 +5,8 @@
 #include "Middleware.h"
 
 
-pid_t startMiddleWare(int regIn, char* pathRegIn, int regOut, char* pathRegOut,
-                      char* pathIn, int varIn, char* pathOut, int varOut) {
+pid_t startMiddleWare(int regIn, const char* pathRegIn, int regOut, const char* pathRegOut,
+                       const char* pathIn, int varIn, const char* pathOut, int varOut) {
     pid_t middle = fork();
     if(middle == 0) {
         int registroIn = getmsg(regIn, pathRegIn);

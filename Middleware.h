@@ -11,7 +11,7 @@
 #include "Semaforo.h"
 #include "Constantes.h"
 
-pid_t startMiddleWare(int, char*, int, char*, char*, int, char*, int);
+pid_t startMiddleWare(int, const char*, int, const char*, const char*, int, const char*, int);
 
 pid_t work(int, int);
 

@@ -13,6 +13,14 @@
 #define QCAJEROIDOUT 2
 #define QHELADEROPATH "/bin/sh"
 #define QHELADEROID 3
+#define QREGISTROHELCAJINID 5
+#define QREGISTROHELCAJINPATH "/bin/sh"
+#define QREGISTROHELCAJOUTID 6
+#define QREGISTROHELCAJOUTPATH "/bin/sh"
+#define QHELCAJIDIN 7
+#define QHELCAJPATHIN "/bin/sh"
+#define QHELCAJIDOUT 8
+#define QHELCAJPATHOUT "/bin/sh"
 #define QRETIRARID 4
 #define QRETIRARPATH "/bin/sh"
 #define QREGISTROCAJINPATH "/bin/sh"
