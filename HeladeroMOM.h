@@ -9,10 +9,8 @@
 
 pid_t startHeladeroCajeroMOM();
 
-void devolverPedido(char*, long);
+void devolverPedidoCliente(char*, long);
 
-void recibirPedido(char*, long*);
-
-void recibirPedidoHeladero(char*, long);
+void recibirPedidoCajero(char*, long*);
 
 #endif //INC_7574TP1_HELADEROMOM_H

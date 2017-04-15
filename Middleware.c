@@ -5,29 +5,43 @@
 #include "Middleware.h"
 
 
-pid_t startMiddleWare(int regIn, const char* pathRegIn, int regOut, const char* pathRegOut,
-                       const char* pathIn, int varIn, const char* pathOut, int varOut) {
+pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
     pid_t middle = fork();
+    int qGetter;
     if(middle == 0) {
-        int registroIn = getmsg(regIn, pathRegIn);
-        int registroOut = getmsg(regOut, pathRegOut);
-        int input = getmsg(varIn, pathIn);
-        int output = getmsg(varOut, pathOut);
-        pid_t registering = registerer(registroIn, registroOut);
+        int regis;
+        std::vector<int> qReg;
+        for(int reg = 0; reg < 2; reg++) {
+            regis = getmsg(regQueues[reg].qId, regQueues[reg].qPath);
+            qReg.push_back(regis);
+        }
+        pid_t registering = registerer(qReg[0], qReg[1]);
         if(registerer == 0) {
             return 0;
         }
-        pid_t working = work(input, output);
-        if(working == 0) {
-            return 0;
+        std::vector<pid_t> trabajadores;
+        std::vector<int> colasDeMiddleware;
+        pid_t working;
+        for(int i = 0; i < qCantidad; i++) {
+            qGetter = getmsg(queues[i].qId, queues[i].qPath);
+            colasDeMiddleware.push_back(qGetter);
+            if(i%2 != 0 && i != 0) {
+                working = work(colasDeMiddleware[i-1], colasDeMiddleware[i]);
+                trabajadores.push_back(working);
+                if(working == 0) {
+                    return 0;
+                }
+            }
         }
         waitpid(registering, NULL, 0);
-        waitpid(working, NULL, 0);
-
-        elimsg(registroIn);
-        elimsg(registroOut);
-        elimsg(input);
-        elimsg(output);
+        for(std::vector<pid_t>::iterator it = trabajadores.begin(); it != trabajadores.end(); it++) {
+            waitpid(*it, NULL, 0);
+        }
+//        elimsg(qReg[0]);
+//        elimsg(qReg[1]);
+//        for(std::vector<int>::iterator it2 = colasDeMiddleware.begin(); it2 != colasDeMiddleware.end(); it2++) {
+//            elimsg(*it2);
+//        }
         return 0;
     } else {
         return middle;

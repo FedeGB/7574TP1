@@ -10,8 +10,14 @@
 #include "ColaMensajes.h"
 #include "Semaforo.h"
 #include "Constantes.h"
+#include <vector>
 
-pid_t startMiddleWare(int, const char*, int, const char*, const char*, int, const char*, int);
+typedef struct colaPedido {
+    int qId;
+    const char* qPath;
+} qPedido;
+
+pid_t startMiddleWare(qPedido*, int, qPedido*);
 
 pid_t work(int, int);
 

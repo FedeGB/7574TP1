@@ -9,10 +9,11 @@
 #include <unistd.h>
 #include "ColaMensajes.h"
 #include "Utilities.h"
+#include "HeladeroMOM.h"
 
 pid_t crearHeladero();
 
-bool atenderPedido(int, int);
+bool atenderPedido();
 
 void prepararHelado(char*);
 

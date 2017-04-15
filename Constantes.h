@@ -7,26 +7,33 @@
 
 // IPCS
 // Queues
-#define QCAJEROPATHIN "/bin/sh"
-#define QCAJEROIDIN 1
-#define QCAJEROPATHOUT "/bin/sh"
-#define QCAJEROIDOUT 2
-#define QHELADEROPATH "/bin/sh"
-#define QHELADEROID 3
-#define QREGISTROHELCAJINID 5
-#define QREGISTROHELCAJINPATH "/bin/sh"
-#define QREGISTROHELCAJOUTID 6
-#define QREGISTROHELCAJOUTPATH "/bin/sh"
-#define QHELCAJIDIN 7
-#define QHELCAJPATHIN "/bin/sh"
-#define QHELCAJIDOUT 8
-#define QHELCAJPATHOUT "/bin/sh"
-#define QRETIRARID 4
-#define QRETIRARPATH "/bin/sh"
-#define QREGISTROCAJINPATH "/bin/sh"
-#define QREGISTROCAJINID 11
-#define QREGISTROCAJOUTPATH "/bin/sh"
-#define QREGISTROCAJOUTID 12
+#define QTOCLIENTECJPATH "/bin/sh"
+#define QTOCLIENTECJID 1
+#define QCAJEROTOCLPATH "/bin/sh"
+#define QCAJEROTOCLID  2
+#define QCLIENTETOCJPATH "/bin/sh"
+#define QCLIENTETOCJID 3
+#define QFROMCLIENTECJPATH "/bin/sh"
+#define QFROMCLIENTECJID 4
+#define QTOHELADEROCJPATH "/bin/sh"
+#define QTOHELADEROCJID 5
+#define QCAJEROTOHELPATH "/bin/sh"
+#define QCAJEROTOHELID 6
+#define QFROMCAJEROHELPATH "/bin/sh"
+#define QFROMCAJEROHELID 7
+#define QTOCLIENTEHELPATH "/bin/sh"
+#define QTOCLIENTEHELID 8
+#define QHELADEROTOCLPATH "/bin/sh"
+#define QHELADEROTOCLID 9
+
+#define QREGISTROCAJINPATH "/bin/echo"
+#define QREGISTROCAJINID 1
+#define QREGISTROCAJOUTPATH "/bin/echo"
+#define QREGISTROCAJOUTID 2
+#define QREGISTROHELINPATH "/bin/echo"
+#define QREGISTROHELINID 3
+#define QREGISTROHELOUTPATH "/bin/echo"
+#define QREGISTROHELOUTID 4
 
 // Semaforos
 #define SEMCAJEROID 5

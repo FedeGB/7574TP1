@@ -9,11 +9,9 @@ pid_t crearHeladero() {
     if(proceso == 0) {
         time_t t;
         srand((unsigned)time(&t));
-        int queueHeladeros = getmsg(QHELADEROID, QHELADEROPATH);
-        int queueRetirar = getmsg(QRETIRARID, QRETIRARPATH);
         bool flag = true;
         while(flag) {
-            flag = atenderPedido(queueHeladeros, queueRetirar);
+            flag = atenderPedido();
         }
         printf("Heladero %d: Termine de atender\n", getpid());
         return 0;
@@ -22,20 +20,18 @@ pid_t crearHeladero() {
     }
 }
 
-bool atenderPedido(int queueHeladeros, int queueRetirar) {
-    Message msgRcv;
+bool atenderPedido() {
     printf("Heladero %d: Espero pedido.\n", getpid());
-    int status = recibirmsg(queueHeladeros, &msgRcv, sizeof(msgRcv), 0);
-    if(status < 0) {
-        return false;
-    }
-    if(msgRcv.data[0] == '0') {
+    char pedido[4];
+    long idCliente;
+    recibirPedidoCajero(pedido, &idCliente);
+    if(pedido[0] == '0') {
         return false;
     }
     printf("Heladero %d: Recibi pedido.\n", getpid());
-    prepararHelado(msgRcv.data);
+    prepararHelado(pedido);
     printf("Heladero %d: Devuelvo helado a cliente.\n", getpid());
-    enviarmsg(queueRetirar, &msgRcv, sizeof(msgRcv));
+    devolverPedidoCliente(pedido, idCliente);
     return true;
 }
 

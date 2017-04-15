@@ -18,19 +18,19 @@ int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* hel
 
 
 void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
-//    int queueCajero = creamsg(QCAJEROID, QCAJEROPATH);
-    int qCajeroIn = creamsg(QCAJEROIDIN, QCAJEROPATHIN);
-    int qCajeroOut = creamsg(QCAJEROIDOUT, QCAJEROPATHOUT);
-    int qCajeroRegisterIn = creamsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
-    int qCajeroRegisterOut = creamsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
-    int queueHeladeros = creamsg(QHELADEROID, QHELADEROPATH);
-    int queueRetirar = creamsg(QRETIRARID, QRETIRARPATH);
-    queues[0] = qCajeroIn;
-    queues[1] = qCajeroOut;
-    queues[2] = qCajeroRegisterIn;
-    queues[3] = qCajeroRegisterOut;
-    queues[4] = queueHeladeros;
-    queues[5] = queueRetirar;
+    queues[0] = creamsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
+    queues[1] = creamsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
+    queues[2] = creamsg(QCLIENTETOCJID, QCLIENTETOCJPATH);
+    queues[3] = creamsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
+    queues[4] = creamsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
+    queues[5] = creamsg(QCAJEROTOHELID, QCAJEROTOHELPATH);
+    queues[6] = creamsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
+    queues[7] = creamsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
+    queues[8] = creamsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
+    queues[9] = creamsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+    queues[10] = creamsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
+    queues[11] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
+    queues[12] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
     int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
     int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
@@ -163,7 +163,7 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
     // TODO: Modificar cantidades a cerrar
-    for(int q = 0; q < 6; q++) {
+    for(int q = 0; q < 13; q++) {
         elimsg(queues[q]);
     }
     for(int sh = 0; sh < 3; sh++) {

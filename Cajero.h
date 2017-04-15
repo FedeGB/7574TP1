@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "ColaMensajes.h"
 #include "Utilities.h"
 #include "CajeroMOM.h"
 

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "ColaMensajes.h"
 #include "Cajero.h"
+#include "CajeroMOM.h"
 #include "Heladero.h"
 #include "Cliente.h"
 #include <vector>
