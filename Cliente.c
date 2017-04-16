@@ -40,8 +40,8 @@ void retirarPedido() {
     Message msgRcv;
     printf("Cliente %d: Estoy esperando mi pedido.\n", getpid());
     char pedido[4];
-    printf("Cliente %d: Recibi mi pedido.\n", getpid());
     recibirHelado(pedido, getpid()); // TODO: CHANGE POR ID DE TICKET
+    printf("Cliente %d: Recibi mi pedido.\n", getpid());
 //    if(status > 0) {
         if(pedido[3] == LLEVAR) {
             printf("Cliente %d: Es para llevar, me fui.\n", getpid());

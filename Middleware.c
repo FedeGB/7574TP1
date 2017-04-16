@@ -54,11 +54,10 @@ pid_t work(int input, int output) {
     if(trabajo == 0) {
         bool flag = true;
         int status;
-        int j = 0;
-        int i = 1;
         while (flag) {
             Message msgRcv;
             status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
+            printf("Middle %d recibio %s con mtype %d\n", getpid(), msgRcv.data, msgRcv.mtype);
             if (status >= 0) {
                 if (msgRcv.data[1] == '0') {
                     flag = false;

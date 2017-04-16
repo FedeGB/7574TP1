@@ -93,6 +93,7 @@ bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
         return false;
     }
     middlewares[0] = middleCajero;
+    printf("Inicio Middle cajero\n");
     pid_t cajeroHel = crearCajero();
     if(cajeroHel == 0) {
         return false;
@@ -104,6 +105,7 @@ bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
         return false;
     }
     middlewares[1] = middleHeladeros;
+    printf("Inicio Middle heladeros\n");
     for(int hel = 0; hel < 2; hel++) {
         pid_t helade = crearHeladero();
         if (helade == 0) {
@@ -117,6 +119,7 @@ bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
         return false;
     }
     middlewares[2] = middleClientes;
+    printf("Inicio Middle clientes\n");
     return true;
 }
 
@@ -166,7 +169,7 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
         strncpy(msg.data, cierre, 4);
 
         p(semaforos[1]);
-        enviarmsg(queues[0],&msg, sizeof(msg));
+        enviarmsg(queues[13],&msg, sizeof(msg));
         waitpid(*cajero, NULL, 0);
         for(int hel = 0; hel < 2; hel++) {
             waitpid(heladeros[hel], NULL, 0);

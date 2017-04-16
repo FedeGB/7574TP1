@@ -54,4 +54,5 @@ void recibirPedidoCliente(char* pedido, long* idRcv) {
     recibirmsg(output, &msgRcv, sizeof(msgRcv), 0);
     strncpy(pedido, msgRcv.data, 4);
     *idRcv = msgRcv.mtype;
+    printf("data: %s, %d\n", msgRcv.data, msgRcv.mtype);
 }

@@ -29,8 +29,8 @@ void atenderCajero() {
         printf("Cajero: Atiendo cliente.\n");
         esperarAleatorio();
         char pedido[4];
-        long* idCliente;
-        recibirPedidoCliente(pedido, idCliente);
+        long idCliente;
+        recibirPedidoCliente(pedido, &idCliente);
         printf("Cajero: Atiendo pedido %s.\n", pedido);
         // TODO: Generar ticket y mandar a cliente
         if(pedido[0] == '0') {
@@ -39,7 +39,7 @@ void atenderCajero() {
         }
         Message msgRcv;
         while(j < i) {
-            enviarPedidoHeladero(pedido, *idCliente);
+            enviarPedidoHeladero(pedido, idCliente);
             j++;
         }
         printf("Cajero: Envie mensaje a heladeros.\n");
