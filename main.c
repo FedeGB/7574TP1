@@ -6,7 +6,7 @@
 
 int main() {
     printf("Comienza heladeria\n");
-    int queues[13], sharedMem[3], semaforos[11];
+    int queues[18], sharedMem[3], semaforos[11];
     pid_t cajero;
     pid_t heladeros[2];
 

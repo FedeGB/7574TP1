@@ -25,7 +25,7 @@ void realizarPedido() {
     p(semQueueId);
     char pedido[4];
     getPedido(pedido);
-    enviarPedido(pedido, (long)getpid());
+    enviarPedidoCajero(pedido, getpid()); // TODO: CHANGE PID por id de ticket con logica del ticket
     int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     p(semLugaresCaj);
@@ -37,13 +37,14 @@ void realizarPedido() {
 }
 
 void retirarPedido() {
-    int queueRetirar = getmsg(QRETIRARID, QRETIRARPATH);
     Message msgRcv;
     printf("Cliente %d: Estoy esperando mi pedido.\n", getpid());
-    int status = recibirmsg(queueRetirar, &msgRcv, sizeof(msgRcv), getpid());
+    char pedido[4];
+    long idRecib;
     printf("Cliente %d: Recibi mi pedido.\n", getpid());
-    if(status > 0) {
-        if(msgRcv.data[3] == LLEVAR) {
+    recibirHelado(pedido, &idRecib);
+//    if(status > 0) {
+        if(pedido[3] == LLEVAR) {
             printf("Cliente %d: Es para llevar, me fui.\n", getpid());
             return;
         }
@@ -57,7 +58,7 @@ void retirarPedido() {
         (*lugares)++;
         unmap(lugares);
         v(lugaresSem);
-    }
+//    }
 }
 
 void getPedido(char* pedido) {

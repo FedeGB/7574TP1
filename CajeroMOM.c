@@ -9,10 +9,10 @@
 pid_t startCajeroMOM() {
     qPedido colasMiddle[6];
     qPedido registro[2];
-    colasMiddle[0].qId= QCAJEROTOCLID;
-    colasMiddle[0].qPath = QCAJEROTOCLPATH;
-    colasMiddle[1].qId = QTOCLIENTECJID;
-    colasMiddle[1].qPath = QTOCLIENTECJPATH;
+    colasMiddle[0].qId = QTOCLIENTECJID;
+    colasMiddle[0].qPath = QTOCLIENTECJPATH;
+    colasMiddle[1].qId= QCAJEROTOCLID;
+    colasMiddle[1].qPath = QCAJEROTOCLPATH;
     colasMiddle[2].qId = QCLIENTETOCJID;
     colasMiddle[2].qPath = QCLIENTETOCJPATH;
     colasMiddle[3].qId = QFROMCLIENTECJID;

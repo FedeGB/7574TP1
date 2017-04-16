@@ -31,6 +31,11 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     queues[10] = creamsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
     queues[11] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
     queues[12] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
+    queues[13] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    queues[14] = creamsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
+    queues[15] = creamsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
+    queues[16] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
+    queues[17] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
     int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
     int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
@@ -163,7 +168,7 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
     // TODO: Modificar cantidades a cerrar
-    for(int q = 0; q < 13; q++) {
+    for(int q = 0; q < 18; q++) {
         elimsg(queues[q]);
     }
     for(int sh = 0; sh < 3; sh++) {

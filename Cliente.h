@@ -14,7 +14,7 @@
 #include "ColaMensajes.h"
 #include "MemoriaCompartida.h"
 #include "Utilities.h"
-#include "CajeroMOM.h"
+#include "ClienteMOM.h"
 
 typedef struct cliente {
     int pid;
