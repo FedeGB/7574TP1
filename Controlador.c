@@ -5,10 +5,10 @@
 #include "Controlador.h"
 
 
-int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros) {
+int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
     iniciarIPCs(queues, sharedMem, semaforos);
     iniciarSharedMemories(sharedMem, semaforos);
-    bool trabajador = iniciarTrabajadores(cajero, heladeros);
+    bool trabajador = iniciarTrabajadores(cajero, heladeros, middlewares);
     if(trabajador) {
         return 1;
     } else {
@@ -87,14 +87,23 @@ void iniciarSharedMemories(int* sharedMem, int* semaforos) {
 }
 
 
-bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros) {
+bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
+    pid_t middleCajero = startCajeroMOM();
+    if(middleCajero == 0) {
+        return false;
+    }
+    middlewares[0] = middleCajero;
     pid_t cajeroHel = crearCajero();
     if(cajeroHel == 0) {
         return false;
     }
     cajero = &cajeroHel;
     printf("Se creo cajero.\n");
-
+    pid_t middleHeladeros = startHeladeroMOM();
+    if(middleHeladeros == 0) {
+        return false;
+    }
+    middlewares[1] = middleHeladeros;
     for(int hel = 0; hel < 2; hel++) {
         pid_t helade = crearHeladero();
         if (helade == 0) {
@@ -103,11 +112,16 @@ bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros) {
         heladeros[hel] = helade;
     }
     printf("Se crearon 2 heladeros.\n");
+    pid_t middleClientes = startClienteMOM();
+    if(middleClientes == 0) {
+        return false;
+    }
+    middlewares[2] = middleClientes;
     return true;
 }
 
 
-pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros) {
+pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros, pid_t* middle) {
     pid_t simulador = fork();
 
     if(simulador == 0) {
@@ -160,10 +174,45 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
         for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
             waitpid(*it, NULL, 0);
         }
+        terminarMiddlewares();
+        waitpid(middle[0], NULL, 0);
+        waitpid(middle[1], NULL, 0);
+        waitpid(middle[2], NULL, 0);
         return 0;
     } else {
         return simulador;
     }
+}
+
+void terminarMiddlewares() {
+    Message msgClose;
+    msgClose.data[0] = '1';
+    msgClose.data[1] = '0';
+    msgClose.data[2] = '1';
+    msgClose.data[3] = '1';
+    msgClose.mtype = 1;
+    int queue1 = getmsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
+    enviarmsg(queue1, &msgClose, sizeof(msgClose));
+    int queue2 = getmsg(QCLIENTETOCJID, QCLIENTETOCJPATH);
+    enviarmsg(queue2, &msgClose, sizeof(msgClose));
+    int queue3 = getmsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
+    enviarmsg(queue3, &msgClose, sizeof(msgClose));
+    int queue4 = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    enviarmsg(queue4, &msgClose, sizeof(msgClose));
+    int queue5 = getmsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
+    enviarmsg(queue5, &msgClose, sizeof(msgClose));
+    int queue6 = getmsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
+    enviarmsg(queue6, &msgClose, sizeof(msgClose));
+    int queue7 = getmsg(QCAJEROTOHELID, QCAJEROTOHELPATH);
+    enviarmsg(queue7, &msgClose, sizeof(msgClose));
+    int queue8 = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+    enviarmsg(queue8, &msgClose, sizeof(msgClose));
+    int registro1 = getmsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
+    enviarmsg(registro1, &msgClose, sizeof(msgClose));
+    int registro2 = getmsg(QREGISTROCLINID, QREGISTROCLINPATH);
+    enviarmsg(registro2, &msgClose, sizeof(msgClose));
+    int registro3 = getmsg(QREGISTROHELINID, QREGISTROHELINPATH);
+    enviarmsg(registro3, &msgClose, sizeof(msgClose));
 }
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {

@@ -7,7 +7,7 @@
 
 #include "Middleware.h"
 
-pid_t startHeladeroCajeroMOM();
+pid_t startHeladeroMOM();
 
 void devolverPedidoCliente(char*, long);
 

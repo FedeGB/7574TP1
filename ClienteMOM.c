@@ -27,14 +27,24 @@ pid_t startClienteMOM() {
     return startMiddleWare(colasMiddle, 6, registro);
 }
 
-void enviarPedidoCajero(char*, long) {
-
+void enviarPedidoCajero(char* pedido, long idCliente) {
+    int queue = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    Message msgSend;
+    msgSend.mtype = idCliente;
+    strncpy(msgSend.data, pedido, 4);
+    enviarmsg(queue, &msgSend, sizeof(msgSend));
 }
 
-void recibirTicket(char*, long*) {
-
+void recibirTicket(char* pedido, long idCliente) {
+    int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
+    Message msgRcv;
+    recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente);
+    strncpy(pedido, msgRcv.data, 4);
 }
 
-void recibirHelado(char*, long*) {
-
+void recibirHelado(char* pedido, long idCliente) {
+    int queue = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
+    Message msgRcv;
+    recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente);
+    strncpy(pedido, msgRcv.data, 4);
 }

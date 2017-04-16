@@ -62,15 +62,10 @@ pid_t work(int input, int output) {
             if (status >= 0) {
                 if (msgRcv.data[1] == '0') {
                     flag = false;
-                    i = msgRcv.data[2];
+                    continue;
                 }
-                while (j < i) {
-                    enviarmsg(output, &msgRcv, sizeof(msgRcv));
-                    j++;
-                }
+                enviarmsg(output, &msgRcv, sizeof(msgRcv));
             }
-            j = 0;
-            i = 1;
         }
         return 0;
     } else {
@@ -89,6 +84,7 @@ pid_t registerer(int registroIn, int registroOut) {
             if (status >= 0) {
                 if (msgRcv.data[1] == '0') {
                     flag = false;
+                    continue;
                 }
                 Message msgSnd;
                 // TODO: Devolver handler correcto
@@ -97,6 +93,7 @@ pid_t registerer(int registroIn, int registroOut) {
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));
             }
         }
+        return 0;
     } else {
         return reg;
     }

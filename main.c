@@ -9,12 +9,13 @@ int main() {
     int queues[18], sharedMem[3], semaforos[11];
     pid_t cajero;
     pid_t heladeros[2];
+    pid_t middlewares[3];
 
-    int controlador = start(queues, sharedMem, semaforos, &cajero,  heladeros);
+    int controlador = start(queues, sharedMem, semaforos, &cajero,  heladeros, middlewares);
     if(controlador == 0) {
         return 0;
     }
-    pid_t sim = simular(queues, sharedMem, semaforos, &cajero,  heladeros);
+    pid_t sim = simular(queues, sharedMem, semaforos, &cajero,  heladeros, middlewares);
     if(sim == 0) {
         return 0;
     }

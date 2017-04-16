@@ -12,8 +12,8 @@ pid_t startClienteMOM();
 
 void enviarPedidoCajero(char*, long);
 
-void recibirTicket(char*, long*);
+void recibirTicket(char*, long);
 
-void recibirHelado(char*, long*);
+void recibirHelado(char*, long);
 
 #endif //INC_7574TP1_CLIENTEMOM_H
