@@ -4,18 +4,6 @@
 
 #include "Utilities.h"
 
-bool seguirAtendiendo() {
-    int semEntrada = getSemaforo(SEMENTRADAID, SEMENTRADAPATH);
-    int entradaShm = getshm(ENTRADAID, ENTRADAPATH);
-    p(semEntrada);
-    bool* entrada = (bool*)map(entradaShm);
-    bool flag = *entrada;
-    unmap(entrada);
-    v(semEntrada);
-    return flag;
-}
-
-
 void esperarAleatorio() {
     int sleepingTime = numeroAleatorioRango(3, 7); // Entre 1 y 4 segundo
     sleep(sleepingTime);

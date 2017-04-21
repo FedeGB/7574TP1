@@ -28,7 +28,6 @@ int inicializar (int idSem, int valorInicial) {
         struct seminfo *__buf; /* Buffer for IPC_INFO(Linux specific)*/
     } init;
 
-//    union semnum init;
     init.val = valorInicial;
     int resultado = semctl ( idSem, 0, SETVAL, init );
     if(resultado < 0) {

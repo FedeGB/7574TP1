@@ -42,7 +42,7 @@
 #define ENLUGAR '2'
 
 // Variables heladeria
-#define ESPACIOHELADERIA 10
-#define MAXCOLACAJER 4
+#define ESPACIOHELADERIA 3
+#define MAXCOLACAJER 5
 
 #endif //INC_7574TP1_CONSTANTES_H

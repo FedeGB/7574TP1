@@ -1,0 +1,12 @@
+Instrucciones para la ejecución del programa:
+
+1- Compilar con $ make.
+2- Correr con ./main
+
+El programa recibe input para mandar clientes a la heladeria
+y cerrar la heladeria.
+Para enviar un cliente enviar el caracter 'c'.
+Para cerrar la heladeria enviar el caracter 'x'.
+
+El programa terminara por completo cuando terminen su ciclo los clientes
+(terminar de comer el helado adentro o llevarselo).

@@ -11,13 +11,6 @@
 #include <time.h>
 #include <unistd.h>
 
-
-//int* parsearPedido(char* pedido) {
-//
-//}
-
-bool seguirAtendiendo();
-
 void esperarAleatorio();
 
 int numeroAleatorioRango(int, int);

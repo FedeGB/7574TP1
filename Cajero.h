@@ -14,6 +14,4 @@ pid_t crearCajero();
 
 void atenderCajero();
 
-//bool hayClientesEnCola();
-
 #endif //INC_7574TP1_CAJERO_H
