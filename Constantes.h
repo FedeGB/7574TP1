@@ -46,14 +46,16 @@
 #define QREGISTROCLOUTID 6
 
 // Semaforos
-#define SEMCAJEROID 5
 #define SEMCAJEROPATH "/bin/sh"
+#define SEMCAJEROID 1
 #define SEMLUGARESPATH "/bin/sh"
-#define SEMLUGARESID 6
-#define SEMLUGARESCAJID 9
+#define SEMLUGARESID 2
 #define SEMLUGARESCAJPATH "/bin/sh"
-#define SEMENTRADAID 10
+#define SEMLUGARESCAJID 3
 #define SEMENTRADAPATH "/bin/sh"
+#define SEMENTRADAID 4
+#define SEMREGISTERPATH "/bin/sh"
+#define SEMREGISTERID 5
 #define SEMGUSTOS "/bin/ls"
 
 // Gustos
@@ -66,12 +68,14 @@
 #define MENTAGRANIZADA '7'
 
 // Shared Memory
-#define ENTRADAID 11
-#define ENTRADAPATH "/bin/sh"
-#define LUGARESPATH "/bin/sh"
-#define LUGARESID 7
-#define LUGARESCAJEROID 8
-#define LUGARESCAJEROPATH "/bin/sh"
+#define ENTRADAPATH "/bin/dir"
+#define ENTRADAID 1
+#define LUGARESPATH "/bin/dir"
+#define LUGARESID 2
+#define LUGARESCAJEROPATH "/bin/dir"
+#define LUGARESCAJEROID 3
+#define REGISTERHANDLERPATH "/bin/dir"
+#define REGISTERHANDLERID 4
 
 // TIPO ÞEDIDO
 #define LLEVAR '1'

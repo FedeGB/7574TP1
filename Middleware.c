@@ -47,22 +47,16 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
 pid_t work(int input, int output) {
     pid_t trabajo = fork();
     if(trabajo == 0) {
-        bool flag = true;
         int status;
-        while (flag) {
+        while (true) {
             Message msgRcv;
             status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
             if (status >= 0) {
-                if (msgRcv.data[1] == '0') {
-                    flag = false;
-                    continue;
-                }
                 enviarmsg(output, &msgRcv, sizeof(msgRcv));
             } else {
                 return 0;
             }
         }
-        return 0;
     } else {
         return trabajo;
     }
@@ -70,39 +64,31 @@ pid_t work(int input, int output) {
 
 pid_t registerer(int registroIn, int registroOut) {
     pid_t reg = fork();
+    int registerSem = getSemaforo(SEMREGISTERID, SEMREGISTERPATH);
     if(reg == 0) {
-        bool flag = true;
         int status;
-        while (flag) {
+        while (true) {
             Message msgRcv;
             status = recibirmsg(registroIn, &msgRcv, sizeof(msgRcv), 0);
             if (status >= 0) {
-                if (msgRcv.data[1] == '0') {
-                    flag = false;
-                    continue;
-                }
                 Message msgSnd;
-                // TODO: Devolver handler correcto
                 strncpy(msgSnd.data, "1111", 4);
-                msgSnd.mtype = 1;
+                int memReg = getshm(REGISTERHANDLERID, REGISTERHANDLERPATH);
+                if(memReg < 0) {
+                    return 0;
+                }
+                p(registerSem);
+                long* id = (long*)map(memReg);
+                *id++;
+                msgSnd.mtype = *id;
+                unmap(id);
+                v(registerSem);
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));
             } else {
                 return 0;
             }
         }
-        return 0;
     } else {
         return reg;
     }
 }
-
-int registrar() {
-
-}
-
-//desregistrar
-
-
-//Pasar handler y no ID de queue
-
-//registrar -> handler

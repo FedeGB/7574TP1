@@ -10,6 +10,7 @@
 #include "ColaMensajes.h"
 #include "Semaforo.h"
 #include "Constantes.h"
+#include "MemoriaCompartida.h"
 #include <vector>
 
 typedef struct colaPedido {

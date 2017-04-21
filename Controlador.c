@@ -39,9 +39,11 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
     int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
+    int registerHandler = creashm(REGISTERHANDLERID, sizeof(long), REGISTERHANDLERPATH);
     sharedMem[0] = lugaresHeladeria;
     sharedMem[1] = lugaresCajero;
     sharedMem[2] = entradaShm;
+    sharedMem[3] = registerHandler;
     int semLugares = crearSemaforo(SEMLUGARESPATH, SEMLUGARESID, 2);
     int semCajero = crearSemaforo(SEMCAJEROPATH, SEMCAJEROID, 0);
     int semVainilla = crearSemaforo(SEMGUSTOS, VAINILLA, 1);
@@ -53,6 +55,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     int semMenta = crearSemaforo(SEMGUSTOS, MENTAGRANIZADA, 1);
     int semLugaresCaj = crearSemaforo(SEMLUGARESCAJPATH, SEMLUGARESCAJID, 1);
     int semEntrada = crearSemaforo(SEMENTRADAPATH, SEMENTRADAID, 1);
+    int semRegister = crearSemaforo(SEMREGISTERPATH, SEMREGISTERID, 1);
     semaforos[0] = semLugares;
     semaforos[1] = semCajero;
     semaforos[2] = semVainilla;
@@ -64,6 +67,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     semaforos[8] = semMenta;
     semaforos[9] = semLugaresCaj;
     semaforos[10] = semEntrada;
+    semaforos[11] = semRegister;
     printf("Se generaron ipcs.\n");
 }
 
@@ -83,6 +87,11 @@ void iniciarSharedMemories(int* sharedMem, int* semaforos) {
     (*entrada) = true;
     unmap(entrada);
     v(semaforos[10]);
+    p(semaforos[11]);
+    long* regMem = (long*)map(sharedMem[3]);
+    *regMem = 0;
+    unmap(regMem);
+    v(semaforos[11]);
     printf("Se incializaron variables de memoria compartida.\n");
 }
 
@@ -174,10 +183,10 @@ void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
     for(int q = 0; q < 18; q++) {
         elimsg(queues[q]);
     }
-    for(int sh = 0; sh < 3; sh++) {
+    for(int sh = 0; sh < 4; sh++) {
         elishm(sharedMem[sh]);
     }
-    for(int sem = 0; sem < 11; sem++) {
+    for(int sem = 0; sem < 12; sem++) {
         eliminarSemaforo(semaforos[sem]);
     }
 }
