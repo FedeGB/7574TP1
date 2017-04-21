@@ -42,22 +42,20 @@ void retirarPedido() {
     char pedido[4];
     recibirHelado(pedido, getpid()); // TODO: CHANGE POR ID DE TICKET
     printf("Cliente %d: Recibi mi pedido.\n", getpid());
-//    if(status > 0) {
-        if(pedido[3] == LLEVAR) {
-            printf("Cliente %d: Es para llevar, me fui.\n", getpid());
-            return;
-        }
-        printf("Cliente %d: Como el helado adentro.\n", getpid());
-        esperarAleatorio();
-        int lugaresMem = getshm(LUGARESID, LUGARESPATH);
-        int lugaresSem = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
-        printf("Cliente %d: Libero lugar y me voy.\n", getpid());
-        p(lugaresSem);
-        int* lugares = (int*)map(lugaresMem);
-        (*lugares)++;
-        unmap(lugares);
-        v(lugaresSem);
-//    }
+    if(pedido[3] == LLEVAR) {
+        printf("Cliente %d: Es para llevar, me fui.\n", getpid());
+        return;
+    }
+    printf("Cliente %d: Como el helado adentro.\n", getpid());
+    esperarAleatorio();
+    int lugaresMem = getshm(LUGARESID, LUGARESPATH);
+    int lugaresSem = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
+    printf("Cliente %d: Libero lugar y me voy.\n", getpid());
+    p(lugaresSem);
+    int* lugares = (int*)map(lugaresMem);
+    (*lugares)++;
+    unmap(lugares);
+    v(lugaresSem);
 }
 
 void getPedido(char* pedido) {

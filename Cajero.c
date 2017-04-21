@@ -36,18 +36,3 @@ void atenderCajero() {
         printf("Cajero: Envie mensaje a heladeros.\n");
     }
 }
-
-
-//bool hayClientesEnCola() {
-//    int semCajero = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
-//    int shQCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
-//    bool hay = true;
-//    p(semCajero);
-//    int* enCola = (int*)map(shQCajero);
-//    if(*enCola <= 0) {
-//        hay = false;
-//    }
-//    unmap(enCola);
-//    v(semCajero);
-//    return hay;
-//}

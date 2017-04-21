@@ -161,65 +161,16 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
         *lugaresC = MAXCOLACAJER + 100;
         unmap(lugaresC);
         v(semaforos[9]);
-
-//        char cierre[4];
-//        Message msg;
-//        getPedidoCierre(cierre);
-//        msg.mtype = getpid();
-//        strncpy(msg.data, cierre, 4);
-//
-//        p(semaforos[1]);
-//        enviarmsg(queues[13],&msg, sizeof(msg));
-//        waitpid(*cajero, NULL, 0);
-//        for(int hel = 0; hel < 2; hel++) {
-//            waitpid(heladeros[hel], NULL, 0);
-//        }
         for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
             waitpid(*it, NULL, 0);
         }
-//        terminarMiddlewares();
-//        waitpid(middle[0], NULL, 0);
-//        waitpid(middle[1], NULL, 0);
-//        waitpid(middle[2], NULL, 0);
         return 0;
     } else {
         return simulador;
     }
 }
 
-void terminarMiddlewares() {
-    Message msgClose;
-    msgClose.data[0] = '1';
-    msgClose.data[1] = '0';
-    msgClose.data[2] = '1';
-    msgClose.data[3] = '1';
-    msgClose.mtype = 1;
-    int queue1 = getmsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
-    enviarmsg(queue1, &msgClose, sizeof(msgClose));
-    int queue2 = getmsg(QCLIENTETOCJID, QCLIENTETOCJPATH);
-    enviarmsg(queue2, &msgClose, sizeof(msgClose));
-    int queue3 = getmsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
-    enviarmsg(queue3, &msgClose, sizeof(msgClose));
-    int queue4 = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
-    enviarmsg(queue4, &msgClose, sizeof(msgClose));
-    int queue5 = getmsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
-    enviarmsg(queue5, &msgClose, sizeof(msgClose));
-    int queue6 = getmsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
-    enviarmsg(queue6, &msgClose, sizeof(msgClose));
-    int queue7 = getmsg(QCAJEROTOHELID, QCAJEROTOHELPATH);
-    enviarmsg(queue7, &msgClose, sizeof(msgClose));
-    int queue8 = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
-    enviarmsg(queue8, &msgClose, sizeof(msgClose));
-    int registro1 = getmsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
-    enviarmsg(registro1, &msgClose, sizeof(msgClose));
-    int registro2 = getmsg(QREGISTROCLINID, QREGISTROCLINPATH);
-    enviarmsg(registro2, &msgClose, sizeof(msgClose));
-    int registro3 = getmsg(QREGISTROHELINID, QREGISTROHELINPATH);
-    enviarmsg(registro3, &msgClose, sizeof(msgClose));
-}
-
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
-    // TODO: Modificar cantidades a cerrar
     for(int q = 0; q < 18; q++) {
         elimsg(queues[q]);
     }

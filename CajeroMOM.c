@@ -28,10 +28,6 @@ pid_t startCajeroMOM() {
     return startMiddleWare(colasMiddle, 6, registro);
 }
 
-// TEngo que hacer un MOM para cliente que hable con el mom del cajero y el del heladero
-// Cola unica de entrada MOM. Salida depende de a que MOM se quiera comunicar?
-// Tambien deberia haber un enviar al heladero aca
-
 bool enviarPedidoHeladero(char* pedido, long id) {
     int queue = getmsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
     if(queue < 0) {
