@@ -27,24 +27,40 @@ pid_t startClienteMOM() {
     return startMiddleWare(colasMiddle, 6, registro);
 }
 
-void enviarPedidoCajero(char* pedido, long idCliente) {
+bool enviarPedidoCajero(char* pedido, long idCliente) {
     int queue = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgSend;
     msgSend.mtype = idCliente;
     strncpy(msgSend.data, pedido, 4);
     enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
 }
 
-void recibirTicket(char* pedido, long idCliente) {
+bool recibirTicket(char* pedido, long idCliente) {
     int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgRcv;
-    recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente);
+    if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
+        return false;
+    }
     strncpy(pedido, msgRcv.data, 4);
+    return true;
 }
 
-void recibirHelado(char* pedido, long idCliente) {
+bool recibirHelado(char* pedido, long idCliente) {
     int queue = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgRcv;
-    recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente);
+    if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
+        return false;
+    }
     strncpy(pedido, msgRcv.data, 4);
+    return true;
 }

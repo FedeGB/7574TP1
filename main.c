@@ -20,7 +20,6 @@ int main() {
         return 0;
     }
     waitpid(sim, NULL, 0);
-
     cerrarIPCs(queues, sharedMem, semaforos);
     return 0;
 }

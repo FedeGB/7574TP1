@@ -10,10 +10,10 @@
 
 pid_t startClienteMOM();
 
-void enviarPedidoCajero(char*, long);
+bool enviarPedidoCajero(char*, long);
 
-void recibirTicket(char*, long);
+bool recibirTicket(char*, long);
 
-void recibirHelado(char*, long);
+bool recibirHelado(char*, long);
 
 #endif //INC_7574TP1_CLIENTEMOM_H

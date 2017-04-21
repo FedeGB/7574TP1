@@ -32,27 +32,40 @@ pid_t startCajeroMOM() {
 // Cola unica de entrada MOM. Salida depende de a que MOM se quiera comunicar?
 // Tambien deberia haber un enviar al heladero aca
 
-void enviarPedidoHeladero(char* pedido, long id) {
+bool enviarPedidoHeladero(char* pedido, long id) {
     int queue = getmsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgSend;
     msgSend.mtype = id;
     strncpy(msgSend.data, pedido, 4);
     enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
 }
 
-void enviarTicketCliente(char* ticket, long idCl) {
+bool enviarTicketCliente(char* ticket, long idCl) {
     int queue = getmsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgSend;
     msgSend.mtype = idCl;
     strncpy(msgSend.data, ticket, 4);
     enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
 }
 
-void recibirPedidoCliente(char* pedido, long* idRcv) {
+bool recibirPedidoCliente(char* pedido, long* idRcv) {
     int output = getmsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
+    if(output < 0) {
+        return false;
+    }
     Message msgRcv;
-    recibirmsg(output, &msgRcv, sizeof(msgRcv), 0);
+    if(recibirmsg(output, &msgRcv, sizeof(msgRcv), 0) < 0) {
+        return false;
+    }
     strncpy(pedido, msgRcv.data, 4);
     *idRcv = msgRcv.mtype;
-    printf("data: %s, %d\n", msgRcv.data, msgRcv.mtype);
+    return true;
 }

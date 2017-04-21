@@ -162,25 +162,25 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
         unmap(lugaresC);
         v(semaforos[9]);
 
-        char cierre[4];
-        Message msg;
-        getPedidoCierre(cierre);
-        msg.mtype = getpid();
-        strncpy(msg.data, cierre, 4);
-
-        p(semaforos[1]);
-        enviarmsg(queues[13],&msg, sizeof(msg));
-        waitpid(*cajero, NULL, 0);
-        for(int hel = 0; hel < 2; hel++) {
-            waitpid(heladeros[hel], NULL, 0);
-        }
+//        char cierre[4];
+//        Message msg;
+//        getPedidoCierre(cierre);
+//        msg.mtype = getpid();
+//        strncpy(msg.data, cierre, 4);
+//
+//        p(semaforos[1]);
+//        enviarmsg(queues[13],&msg, sizeof(msg));
+//        waitpid(*cajero, NULL, 0);
+//        for(int hel = 0; hel < 2; hel++) {
+//            waitpid(heladeros[hel], NULL, 0);
+//        }
         for(std::vector<pid_t>::iterator it = pid_clientes.begin(); it != pid_clientes.end(); it++) {
             waitpid(*it, NULL, 0);
         }
-        terminarMiddlewares();
-        waitpid(middle[0], NULL, 0);
-        waitpid(middle[1], NULL, 0);
-        waitpid(middle[2], NULL, 0);
+//        terminarMiddlewares();
+//        waitpid(middle[0], NULL, 0);
+//        waitpid(middle[1], NULL, 0);
+//        waitpid(middle[2], NULL, 0);
         return 0;
     } else {
         return simulador;

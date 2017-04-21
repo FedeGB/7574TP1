@@ -24,14 +24,15 @@ bool atenderPedido() {
     printf("Heladero %d: Espero pedido.\n", getpid());
     char pedido[4];
     long idCliente;
-    recibirPedidoCajero(pedido, &idCliente);
-    if(pedido[0] == '0') {
+    if(!recibirPedidoCajero(pedido, &idCliente)) {
         return false;
     }
     printf("Heladero %d: Recibi pedido.\n", getpid());
     prepararHelado(pedido);
     printf("Heladero %d: Devuelvo helado a cliente.\n", getpid());
-    devolverPedidoCliente(pedido, idCliente);
+    if(!devolverPedidoCliente(pedido, idCliente)) {
+        return false;
+    }
     return true;
 }
 

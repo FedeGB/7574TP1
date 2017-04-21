@@ -23,18 +23,28 @@ pid_t startHeladeroMOM() {
     return startMiddleWare(colasMiddle, 4, registro);
 }
 
-void devolverPedidoCliente(char* pedido, long idCliente) {
+bool devolverPedidoCliente(char* pedido, long idCliente) {
     int queue = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message msgSend;
     msgSend.mtype = idCliente;
     strncpy(msgSend.data, pedido, 4);
     enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
 }
 
-void recibirPedidoCajero(char* pedido, long* idCliente) {
+bool recibirPedidoCajero(char* pedido, long* idCliente) {
     int queue = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
+    if(queue < 0) {
+        return false;
+    }
     Message rcvMsg;
-    recibirmsg(queue, &rcvMsg, sizeof(rcvMsg), 0);
+    if(recibirmsg(queue, &rcvMsg, sizeof(rcvMsg), 0) < 0) {
+        return false;
+    }
     strncpy(pedido, rcvMsg.data, 4);
     *idCliente = rcvMsg.mtype;
+    return true;
 }

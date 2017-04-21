@@ -27,21 +27,16 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
             colasDeMiddleware.push_back(qGetter);
             if(i%2 != 0 && i != 0) {
                 working = work(colasDeMiddleware[i-1], colasDeMiddleware[i]);
-                trabajadores.push_back(working);
                 if(working == 0) {
                     return 0;
                 }
+                trabajadores.push_back(working);
             }
         }
         waitpid(registering, NULL, 0);
         for(std::vector<pid_t>::iterator it = trabajadores.begin(); it != trabajadores.end(); it++) {
             waitpid(*it, NULL, 0);
         }
-//        elimsg(qReg[0]);
-//        elimsg(qReg[1]);
-//        for(std::vector<int>::iterator it2 = colasDeMiddleware.begin(); it2 != colasDeMiddleware.end(); it2++) {
-//            elimsg(*it2);
-//        }
         return 0;
     } else {
         return middle;
@@ -57,13 +52,14 @@ pid_t work(int input, int output) {
         while (flag) {
             Message msgRcv;
             status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
-            printf("Middle %d recibio %s con mtype %d\n", getpid(), msgRcv.data, msgRcv.mtype);
             if (status >= 0) {
                 if (msgRcv.data[1] == '0') {
                     flag = false;
                     continue;
                 }
                 enviarmsg(output, &msgRcv, sizeof(msgRcv));
+            } else {
+                return 0;
             }
         }
         return 0;
@@ -90,6 +86,8 @@ pid_t registerer(int registroIn, int registroOut) {
                 strncpy(msgSnd.data, "1111", 4);
                 msgSnd.mtype = 1;
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));
+            } else {
+                return 0;
             }
         }
         return 0;
