@@ -72,15 +72,18 @@ pid_t registerer(int registroIn, int registroOut) {
             status = recibirmsg(registroIn, &msgRcv, sizeof(msgRcv), 0);
             if (status >= 0) {
                 Message msgSnd;
-                strncpy(msgSnd.data, "1111", 4);
+                msgSnd.mtype = msgRcv.mtype;
                 int memReg = getshm(REGISTERHANDLERID, REGISTERHANDLERPATH);
                 if(memReg < 0) {
                     return 0;
                 }
                 p(registerSem);
                 long* id = (long*)map(memReg);
-                *id++;
-                msgSnd.mtype = *id;
+                (*id)++;
+                const int n = snprintf(NULL, 0, "%lu", *id);
+                char buf[n+1];
+                snprintf(buf, n+1, "%lu", *id);
+                strcpy(msgSnd.data, buf);
                 unmap(id);
                 v(registerSem);
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));

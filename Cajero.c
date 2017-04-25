@@ -11,6 +11,8 @@ pid_t crearCajero() {
     if(cajeroId == 0) {
         time_t t;
         srand((unsigned)time(&t));
+        // Uso real mas adelante
+        long idCajero = registrarCajero();
         atenderCajero();
         printf("Cajero: Termine de atender\n");
         return 0;

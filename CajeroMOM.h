@@ -15,4 +15,6 @@ bool enviarTicketCliente(char*, long);
 
 bool recibirPedidoCliente(char*, long*);
 
+long registrarCajero();
+
 #endif //INC_7574TP1_CAJEROMOM_H

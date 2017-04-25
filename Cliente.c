@@ -12,20 +12,22 @@ pid_t generarCliente() {
         }
         time_t t;
         srand((unsigned)time(&t));
-        realizarPedido();
-        retirarPedido();
+        long idCliente = registrarCliente();
+        printf("Mi id de registro es: %d\n",idCliente);
+        realizarPedido(idCliente);
+        retirarPedido(idCliente);
         return 0;
     } else {
         return pid;
     }
 }
 
-void realizarPedido() {
+void realizarPedido(long idCliente) {
     int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     p(semQueueId);
     char pedido[4];
     getPedido(pedido);
-    enviarPedidoCajero(pedido, getpid()); // TODO: CHANGE PID por id de ticket con logica del ticket
+    enviarPedidoCajero(pedido, idCliente);
     int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     p(semLugaresCaj);
@@ -36,11 +38,11 @@ void realizarPedido() {
     v(semLugaresCaj);
 }
 
-void retirarPedido() {
+void retirarPedido(long idCliente) {
     Message msgRcv;
     printf("Cliente %d: Estoy esperando mi pedido.\n", getpid());
     char pedido[4];
-    recibirHelado(pedido, getpid()); // TODO: CHANGE POR ID DE TICKET
+    recibirHelado(pedido, idCliente); // TODO: CHANGE POR ID DE TICKET
     printf("Cliente %d: Recibi mi pedido.\n", getpid());
     if(pedido[3] == LLEVAR) {
         printf("Cliente %d: Es para llevar, me fui.\n", getpid());

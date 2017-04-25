@@ -65,3 +65,17 @@ bool recibirPedidoCliente(char* pedido, long* idRcv) {
     *idRcv = msgRcv.mtype;
     return true;
 }
+
+long registrarCajero() {
+    int regIn = getmsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
+    int regOut = getmsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
+    Message regMsg;
+    regMsg.mtype = getpid();
+    strncpy(regMsg.data, "rrrr", 4);
+    enviarmsg(regIn, &regMsg, sizeof(regMsg));
+    Message regRcv;
+    if(recibirmsg(regOut, &regRcv, sizeof(regRcv), getpid()) >= 0) {
+        return regRcv.mtype;
+    }
+    return -1;
+}

@@ -9,6 +9,8 @@ pid_t crearHeladero() {
     if(proceso == 0) {
         time_t t;
         srand((unsigned)time(&t));
+        // Uso real mas adelante.
+        long idHeladero = registrarHeladero();
         bool flag = true;
         while(flag) {
             flag = atenderPedido();

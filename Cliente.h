@@ -22,9 +22,9 @@ typedef struct cliente {
 
 pid_t generarCliente();
 
-void realizarPedido();
+void realizarPedido(long);
 
-void retirarPedido();
+void retirarPedido(long);
 
 void getPedido(char*);
 

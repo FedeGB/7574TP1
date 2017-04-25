@@ -13,4 +13,6 @@ bool devolverPedidoCliente(char*, long);
 
 bool recibirPedidoCajero(char*, long*);
 
+long registrarHeladero();
+
 #endif //INC_7574TP1_HELADEROMOM_H

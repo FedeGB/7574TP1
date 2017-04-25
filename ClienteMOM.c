@@ -64,3 +64,17 @@ bool recibirHelado(char* pedido, long idCliente) {
     strncpy(pedido, msgRcv.data, 4);
     return true;
 }
+
+long registrarCliente() {
+    int regIn = getmsg(QREGISTROCLINID, QREGISTROCLINPATH);
+    int regOut = getmsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
+    Message regMsg;
+    regMsg.mtype = getpid();
+    strncpy(regMsg.data, "rrrr", 4);
+    enviarmsg(regIn, &regMsg, sizeof(regMsg));
+    Message regRcv;
+    if(recibirmsg(regOut, &regRcv, sizeof(regRcv), getpid()) >= 0) {
+        return atol(regRcv.data);
+    }
+    return -1;
+}
