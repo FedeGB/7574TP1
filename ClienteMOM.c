@@ -39,7 +39,7 @@ bool enviarPedidoCajero(char* pedido, long idCliente) {
     return true;
 }
 
-bool recibirTicket(char* pedido, long idCliente) {
+bool recibirTicket(char* ticket, long idCliente) {
     int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
     if(queue < 0) {
         return false;
@@ -48,7 +48,7 @@ bool recibirTicket(char* pedido, long idCliente) {
     if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
         return false;
     }
-    strncpy(pedido, msgRcv.data, 4);
+    strncpy(ticket, msgRcv.data, 4);
     return true;
 }
 

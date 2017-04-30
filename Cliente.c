@@ -35,6 +35,8 @@ void realizarPedido(long idCliente) {
     (*queue)--;
     printf("Cliente %d: Libero lugar en cola.\n", getpid());
     unmap(queue);
+    char ticket[4];
+    recibirTicket(ticket, idCliente);
     v(semLugaresCaj);
 }
 
