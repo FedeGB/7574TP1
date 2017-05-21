@@ -10,7 +10,7 @@
 #include "Constantes.h"
 #include <time.h>
 #include <unistd.h>
-
+#include <string>
 
 //int* parsearPedido(char* pedido) {
 //
@@ -19,5 +19,9 @@
 void esperarAleatorio();
 
 int numeroAleatorioRango(int, int);
+
+const char* appendString(const char*, const char*, int);
+
+int countDigits(long);
 
 #endif //INC_7574TP1_UTILITIES_H

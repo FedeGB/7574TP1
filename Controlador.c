@@ -203,6 +203,9 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t*
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
     for(int q = 0; q < 18; q++) {
+        if((q == 1 || q == 2 || q == 5 || q == 10) && queues[q] != 0) {
+            close(queues[q]);
+        }
         elimsg(queues[q]);
     }
     for(int sh = 0; sh < 4; sh++) {

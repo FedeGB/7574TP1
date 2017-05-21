@@ -20,25 +20,44 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
             return 0;
         }
         std::vector<pid_t> trabajadores;
-        std::vector<int> colasDeMiddleware;
+        std::vector<qPedido> colasDeMiddleware;
         pid_t working;
         bool sendSocket;
         for(int i = 0; i < qCantidad; i++) {
-            if(queues[i].isSocket) {
-                qGetter = queues[i].qId;
-            } else {
-                qGetter = getmsg(queues[i].qId, queues[i].qPath);
-            }
-            colasDeMiddleware.push_back(qGetter);
+//            if(queues[i].isSocket) {
+//                qGetter = queues[i].qId;
+//            } else {
+//                qGetter = getmsg(queues[i].qId, queues[i].qPath);
+//            }
+            sendSocket = false;
             if(i%2 != 0 && i != 0) {
+                colasDeMiddleware.push_back(queues[i]);
                 if(queues[i].isSocket) {
                     sendSocket = true;
+                    int conn = connectTo(colasDeMiddleware[i].qId, colasDeMiddleware[i].port, colasDeMiddleware[i].ip);
+                    if(conn < 0) {
+                        printf("No se pudo conectar a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
+                    }
                 }
-                working = work(colasDeMiddleware[i-1], colasDeMiddleware[i], sendSocket);
+                working = work(colasDeMiddleware[i-1].qId, colasDeMiddleware[i].qId, sendSocket);
                 if(working == 0) {
                     return 0;
                 }
                 trabajadores.push_back(working);
+            } else {
+                if(queues[i].isSocket) {
+                    struct sockaddr clientAddr;
+                    unsigned int longitudCliente;
+                    printf("Estoy esperando a recibir conexion...\n");
+                    int newSfd = receiveConnection(queues[i].qId, (struct sockaddr*)&clientAddr, &longitudCliente);
+                    if(newSfd > 0) {
+                        queues[i].qId = newSfd;
+                        printf("Recibi nueva conexión\n");
+                    } else {
+                        printf("Fallo en recibir nueva conexión\n");
+                    }
+                }
+                colasDeMiddleware.push_back(queues[i]);
             }
         }
         waitpid(registering, NULL, 0);
@@ -56,12 +75,31 @@ pid_t work(int input, int output, bool sendSocket) {
     pid_t trabajo = fork();
     if(trabajo == 0) {
         int status;
+        int sndSts;
         while (true) {
             Message msgRcv;
-            status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
-            if (status >= 0) {
-                enviarmsg(output, &msgRcv, sizeof(msgRcv));
+            if(sendSocket) {
+                status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
             } else {
+                status = receiveFrom(input, &msgRcv); // Socket
+            }
+            if (status >= 0) {
+                if(sendSocket) {
+                    char buffer[10];
+                    char number[countDigits(msgRcv.mtype)];
+                    sprintf(number, "%ld", msgRcv.mtype);
+                    strncpy(buffer, appendString(msgRcv.data, number, 10), 10);
+                    sndSts = sendTo(output, msgRcv.data, sizeof(msgRcv.data)); // Socket
+                    if(sndSts < 0){
+                        return 0;
+                    }
+                } else {
+                    enviarmsg(output, &msgRcv, sizeof(msgRcv));
+                }
+            } else {
+                if(!sendSocket) {
+                    close(input);
+                }
                 return 0;
             }
         }

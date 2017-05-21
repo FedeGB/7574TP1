@@ -12,12 +12,15 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "ColaMensajes.h"
+#include <string>
 
 int createSocket(const char*, int, bool);
 
-int receiveConnection(int, struct sockaddr*, int*);
+int receiveConnection(int, struct sockaddr*, unsigned int*);
 
-int receiveFrom(int, Message);
+int connectTo(int, int, const char*);
+
+int receiveFrom(int, Message*);
 
 int sendTo(int, char*, int);
 

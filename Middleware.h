@@ -13,11 +13,14 @@
 #include "MemoriaCompartida.h"
 #include <vector>
 #include "Socket.h"
+#include "Utilities.h"
 
 typedef struct colaPedido {
     int qId;
     const char* qPath;
     bool isSocket;
+    int port;
+    const char* ip;
 } qPedido;
 
 pid_t startMiddleWare(qPedido*, int, qPedido*);

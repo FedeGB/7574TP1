@@ -26,11 +26,25 @@ int main(int argc, char** argv) {
     if(controlador == 0) {
         return 0;
     }
-    pid_t sim = simular(queues, sharedMem, semaforos, &cajero,  heladeros, middlewares);
-    if(sim == 0) {
-        return 0;
+    if(init == 1) {
+        pid_t sim = simular(queues, sharedMem, semaforos, &cajero, heladeros, middlewares);
+        if (sim == 0) {
+            return 0;
+        }
+        waitpid(sim, NULL, 0);
+    } else if(init == 2) {
+        waitpid(cajero, NULL, 0);
+        while(1) {
+            sleep(1);
+        }
+    } else {
+        for(int hel; hel < 2; hel++) {
+            waitpid(heladeros[hel], NULL, 0);
+        }
+        while(1) {
+            sleep(1);
+        }
     }
-    waitpid(sim, NULL, 0);
     cerrarIPCs(queues, sharedMem, semaforos);
     return 0;
 }

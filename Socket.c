@@ -39,7 +39,7 @@ int receiveConnection(int sfd, struct sockaddr* clientAddr, unsigned int* longit
     return clientSfd;
 }
 
-int connectTo(int sfd, int port, char* ip) {
+int connectTo(int sfd, int port, const char* ip) {
     struct sockaddr_in direccion;
     direccion.sin_family = AF_INET;
     direccion.sin_port = port;
@@ -71,6 +71,9 @@ int receiveFrom(int sfd, Message* message) {
         strcpy(bufferTmp, "");
     }
     strncpy(message->data, buffer, 4);
+    std::string StrTmp(buffer);
+    std::string number = StrTmp.substr(4, StrTmp.find(".") - 4);
+    message->mtype = std::stol(number);
     return lectura;
 }
 

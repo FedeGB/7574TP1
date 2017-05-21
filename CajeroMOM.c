@@ -16,6 +16,8 @@ pid_t startCajeroMOM(int* queues) {
 //    colasMiddle[1].qPath = QCAJEROTOCLPATH;
     colasMiddle[1].qId = queues[1];
     colasMiddle[1].isSocket = true;
+    colasMiddle[1].ip = "127.0.0.1";
+    colasMiddle[1].port = 8081;
 //    colasMiddle[2].qId = QCLIENTETOCJID;
 //    colasMiddle[2].qPath = QCLIENTETOCJPATH;
     colasMiddle[2].qId = queues[2];
@@ -30,6 +32,8 @@ pid_t startCajeroMOM(int* queues) {
 //    colasMiddle[5].qPath = QCAJEROTOHELPATH;
     colasMiddle[5].qId = queues[5];
     colasMiddle[5].isSocket = true;
+    colasMiddle[5].ip = "127.0.0.1";
+    colasMiddle[5].port = 8083;
     registro[0].qId = QREGISTROCAJINID;
     registro[0].qPath = QREGISTROCAJINPATH;
     registro[1].qId = QREGISTROCAJOUTID;
