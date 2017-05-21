@@ -12,6 +12,7 @@ pid_t startClienteMOM(int* queues) {
 //    colasMiddle[0].qPath = QCAJEROTOCLPATH;
     colasMiddle[0].qId = queues[1];
     colasMiddle[0].isSocket = true;
+    colasMiddle[0].doReceive = true;
     colasMiddle[1].qId = QFROMCAJEROCLID;
     colasMiddle[1].qPath = QFROMCAJEROCLPATH;
     colasMiddle[1].isSocket = false;
@@ -22,12 +23,14 @@ pid_t startClienteMOM(int* queues) {
 //    colasMiddle[3].qPath = QCLIENTETOCJPATH;
     colasMiddle[3].qId = queues[2];
     colasMiddle[3].isSocket = true;
+    colasMiddle[3].doConnect = false;
     colasMiddle[3].ip = "127.0.0.1";
     colasMiddle[3].port = 8082;
 //    colasMiddle[4].qId = QHELADEROTOCLID;
 //    colasMiddle[4].qPath = QHELADEROTOCLPATH;
     colasMiddle[4].qId = queues[10];
     colasMiddle[4].isSocket = true;
+    colasMiddle[4].doReceive = true;
     colasMiddle[5].qId = QFROMHELADEROCLID;
     colasMiddle[5].qPath = QFROMHELADEROCLPATH;
     colasMiddle[5].isSocket = false;

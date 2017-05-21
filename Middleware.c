@@ -34,9 +34,12 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
                 colasDeMiddleware.push_back(queues[i]);
                 if(queues[i].isSocket) {
                     sendSocket = true;
-                    int conn = connectTo(colasDeMiddleware[i].qId, colasDeMiddleware[i].port, colasDeMiddleware[i].ip);
-                    if(conn < 0) {
-                        printf("No se pudo conectar a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
+                    if(colasDeMiddleware[i].doConnect) {
+                        int conn = connectTo(colasDeMiddleware[i].qId, colasDeMiddleware[i].port, colasDeMiddleware[i].ip);
+                        if(conn < 0) {
+                            printf("No se pudo conectar a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
+                        }
+                        printf("Me conecte a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
                     }
                 }
                 working = work(colasDeMiddleware[i-1].qId, colasDeMiddleware[i].qId, sendSocket);
@@ -45,16 +48,16 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
                 }
                 trabajadores.push_back(working);
             } else {
-                if(queues[i].isSocket) {
+                if(queues[i].isSocket && queues[i].doReceive) {
                     struct sockaddr clientAddr;
-                    unsigned int longitudCliente;
+                    unsigned int longitudCliente = sizeof(clientAddr);
                     printf("Estoy esperando a recibir conexion...\n");
                     int newSfd = receiveConnection(queues[i].qId, (struct sockaddr*)&clientAddr, &longitudCliente);
                     if(newSfd > 0) {
                         queues[i].qId = newSfd;
                         printf("Recibi nueva conexión\n");
                     } else {
-                        printf("Fallo en recibir nueva conexión\n");
+                        perror("Fallo en recibir nueva conexión");
                     }
                 }
                 colasDeMiddleware.push_back(queues[i]);

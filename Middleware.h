@@ -21,6 +21,8 @@ typedef struct colaPedido {
     bool isSocket;
     int port;
     const char* ip;
+    bool doConnect;
+    bool doReceive;
 } qPedido;
 
 pid_t startMiddleWare(qPedido*, int, qPedido*);

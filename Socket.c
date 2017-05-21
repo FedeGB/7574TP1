@@ -5,7 +5,7 @@
 #include "Socket.h"
 
 int createSocket(const char* ip, int puerto, bool bind) {
-    int sfd = socket(PF_INET, SOCK_STREAM, 0);
+    int sfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sfd < 0) {
         perror("Error al obtener socket descriptor");
         return -1;

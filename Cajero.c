@@ -22,9 +22,9 @@ pid_t crearCajero() {
 }
 
 void atenderCajero() {
-    int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
+//    int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
     while(true) {
-        v(semQueueId);
+//        v(semQueueId);
         printf("Cajero: Atiendo cliente.\n");
         esperarAleatorio();
         char pedido[4];

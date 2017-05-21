@@ -12,6 +12,7 @@ pid_t startHeladeroMOM(int* queues) {
 //    colasMiddle[0].qPath = QCAJEROTOHELPATH;
     colasMiddle[0].qId = queues[5];
     colasMiddle[0].isSocket = true;
+    colasMiddle[0].doReceive = true;
     colasMiddle[1].qId = QFROMCAJEROHELID;
     colasMiddle[1].qPath = QFROMCAJEROHELPATH;
     colasMiddle[1].isSocket = false;
@@ -24,6 +25,7 @@ pid_t startHeladeroMOM(int* queues) {
     colasMiddle[3].isSocket = true;
     colasMiddle[3].ip = "127.0.0.1";
     colasMiddle[3].port = 8081;
+    colasMiddle[3].doConnect = true;
     registro[0].qId = QREGISTROHELINID;
     registro[0].qPath = QREGISTROHELINPATH;
     registro[1].qId = QREGISTROHELOUTID;
