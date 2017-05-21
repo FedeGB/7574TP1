@@ -5,21 +5,30 @@
 #include "ClienteMOM.h"
 
 
-pid_t startClienteMOM() {
+pid_t startClienteMOM(int* queues) {
     qPedido colasMiddle[6];
     qPedido registro[2];
     colasMiddle[0].qId = QTOCAJEROCLID;
     colasMiddle[0].qPath = QTOCAJEROCLPATH;
-    colasMiddle[1].qId = QCLIENTETOCJID;
-    colasMiddle[1].qPath = QCLIENTETOCJPATH;
-    colasMiddle[2].qId = QCAJEROTOCLID;
-    colasMiddle[2].qPath = QCAJEROTOCLPATH;
+    colasMiddle[0].isSocket = false;
+//    colasMiddle[1].qId = QCLIENTETOCJID;
+//    colasMiddle[1].qPath = QCLIENTETOCJPATH;
+    colasMiddle[1].qId = queues[2];
+    colasMiddle[1].isSocket = true;
+//    colasMiddle[2].qId = QCAJEROTOCLID;
+//    colasMiddle[2].qPath = QCAJEROTOCLPATH;
+    colasMiddle[2].qId = queues[1];
+    colasMiddle[2].isSocket = true;
     colasMiddle[3].qId = QFROMCAJEROCLID;
     colasMiddle[3].qPath = QFROMCAJEROCLPATH;
-    colasMiddle[4].qId = QHELADEROTOCLID;
-    colasMiddle[4].qPath = QHELADEROTOCLPATH;
+    colasMiddle[3].isSocket = false;
+//    colasMiddle[4].qId = QHELADEROTOCLID;
+//    colasMiddle[4].qPath = QHELADEROTOCLPATH;
+    colasMiddle[4].qId = queues[10];
+    colasMiddle[4].isSocket = true;
     colasMiddle[5].qId = QFROMHELADEROCLID;
     colasMiddle[5].qPath = QFROMHELADEROCLPATH;
+    colasMiddle[5].isSocket = false;
     registro[0].qId = QREGISTROCLINID;
     registro[0].qPath = QREGISTROCLINPATH;
     registro[1].qId = QREGISTROCLOUTID;

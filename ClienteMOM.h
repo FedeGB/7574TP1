@@ -7,7 +7,7 @@
 
 #include "Middleware.h"
 
-pid_t startClienteMOM();
+pid_t startClienteMOM(int*);
 
 bool enviarPedidoCajero(char*, long);
 

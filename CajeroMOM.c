@@ -6,21 +6,30 @@
 
 
 
-pid_t startCajeroMOM() {
+pid_t startCajeroMOM(int* queues) {
     qPedido colasMiddle[6];
     qPedido registro[2];
     colasMiddle[0].qId = QTOCLIENTECJID;
     colasMiddle[0].qPath = QTOCLIENTECJPATH;
-    colasMiddle[1].qId= QCAJEROTOCLID;
-    colasMiddle[1].qPath = QCAJEROTOCLPATH;
-    colasMiddle[2].qId = QCLIENTETOCJID;
-    colasMiddle[2].qPath = QCLIENTETOCJPATH;
+    colasMiddle[0].isSocket = false;
+//    colasMiddle[1].qId= QCAJEROTOCLID;
+//    colasMiddle[1].qPath = QCAJEROTOCLPATH;
+    colasMiddle[1].qId = queues[1];
+    colasMiddle[1].isSocket = true;
+//    colasMiddle[2].qId = QCLIENTETOCJID;
+//    colasMiddle[2].qPath = QCLIENTETOCJPATH;
+    colasMiddle[2].qId = queues[2];
+    colasMiddle[2].isSocket = true;
     colasMiddle[3].qId = QFROMCLIENTECJID;
     colasMiddle[3].qPath = QFROMCLIENTECJPATH;
+    colasMiddle[3].isSocket = false;
     colasMiddle[4].qId = QTOHELADEROCJID;
     colasMiddle[4].qPath = QTOHELADEROCJPATH;
-    colasMiddle[5].qId = QCAJEROTOHELID;
-    colasMiddle[5].qPath = QCAJEROTOHELPATH;
+    colasMiddle[4].isSocket = false;
+//    colasMiddle[5].qId = QCAJEROTOHELID;
+//    colasMiddle[5].qPath = QCAJEROTOHELPATH;
+    colasMiddle[5].qId = queues[5];
+    colasMiddle[5].isSocket = true;
     registro[0].qId = QREGISTROCAJINID;
     registro[0].qPath = QREGISTROCAJINPATH;
     registro[1].qId = QREGISTROCAJOUTID;

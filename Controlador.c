@@ -5,10 +5,10 @@
 #include "Controlador.h"
 
 
-int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
-    iniciarIPCs(queues, sharedMem, semaforos);
+int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* heladeros, pid_t* middlewares, int init) {
+    iniciarIPCs(queues, sharedMem, semaforos, init);
     iniciarSharedMemories(sharedMem, semaforos);
-    bool trabajador = iniciarTrabajadores(cajero, heladeros, middlewares);
+    bool trabajador = iniciarTrabajadores(cajero, heladeros, middlewares, queues, init);
     if(trabajador) {
         return 1;
     } else {
@@ -17,18 +17,18 @@ int start(int* queues, int* sharedMem, int* semaforos, pid_t* cajero, pid_t* hel
 }
 
 
-void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
+void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
     queues[0] = creamsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
-    queues[1] = creamsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
-    queues[2] = creamsg(QCLIENTETOCJID, QCLIENTETOCJPATH);
+//    queues[1] = creamsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
+//    queues[2] = creamsg(QCLIENTETOCJID, QCLIENTETOCJPATH);
     queues[3] = creamsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
     queues[4] = creamsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
-    queues[5] = creamsg(QCAJEROTOHELID, QCAJEROTOHELPATH);
+//    queues[5] = creamsg(QCAJEROTOHELID, QCAJEROTOHELPATH);
     queues[6] = creamsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
     queues[7] = creamsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
     queues[8] = creamsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
     queues[9] = creamsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
-    queues[10] = creamsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
+//    queues[10] = creamsg(QHELADEROTOCLID, QHELADEROTOCLPATH);
     queues[11] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
     queues[12] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
     queues[13] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
@@ -36,6 +36,22 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     queues[15] = creamsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
     queues[16] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
     queues[17] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
+    if(init == 1) { // Cliente
+        queues[1] = createSocket("127.0.0.1", 8081, true);
+        queues[2] = queues[1];
+        queues[5] = 0;
+        queues[10] = createSocket("", 0, false);
+    } else if (init == 2) { // Cajero
+        queues[1] = createSocket("127.0.0.1", 8082, true);
+        queues[2] = queues[1];
+        queues[5] = createSocket("", 0, false);
+        queues[10] = 0;
+    } else { // Heladero
+        queues[1] = 0;
+        queues[2] = 0;
+        queues[5] = createSocket("127.0.0.1", 8083, true);
+        queues[10] = createSocket("", 0, false);
+    }
     int lugaresHeladeria = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     int lugaresCajero = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
     int entradaShm = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
@@ -96,39 +112,45 @@ void iniciarSharedMemories(int* sharedMem, int* semaforos) {
 }
 
 
-bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares) {
-    pid_t middleCajero = startCajeroMOM();
-    if(middleCajero == 0) {
-        return false;
-    }
-    middlewares[0] = middleCajero;
-    printf("Inicio Middle cajero\n");
-    pid_t cajeroHel = crearCajero();
-    if(cajeroHel == 0) {
-        return false;
-    }
-    cajero = &cajeroHel;
-    printf("Se creo cajero.\n");
-    pid_t middleHeladeros = startHeladeroMOM();
-    if(middleHeladeros == 0) {
-        return false;
-    }
-    middlewares[1] = middleHeladeros;
-    printf("Inicio Middle heladeros\n");
-    for(int hel = 0; hel < 2; hel++) {
-        pid_t helade = crearHeladero();
-        if (helade == 0) {
+bool iniciarTrabajadores(pid_t* cajero, pid_t* heladeros, pid_t* middlewares, int* queues, int init) {
+    if(init == 2) {
+        pid_t middleCajero = startCajeroMOM(queues);
+        if (middleCajero == 0) {
             return false;
         }
-        heladeros[hel] = helade;
+        middlewares[0] = middleCajero;
+        printf("Inicio Middle cajero\n");
+        pid_t cajeroHel = crearCajero();
+        if (cajeroHel == 0) {
+            return false;
+        }
+        cajero = &cajeroHel;
+        printf("Se creo cajero.\n");
     }
-    printf("Se crearon 2 heladeros.\n");
-    pid_t middleClientes = startClienteMOM();
-    if(middleClientes == 0) {
-        return false;
+    if(init == 3) {
+        pid_t middleHeladeros = startHeladeroMOM(queues);
+        if (middleHeladeros == 0) {
+            return false;
+        }
+        middlewares[1] = middleHeladeros;
+        printf("Inicio Middle heladeros\n");
+        for (int hel = 0; hel < 2; hel++) {
+            pid_t helade = crearHeladero();
+            if (helade == 0) {
+                return false;
+            }
+            heladeros[hel] = helade;
+        }
+        printf("Se crearon 2 heladeros.\n");
     }
-    middlewares[2] = middleClientes;
-    printf("Inicio Middle clientes\n");
+    if(init == 1) {
+        pid_t middleClientes = startClienteMOM(queues);
+        if (middleClientes == 0) {
+            return false;
+        }
+        middlewares[2] = middleClientes;
+        printf("Inicio Middle clientes\n");
+    }
     return true;
 }
 

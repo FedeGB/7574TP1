@@ -14,17 +14,18 @@
 #include "Heladero.h"
 #include "Cliente.h"
 #include <vector>
+#include "Socket.h"
 
 #ifndef INC_7574TP1_CONTROLADOR_H
 #define INC_7574TP1_CONTROLADOR_H
 
-int start(int*, int*, int*, pid_t*, pid_t*, pid_t*);
+int start(int*, int*, int*, pid_t*, pid_t*, pid_t*, int);
 
-void iniciarIPCs(int*, int*, int*);
+void iniciarIPCs(int*, int*, int*, int);
 
 void iniciarSharedMemories(int*, int*);
 
-bool iniciarTrabajadores(pid_t*, pid_t*, pid_t*);
+bool iniciarTrabajadores(pid_t*, pid_t*, pid_t*, int*, int);
 
 pid_t simular(int*, int*, int*, pid_t*, pid_t*, pid_t*);
 

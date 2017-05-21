@@ -22,11 +22,19 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
         std::vector<pid_t> trabajadores;
         std::vector<int> colasDeMiddleware;
         pid_t working;
+        bool sendSocket;
         for(int i = 0; i < qCantidad; i++) {
-            qGetter = getmsg(queues[i].qId, queues[i].qPath);
+            if(queues[i].isSocket) {
+                qGetter = queues[i].qId;
+            } else {
+                qGetter = getmsg(queues[i].qId, queues[i].qPath);
+            }
             colasDeMiddleware.push_back(qGetter);
             if(i%2 != 0 && i != 0) {
-                working = work(colasDeMiddleware[i-1], colasDeMiddleware[i]);
+                if(queues[i].isSocket) {
+                    sendSocket = true;
+                }
+                working = work(colasDeMiddleware[i-1], colasDeMiddleware[i], sendSocket);
                 if(working == 0) {
                     return 0;
                 }
@@ -44,7 +52,7 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
 }
 
 
-pid_t work(int input, int output) {
+pid_t work(int input, int output, bool sendSocket) {
     pid_t trabajo = fork();
     if(trabajo == 0) {
         int status;

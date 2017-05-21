@@ -12,15 +12,17 @@
 #include "Constantes.h"
 #include "MemoriaCompartida.h"
 #include <vector>
+#include "Socket.h"
 
 typedef struct colaPedido {
     int qId;
     const char* qPath;
+    bool isSocket;
 } qPedido;
 
 pid_t startMiddleWare(qPedido*, int, qPedido*);
 
-pid_t work(int, int);
+pid_t work(int, int, bool);
 
 pid_t registerer(int, int);
 
