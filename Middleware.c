@@ -96,8 +96,7 @@ pid_t work(int input, int output, bool sendSocket) {
                 if(sendSocket) {
                     char buffer[10];
                     char number[countDigits(msgRcv.mtype)];
-                    sprintf(number, "%ld", msgRcv.mtype);
-                    strncpy(buffer, appendString(msgRcv.data, number, 10), 10);
+                    appendString(msgRcv.data, number, buffer, 10);
                     printf("Envio mensaje por socket: %s\n", buffer);
                     sndSts = sendTo(output, buffer, sizeof(buffer)); // Socket
                     printf("Envie mensaje por socket: %s\n", buffer);
@@ -116,11 +115,11 @@ pid_t work(int input, int output, bool sendSocket) {
             }
         }
     } else {
-        if(sendSocket) {
+        /*if(sendSocket) {
             close(output);
         } else {
             close(input);
-        }
+        }*/
         return trabajo;
     }
 }

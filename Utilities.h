@@ -20,7 +20,7 @@ void esperarAleatorio();
 
 int numeroAleatorioRango(int, int);
 
-const char* appendString(const char*, const char*, int);
+void appendString(const char*, const char*, char*, int);
 
 int countDigits(long);
 

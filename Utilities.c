@@ -16,13 +16,13 @@ int numeroAleatorioRango(int min, int max) {
 }
 
 
-const char* appendString(const char* stringOriginal, const char* append, int finalSize){
+void appendString(const char* stringOriginal, const char* append, char* final, int finalSize){
     std::string newString(stringOriginal);
     newString.insert(4, append);
     while(newString.size() < finalSize) {
         newString.insert(newString.size() - 1, ".");
     }
-    return newString.c_str();
+    strncpy(final, newString.c_str(), finalSize);
 }
 
 int countDigits(long number) {

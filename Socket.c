@@ -66,10 +66,11 @@ int receiveFrom(int sfd, Message* message) {
     strcpy(buffer, "");
     strcpy(bufferTmp, "") ;
     while(lectura < 10) {
-        readStatus = read(sfd, &buffer, sizeof(buffer));
-        if(readStatus < 0) {
+        readStatus = read(sfd, bufferTmp, sizeof(bufferTmp));
+        if(readStatus <= 0) {
             return -1;
         }
+        printf("Recibo %s\n", bufferTmp);
         lectura += readStatus;
         strncat(buffer, bufferTmp, readStatus);
         strcpy(bufferTmp, "");
