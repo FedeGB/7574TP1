@@ -10,20 +10,24 @@ int createSocket(const char* ip, int puerto, bool bind) {
         perror("Error al obtener socket descriptor");
         return -1;
     }
+    int opt = 1;
+    if (setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,  &opt, sizeof(opt))) {
+        perror("setsockopt");
+        return -1;
+    }
     if(bind) {
         struct sockaddr_in direccion_sev;
+        memset(&direccion_sev, 0, sizeof(direccion_sev));
         direccion_sev.sin_family = AF_INET;
-        direccion_sev.sin_port = puerto;
-        direccion_sev.sin_addr.s_addr = inet_addr(ip);
-
-        int binder = ::bind(sfd, (struct sockaddr*)&direccion_sev, sizeof(struct sockaddr_in));
+        direccion_sev.sin_port = htons(puerto);
+        direccion_sev.sin_addr.s_addr = htonl(INADDR_ANY);
+        int binder = ::bind(sfd, (struct sockaddr*)&direccion_sev, sizeof(struct sockaddr));
         if(binder < 0) {
             perror("Error al bindear\n");
             close(sfd);
             return -1;
         }
-
-        int listener = listen(sfd, 10);
+        int listener = listen(sfd, 5);
 
         if(listener < 0) {
             perror("Error en el listener");
@@ -34,7 +38,7 @@ int createSocket(const char* ip, int puerto, bool bind) {
     return sfd;
 }
 
-int receiveConnection(int sfd, struct sockaddr* clientAddr, unsigned int* longitudCliente) {
+int receiveConnection(int sfd, struct sockaddr* clientAddr, socklen_t* longitudCliente) {
     int clientSfd = accept(sfd, clientAddr, longitudCliente);
     return clientSfd;
 }
@@ -42,10 +46,10 @@ int receiveConnection(int sfd, struct sockaddr* clientAddr, unsigned int* longit
 int connectTo(int sfd, int port, const char* ip) {
     struct sockaddr_in direccion;
     direccion.sin_family = AF_INET;
-    direccion.sin_port = port;
+    direccion.sin_port = htons(port);
     direccion.sin_addr.s_addr = inet_addr(ip);
 
-    int connecter = connect(sfd, (struct sockaddr*)&direccion, sizeof(direccion));
+    int connecter = connect(sfd, (struct sockaddr*)&direccion, sizeof(struct sockaddr_in));
     if(connecter < 0) {
         perror("Error al conectar");
         close(sfd);

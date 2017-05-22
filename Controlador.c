@@ -37,7 +37,8 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
 //    queues[16] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
 //    queues[17] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
     if(init == 1) { // Cliente
-        queues[1] = createSocket("127.0.0.1", 8081, true);
+        int listener = createSocket("127.0.0.1", 8081, true);
+        queues[1] = listener;
         queues[2] = queues[1];
         queues[3] = 0;
         queues[4] = 0;
@@ -46,7 +47,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
         queues[7] = 0;
         queues[8] = 0;
         queues[9] = 0;
-        queues[10] = createSocket("", 0, false);
+        queues[10] = createSocket("127.0.0.1", 8081, true);
         queues[11] = 0;
         queues[12] = 0;
         queues[13] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
@@ -55,7 +56,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
         queues[16] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
         queues[17] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
         sharedMem[0] = creashm(LUGARESID, sizeof(int), LUGARESPATH);
-        sharedMem[1] = 0;
+        sharedMem[1] = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
         sharedMem[2] = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
         sharedMem[3] = 0;
         semaforos[0] = crearSemaforo(SEMLUGARESPATH, SEMLUGARESID, 2);
@@ -67,7 +68,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
         semaforos[6] = 0;
         semaforos[7] = 0;
         semaforos[8] = 0;
-        semaforos[9] = 0;
+        semaforos[9] = crearSemaforo(SEMLUGARESCAJPATH, SEMLUGARESCAJID, 1);
         semaforos[10] = crearSemaforo(SEMENTRADAPATH, SEMENTRADAID, 1);
         semaforos[11] = 0;
     } else if (init == 2) { // Cajero

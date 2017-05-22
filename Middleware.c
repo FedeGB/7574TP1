@@ -31,17 +31,19 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
 //            }
             sendSocket = false;
             if(i%2 != 0 && i != 0) {
-                colasDeMiddleware.push_back(queues[i]);
                 if(queues[i].isSocket) {
                     sendSocket = true;
-                    if(colasDeMiddleware[i].doConnect) {
-                        int conn = connectTo(colasDeMiddleware[i].qId, colasDeMiddleware[i].port, colasDeMiddleware[i].ip);
+                    if(queues[i].doConnect) {
+                        int conn = connectTo(queues[i].qId, queues[i].port, queues[i].ip);
                         if(conn < 0) {
-                            printf("No se pudo conectar a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
+                            printf("No se pudo conectar a %s con puerto %d\n", queues[i].ip, queues[i].port);
                         }
-                        printf("Me conecte a %s con puerto %d\n", colasDeMiddleware[i].ip, colasDeMiddleware[i].port);
+                        printf("Me conecte a %s con puerto %d\n", queues[i].ip, queues[i].port);
                     }
+                } else {
+                    queues[i].qId = getmsg(queues[i].qId, queues[i].qPath);
                 }
+                colasDeMiddleware.push_back(queues[i]);
                 working = work(colasDeMiddleware[i-1].qId, colasDeMiddleware[i].qId, sendSocket);
                 if(working == 0) {
                     return 0;
@@ -49,8 +51,8 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
                 trabajadores.push_back(working);
             } else {
                 if(queues[i].isSocket && queues[i].doReceive) {
-                    struct sockaddr clientAddr;
-                    unsigned int longitudCliente = sizeof(clientAddr);
+                    struct sockaddr_in clientAddr;
+                    socklen_t longitudCliente = sizeof(clientAddr);
                     printf("Estoy esperando a recibir conexion...\n");
                     int newSfd = receiveConnection(queues[i].qId, (struct sockaddr*)&clientAddr, &longitudCliente);
                     if(newSfd > 0) {
@@ -59,6 +61,8 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
                     } else {
                         perror("Fallo en recibir nueva conexión");
                     }
+                } else if(!queues[i].isSocket) {
+                    queues[i].qId = getmsg(queues[i].qId, queues[i].qPath);
                 }
                 colasDeMiddleware.push_back(queues[i]);
             }
@@ -83,8 +87,10 @@ pid_t work(int input, int output, bool sendSocket) {
             Message msgRcv;
             if(sendSocket) {
                 status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
+                printf("Recibi mensaje de cola: %s\n", msgRcv.data);
             } else {
                 status = receiveFrom(input, &msgRcv); // Socket
+                printf("Recibi mensaje de socket: %s\n", msgRcv.data);
             }
             if (status >= 0) {
                 if(sendSocket) {
@@ -92,12 +98,15 @@ pid_t work(int input, int output, bool sendSocket) {
                     char number[countDigits(msgRcv.mtype)];
                     sprintf(number, "%ld", msgRcv.mtype);
                     strncpy(buffer, appendString(msgRcv.data, number, 10), 10);
-                    sndSts = sendTo(output, msgRcv.data, sizeof(msgRcv.data)); // Socket
+                    printf("Envio mensaje por socket: %s\n", buffer);
+                    sndSts = sendTo(output, buffer, sizeof(buffer)); // Socket
+                    printf("Envie mensaje por socket: %s\n", buffer);
                     if(sndSts < 0){
                         return 0;
                     }
                 } else {
                     enviarmsg(output, &msgRcv, sizeof(msgRcv));
+                    printf("Envie mensaje por cola: %s\n", msgRcv.data);
                 }
             } else {
                 if(!sendSocket) {
@@ -107,6 +116,11 @@ pid_t work(int input, int output, bool sendSocket) {
             }
         }
     } else {
+        if(sendSocket) {
+            close(output);
+        } else {
+            close(input);
+        }
         return trabajo;
     }
 }

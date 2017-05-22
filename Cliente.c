@@ -27,17 +27,19 @@ void realizarPedido(long idCliente) {
 //    p(semQueueId);
     char pedido[4];
     getPedido(pedido);
+    printf("Cliente %ld: Envio pedido a cajero: %s\n", idCliente, pedido);
     enviarPedidoCajero(pedido, idCliente);
-//    int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+    int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
-//    p(semLugaresCaj);
+    p(semLugaresCaj);
     int* queue = (int*)map(lugaresCajero);
     (*queue)--;
-    printf("Cliente %d: Libero lugar en cola.\n", getpid());
+    printf("Cliente %ld: Libero lugar en cola.\n", idCliente);
     unmap(queue);
     char ticket[4];
+    printf("Cliete %ld: Espero ticket del cajero.\n", idCliente);
     recibirTicket(ticket, idCliente);
-//    v(semLugaresCaj);
+    v(semLugaresCaj);
 }
 
 void retirarPedido(long idCliente) {
@@ -90,18 +92,18 @@ bool todoOcupado() {
     bool ocupadoHeladeria = false;
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
     if(lugaresCajero > 0) {
-//        int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
-//        p(semLugaresCaj);
+        int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+        p(semLugaresCaj);
         int* queue = (int*)map(lugaresCajero);
         if((*queue) >= MAXCOLACAJER) {
             printf("Cliente %d: Cola esta llena, me voy.\n", getpid());
             unmap(queue);
-//            v(semLugaresCaj);
+            v(semLugaresCaj);
             return true;
         }
         (*queue)++;
         unmap(queue);
-//        v(semLugaresCaj);
+        v(semLugaresCaj);
         int lugaresHeladeria = getshm(LUGARESID,LUGARESPATH);
         int semLugares = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
         p(semLugares);

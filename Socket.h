@@ -7,6 +7,7 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <netdb.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -16,7 +17,7 @@
 
 int createSocket(const char*, int, bool);
 
-int receiveConnection(int, struct sockaddr*, unsigned int*);
+int receiveConnection(int, struct sockaddr*, socklen_t*);
 
 int connectTo(int, int, const char*);
 
