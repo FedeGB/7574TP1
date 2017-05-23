@@ -61,21 +61,27 @@ int connectTo(int sfd, int port, const char* ip) {
 int receiveFrom(int sfd, Message* message) {
     int lectura = 0;
     int readStatus = 0;
-    char buffer[10];
+    std::string buffer;
     char bufferTmp[10];
-    strcpy(buffer, "");
+    buffer.clear();
     strcpy(bufferTmp, "") ;
     while(lectura < 10) {
         readStatus = read(sfd, bufferTmp, sizeof(bufferTmp));
-        if(readStatus <= 0) {
+        if(readStatus < 0) {
+            perror("Error al leer socket");
             return -1;
+        }
+        if(readStatus == 0) {
+            break;
         }
         printf("Recibo %s\n", bufferTmp);
         lectura += readStatus;
-        strncat(buffer, bufferTmp, readStatus);
+        std::string tmpString(bufferTmp);
+        buffer += tmpString;
+        printf("buffer por ahora: %s", buffer.c_str());
         strcpy(bufferTmp, "");
     }
-    strncpy(message->data, buffer, 4);
+    strncpy(message->data, buffer.c_str(), 4);
     std::string StrTmp(buffer);
     std::string number = StrTmp.substr(4, StrTmp.find(".") - 4);
     message->mtype = std::stol(number);

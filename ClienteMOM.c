@@ -6,7 +6,7 @@
 
 
 pid_t startClienteMOM(int* queues) {
-    qPedido colasMiddle[6];
+    /*qPedido colasMiddle[6];
     qPedido registro[2];
 //    colasMiddle[0].qId = QCAJEROTOCLID;
 //    colasMiddle[0].qPath = QCAJEROTOCLPATH;
@@ -38,7 +38,62 @@ pid_t startClienteMOM(int* queues) {
     registro[0].qPath = QREGISTROCLINPATH;
     registro[1].qId = QREGISTROCLOUTID;
     registro[1].qPath = QREGISTROCLOUTPATH;
-    return startMiddleWare(colasMiddle, 6, registro);
+    return startMiddleWare(colasMiddle, 6, registro);*/
+    pid_t middle = fork();
+    if(middle == 0) {
+        int regisInput, regisOut;
+        regisInput = getmsg(QREGISTROCLINID, QREGISTROCLINPATH);
+        regisOut = getmsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
+        pid_t registering = registerer(regisInput, regisOut);
+        if(registerer == 0) {
+            return 0;
+        }
+        std::vector<pid_t> trabajadores;
+        pid_t working;
+        struct sockaddr_in clientAddr;
+        socklen_t longitudCliente = sizeof(clientAddr);
+        printf("Estoy esperando a recibir conexion...\n");
+        int newCjfd = receiveConnection(queues[1], (struct sockaddr*)&clientAddr, &longitudCliente);
+        if(newCjfd > 0) {
+            printf("Recibi nueva conexión\n");
+        } else {
+            perror("Fallo en recibir nueva conexión");
+        }
+        struct sockaddr_in clientAddr2;
+        socklen_t longitudCliente2 = sizeof(clientAddr2);
+        printf("Estoy esperando a recibir conexion...\n");
+        int newHlfd = receiveConnection(queues[10],  (struct sockaddr*)&clientAddr2, &longitudCliente2);
+        if(newHlfd > 0) {
+            printf("Recibi nueva conexión\n");
+        } else {
+            perror("Fallo en recibir nueva conexión");
+        }
+        int fromCj = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
+        int toCj = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+        int fromHl = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
+        working = work(newCjfd, fromCj, false);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        working = work(toCj, newCjfd, true);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        working = work(newHlfd, fromHl, false);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        waitpid(registering, NULL, 0);
+        for(std::vector<pid_t>::iterator it = trabajadores.begin(); it != trabajadores.end(); it++) {
+            waitpid(*it, NULL, 0);
+        }
+        return 0;
+    } else {
+        return middle;
+    }
 }
 
 bool enviarPedidoCajero(char* pedido, long idCliente) {

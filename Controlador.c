@@ -47,7 +47,7 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos, int init) {
         queues[7] = 0;
         queues[8] = 0;
         queues[9] = 0;
-        queues[10] = createSocket("127.0.0.1", 8081, true);
+        queues[10] = listener;
         queues[11] = 0;
         queues[12] = 0;
         queues[13] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);

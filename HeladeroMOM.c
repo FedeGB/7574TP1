@@ -6,7 +6,7 @@
 
 
 pid_t startHeladeroMOM(int* queues) {
-    qPedido colasMiddle[4];
+    /*qPedido colasMiddle[4];
     qPedido registro[2];
 //    colasMiddle[0].qId = QCAJEROTOHELID;
 //    colasMiddle[0].qPath = QCAJEROTOHELPATH;
@@ -30,7 +30,55 @@ pid_t startHeladeroMOM(int* queues) {
     registro[0].qPath = QREGISTROHELINPATH;
     registro[1].qId = QREGISTROHELOUTID;
     registro[1].qPath = QREGISTROHELOUTPATH;
-    return startMiddleWare(colasMiddle, 4, registro);
+    return startMiddleWare(colasMiddle, 4, registro);*/
+    pid_t middle = fork();
+    if(middle == 0) {
+        int regisInput, regisOut;
+        regisInput = getmsg(QREGISTROHELINID, QREGISTROHELINPATH);
+        regisOut = getmsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
+        pid_t registering = registerer(regisInput, regisOut);
+        if(registerer == 0) {
+            return 0;
+        }
+        std::vector<pid_t> trabajadores;
+        pid_t working;
+        struct sockaddr_in clientAddr;
+        socklen_t longitudCliente = sizeof(clientAddr);
+        printf("Estoy esperando a recibir conexion...\n");
+        int newCjfd = receiveConnection(queues[5], (struct sockaddr*)&clientAddr, &longitudCliente);
+        if(newCjfd > 0) {
+            printf("Recibi nueva conexión\n");
+        } else {
+            perror("Fallo en recibir nueva conexión");
+        }
+        int clientePort = 8081;
+        const char* clienteIP = "127.0.0.1";
+        int toClfd = connectTo(queues[10], clientePort, clienteIP);
+        if(toClfd < 0) {
+            printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);
+        } else {
+            printf("Me conecte a %s con puerto %d\n", clienteIP, clientePort);
+        }
+        int fromCj = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
+        int toCl = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+        working = work(newCjfd, fromCj, false);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        working = work(toCl, queues[10], true);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        waitpid(registering, NULL, 0);
+        for(std::vector<pid_t>::iterator it = trabajadores.begin(); it != trabajadores.end(); it++) {
+            waitpid(*it, NULL, 0);
+        }
+        return 0;
+    } else {
+        return middle;
+    }
 }
 
 bool devolverPedidoCliente(char* pedido, long idCliente) {

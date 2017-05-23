@@ -56,11 +56,15 @@ pid_t startMiddleWare(qPedido* queues, int qCantidad, qPedido* regQueues) {
                     printf("Estoy esperando a recibir conexion...\n");
                     int newSfd = receiveConnection(queues[i].qId, (struct sockaddr*)&clientAddr, &longitudCliente);
                     if(newSfd > 0) {
-                        queues[i].qId = newSfd;
+                        qPedido tmp;
+                        tmp = queues[i];
+                        tmp.qId = newSfd;
+                        colasDeMiddleware.push_back(tmp);
                         printf("Recibi nueva conexión\n");
                     } else {
                         perror("Fallo en recibir nueva conexión");
                     }
+                    continue;
                 } else if(!queues[i].isSocket) {
                     queues[i].qId = getmsg(queues[i].qId, queues[i].qPath);
                 }
@@ -109,7 +113,7 @@ pid_t work(int input, int output, bool sendSocket) {
                 }
             } else {
                 if(!sendSocket) {
-                    close(input);
+//                    close(input);
                 }
                 return 0;
             }

@@ -7,7 +7,7 @@
 
 
 pid_t startCajeroMOM(int* queues) {
-    qPedido colasMiddle[6];
+    /*qPedido colasMiddle[6];
     qPedido registro[2];
     colasMiddle[0].qId = QTOCLIENTECJID;
     colasMiddle[0].qPath = QTOCLIENTECJPATH;
@@ -41,7 +41,60 @@ pid_t startCajeroMOM(int* queues) {
     registro[0].qPath = QREGISTROCAJINPATH;
     registro[1].qId = QREGISTROCAJOUTID;
     registro[1].qPath = QREGISTROCAJOUTPATH;
-    return startMiddleWare(colasMiddle, 6, registro);
+    return startMiddleWare(colasMiddle, 6, registro);*/
+    pid_t middle = fork();
+    if(middle == 0) {
+        int regisInput, regisOut;
+        regisInput = getmsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
+        regisOut = getmsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
+        pid_t registering = registerer(regisInput, regisOut);
+        if(registerer == 0) {
+            return 0;
+        }
+        std::vector<pid_t> trabajadores;
+        pid_t working;
+        int clientePort = 8081;
+        const char* clienteIP = "127.0.0.1";
+        int toClfd = connectTo(queues[1], clientePort, clienteIP);
+        if(toClfd < 0) {
+            printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);
+        } else {
+            printf("Me conecte a %s con puerto %d\n", clienteIP, clientePort);
+        }
+        int heladeroPort = 8083;
+        const char* heladeroIP = "127.0.0.1";
+        int toHlfd = connectTo(queues[5], heladeroPort, heladeroIP);
+        if(toHlfd  < 0) {
+            printf("No se pudo conectar a %s con puerto %d\n", heladeroIP, heladeroPort);
+        } else {
+            printf("Me conecte a %s con puerto %d\n", heladeroIP, heladeroPort);
+        }
+        int toCl = getmsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
+        int fromCl = getmsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
+        int toHl = getmsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
+        working = work(toCl, queues[1], true);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        working = work(queues[1], fromCl, false);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        working = work(toHl, queues[5], true);
+        if(working == 0) {
+            return 0;
+        }
+        trabajadores.push_back(working);
+        waitpid(registering, NULL, 0);
+        for(std::vector<pid_t>::iterator it = trabajadores.begin(); it != trabajadores.end(); it++) {
+            waitpid(*it, NULL, 0);
+        }
+        return 0;
+    } else {
+        return middle;
+    }
 }
 
 bool enviarPedidoHeladero(char* pedido, long id) {
