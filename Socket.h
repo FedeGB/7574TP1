@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include "ColaMensajes.h"
 #include <string>
+#include "Utilities.h"
 
 int createSocket(const char*, int, bool);
 
@@ -23,6 +24,6 @@ int connectTo(int, int, const char*);
 
 int receiveFrom(int, Message*);
 
-int sendTo(int, char*, int);
+int sendTo(int, Message*, int);
 
 #endif //INC_7574TP1_SOCKET_H

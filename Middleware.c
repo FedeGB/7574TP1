@@ -20,12 +20,8 @@ pid_t work(int input, int output, bool sendSocket) {
             }
             if (status >= 0) {
                 if(sendSocket) {
-                    char buffer[10];
-                    std::string number = std::to_string(msgRcv.mtype);
-                    appendString(msgRcv.data, number.c_str(), buffer, 10);
-                    printf("Envio mensaje por socket: %s\n", buffer);
-                    sndSts = sendTo(output, buffer, sizeof(buffer)); // Socket
-                    printf("Envie mensaje por socket: %s\n", buffer);
+                    sndSts = sendTo(output, &msgRcv, 10); // Socket
+                    printf("Envie mensaje por socket: %s\n", msgRcv.data);
                     if(sndSts < 0){
                         return 0;
                     }
@@ -34,18 +30,10 @@ pid_t work(int input, int output, bool sendSocket) {
                     printf("Envie mensaje por cola: %s\n", msgRcv.data);
                 }
             } else {
-                if(!sendSocket) {
-//                    close(input);
-                }
                 return 0;
             }
         }
     } else {
-        /*if(sendSocket) {
-            close(output);
-        } else {
-            close(input);
-        }*/
         return trabajo;
     }
 }

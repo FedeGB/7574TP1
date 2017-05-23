@@ -87,9 +87,12 @@ int receiveFrom(int sfd, Message* message) {
 }
 
 
-int sendTo(int sfd, char* message, int size) {
+int sendTo(int sfd, Message* message, int size) {
+    char buffer[size];
+    std::string number = std::to_string(message->mtype);
+    appendString(message->data, number.c_str(), buffer, size);
     int writeStatus = 0;
-    writeStatus = write(sfd, message, size);
+    writeStatus = write(sfd, buffer, size);
     if (writeStatus < 0) {
         return -1;
     }

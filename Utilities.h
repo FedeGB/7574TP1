@@ -12,10 +12,6 @@
 #include <unistd.h>
 #include <string>
 
-//int* parsearPedido(char* pedido) {
-//
-//}
-
 void esperarAleatorio();
 
 int numeroAleatorioRango(int, int);
