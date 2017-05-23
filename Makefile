@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -ggdb
 LDFLAGS=-std=c++11
-SOURCES=*.c
+SOURCES=*.c IPC/*.c Common/*.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

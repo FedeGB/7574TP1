@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "ColaMensajes.h"
+#include "IPC/ColaMensajes.h"
 #include "Cajero.h"
 #include "CajeroMOM.h"
 #include "ClienteMOM.h"
@@ -14,7 +14,7 @@
 #include "Heladero.h"
 #include "Cliente.h"
 #include <vector>
-#include "Socket.h"
+#include "IPC/Socket.h"
 
 #ifndef INC_7574TP1_CONTROLADOR_H
 #define INC_7574TP1_CONTROLADOR_H

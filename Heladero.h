@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "ColaMensajes.h"
-#include "Utilities.h"
+#include "IPC/ColaMensajes.h"
+#include "Common/Utilities.h"
 #include "HeladeroMOM.h"
 
 pid_t crearHeladero();

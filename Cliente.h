@@ -10,10 +10,10 @@
 #include <unistd.h>
 #include <string.h>
 #include "Constantes.h"
-#include "Semaforo.h"
-#include "ColaMensajes.h"
-#include "MemoriaCompartida.h"
-#include "Utilities.h"
+#include "IPC/Semaforo.h"
+#include "IPC/ColaMensajes.h"
+#include "IPC/MemoriaCompartida.h"
+#include "Common/Utilities.h"
 #include "ClienteMOM.h"
 
 typedef struct cliente {

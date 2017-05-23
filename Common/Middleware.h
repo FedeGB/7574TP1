@@ -7,12 +7,12 @@
 
 #include <unistd.h>
 #include <sys/wait.h>
-#include "ColaMensajes.h"
-#include "Semaforo.h"
-#include "Constantes.h"
-#include "MemoriaCompartida.h"
+#include "../IPC/ColaMensajes.h"
+#include "../IPC/Semaforo.h"
+#include "../Constantes.h"
+#include "../IPC/MemoriaCompartida.h"
 #include <vector>
-#include "Socket.h"
+#include "../IPC/Socket.h"
 
 pid_t work(int, int, bool);
 

@@ -5,7 +5,7 @@
 #ifndef INC_7574TP1_HELADEROMOM_H
 #define INC_7574TP1_HELADEROMOM_H
 
-#include "Middleware.h"
+#include "Common/Middleware.h"
 
 pid_t startHeladeroMOM(int*);
 
