@@ -24,14 +24,3 @@ void appendString(const char* stringOriginal, const char* append, char* final, i
     }
     strncpy(final, newString.c_str(), finalSize);
 }
-
-int countDigits(long number) {
-    int count = 0;
-    while(number != 0)
-    {
-        // n = n/10
-        number /= 10;
-        ++count;
-    }
-    return count;
-}

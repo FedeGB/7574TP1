@@ -13,25 +13,25 @@ pid_t crearHeladero() {
         long idHeladero = registrarHeladero();
         bool flag = true;
         while(flag) {
-            flag = atenderPedido();
+            flag = atenderPedido(idHeladero);
         }
-        printf("Heladero %d: Termine de atender\n", getpid());
+        printf("Heladero %ld: Termine de atender\n", idHeladero);
         return 0;
     } else {
         return proceso;
     }
 }
 
-bool atenderPedido() {
-    printf("Heladero %d: Espero pedido.\n", getpid());
+bool atenderPedido(long idHeladero) {
+    printf("Heladero %ld: Espero pedido.\n", idHeladero);
     char pedido[4];
     long idCliente;
     if(!recibirPedidoCajero(pedido, &idCliente)) {
         return false;
     }
-    printf("Heladero %d: Recibi pedido.\n", getpid());
+    printf("Heladero %ld: Recibi pedido.\n", idHeladero);
     prepararHelado(pedido);
-    printf("Heladero %d: Devuelvo helado a cliente.\n", getpid());
+    printf("Heladero %ld: Devuelvo helado a cliente.\n", idHeladero);
     if(!devolverPedidoCliente(pedido, idCliente)) {
         return false;
     }

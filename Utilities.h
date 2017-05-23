@@ -22,6 +22,4 @@ int numeroAleatorioRango(int, int);
 
 void appendString(const char*, const char*, char*, int);
 
-int countDigits(long);
-
 #endif //INC_7574TP1_UTILITIES_H

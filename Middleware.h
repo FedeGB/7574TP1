@@ -15,18 +15,6 @@
 #include "Socket.h"
 #include "Utilities.h"
 
-typedef struct colaPedido {
-    int qId;
-    const char* qPath;
-    bool isSocket;
-    int port;
-    const char* ip;
-    bool doConnect;
-    bool doReceive;
-} qPedido;
-
-pid_t startMiddleWare(qPedido*, int, qPedido*);
-
 pid_t work(int, int, bool);
 
 pid_t registerer(int, int);

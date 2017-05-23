@@ -13,7 +13,6 @@ pid_t generarCliente() {
         time_t t;
         srand((unsigned)time(&t));
         long idCliente = registrarCliente();
-//        printf("Mi id de registro es: %d\n",idCliente);
         realizarPedido(idCliente);
         retirarPedido(idCliente);
         return 0;
@@ -23,8 +22,6 @@ pid_t generarCliente() {
 }
 
 void realizarPedido(long idCliente) {
-//    int semQueueId = getSemaforo(SEMCAJEROID, SEMCAJEROPATH);
-//    p(semQueueId);
     char pedido[4];
     getPedido(pedido);
     printf("Cliente %ld: Envio pedido a cajero: %s\n", idCliente, pedido);
@@ -44,19 +41,19 @@ void realizarPedido(long idCliente) {
 
 void retirarPedido(long idCliente) {
     Message msgRcv;
-    printf("Cliente %d: Estoy esperando mi pedido.\n", getpid());
+    printf("Cliente %ld: Estoy esperando mi pedido.\n", idCliente);
     char pedido[4];
-    recibirHelado(pedido, idCliente); // TODO: CHANGE POR ID DE TICKET
-    printf("Cliente %d: Recibi mi pedido.\n", getpid());
+    recibirHelado(pedido, idCliente);
+    printf("Cliente %ld: Recibi mi pedido.\n", idCliente);
     if(pedido[3] == LLEVAR) {
-        printf("Cliente %d: Es para llevar, me fui.\n", getpid());
+        printf("Cliente %ld: Es para llevar, me fui.\n", idCliente);
         return;
     }
-    printf("Cliente %d: Como el helado adentro.\n", getpid());
+    printf("Cliente %ld: Como el helado adentro.\n", idCliente);
     esperarAleatorio();
     int lugaresMem = getshm(LUGARESID, LUGARESPATH);
     int lugaresSem = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
-    printf("Cliente %d: Libero lugar y me voy.\n", getpid());
+    printf("Cliente %ld: Libero lugar y me voy.\n", idCliente);
     p(lugaresSem);
     int* lugares = (int*)map(lugaresMem);
     (*lugares)++;

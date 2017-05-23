@@ -6,31 +6,6 @@
 
 
 pid_t startHeladeroMOM(int* queues) {
-    /*qPedido colasMiddle[4];
-    qPedido registro[2];
-//    colasMiddle[0].qId = QCAJEROTOHELID;
-//    colasMiddle[0].qPath = QCAJEROTOHELPATH;
-    colasMiddle[0].qId = queues[5];
-    colasMiddle[0].isSocket = true;
-    colasMiddle[0].doReceive = true;
-    colasMiddle[1].qId = QFROMCAJEROHELID;
-    colasMiddle[1].qPath = QFROMCAJEROHELPATH;
-    colasMiddle[1].isSocket = false;
-    colasMiddle[2].qId = QTOCLIENTEHELID;
-    colasMiddle[2].qPath = QTOCLIENTEHELPATH;
-    colasMiddle[2].isSocket = false;
-//    colasMiddle[3].qId = QHELADEROTOCLID;
-//    colasMiddle[3].qPath = QHELADEROTOCLPATH;
-    colasMiddle[3].qId = queues[10];
-    colasMiddle[3].isSocket = true;
-    colasMiddle[3].ip = "127.0.0.1";
-    colasMiddle[3].port = 8081;
-    colasMiddle[3].doConnect = true;
-    registro[0].qId = QREGISTROHELINID;
-    registro[0].qPath = QREGISTROHELINPATH;
-    registro[1].qId = QREGISTROHELOUTID;
-    registro[1].qPath = QREGISTROHELOUTPATH;
-    return startMiddleWare(colasMiddle, 4, registro);*/
     pid_t middle = fork();
     if(middle == 0) {
         int regisInput, regisOut;
