@@ -74,11 +74,9 @@ int receiveFrom(int sfd, Message* message) {
         if(readStatus == 0) {
             break;
         }
-        printf("Recibo %s\n", bufferTmp);
         lectura += readStatus;
         std::string tmpString(bufferTmp);
         buffer += tmpString;
-        printf("buffer por ahora: %s", buffer.c_str());
         strcpy(bufferTmp, "");
     }
     strncpy(message->data, buffer.c_str(), 4);
@@ -91,7 +89,7 @@ int receiveFrom(int sfd, Message* message) {
 
 int sendTo(int sfd, char* message, int size) {
     int writeStatus = 0;
-    writeStatus = write(sfd, &message, size);
+    writeStatus = write(sfd, message, size);
     if (writeStatus < 0) {
         return -1;
     }

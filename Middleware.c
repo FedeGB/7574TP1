@@ -99,8 +99,8 @@ pid_t work(int input, int output, bool sendSocket) {
             if (status >= 0) {
                 if(sendSocket) {
                     char buffer[10];
-                    char number[countDigits(msgRcv.mtype)];
-                    appendString(msgRcv.data, number, buffer, 10);
+                    std::string number = std::to_string(msgRcv.mtype);
+                    appendString(msgRcv.data, number.c_str(), buffer, 10);
                     printf("Envio mensaje por socket: %s\n", buffer);
                     sndSts = sendTo(output, buffer, sizeof(buffer)); // Socket
                     printf("Envie mensaje por socket: %s\n", buffer);

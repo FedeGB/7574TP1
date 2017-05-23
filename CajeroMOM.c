@@ -110,7 +110,7 @@ bool enviarPedidoHeladero(char* pedido, long id) {
 }
 
 bool enviarTicketCliente(char* ticket, long idCl) {
-    int queue = getmsg(QCAJEROTOCLID, QCAJEROTOCLPATH);
+    int queue = getmsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
     if(queue < 0) {
         return false;
     }
