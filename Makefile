@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall -ggdb
-LDFLAGS=-std=c++11
-SOURCES=*.c IPC/*.c Common/*.c
+LDFLAGS=-std=c++11 -lnsl
+SOURCES=*.c IPC/*.c Common/*.c RPCServer/registerer_clnt.c
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

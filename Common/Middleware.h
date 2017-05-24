@@ -13,9 +13,12 @@
 #include "../IPC/MemoriaCompartida.h"
 #include <vector>
 #include "../IPC/Socket.h"
+#include "../RPCServer/registerer.h"
 
 pid_t work(int, int, bool);
 
 pid_t registerer(int, int);
+
+int getRegisteringFromRPC();
 
 #endif //INC_7574TP1_MIDDLEWARE_H

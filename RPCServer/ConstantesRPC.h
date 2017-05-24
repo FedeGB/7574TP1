@@ -1,0 +1,11 @@
+//
+// Created by fedenote on 5/24/17.
+//
+
+#ifndef INC_7574TP1_CONSTANTESRPC_H
+#define INC_7574TP1_CONSTANTESRPC_H
+
+#define REGISTERHANDLERPATH "/bin/dir"
+#define REGISTERHANDLERID 4
+
+#endif //INC_7574TP1_CONSTANTESRPC_H

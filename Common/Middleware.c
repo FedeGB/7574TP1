@@ -54,6 +54,7 @@ pid_t registerer(int registroIn, int registroOut) {
                     return 0;
                 }
                 p(registerSem);
+                int val = getRegisteringFromRPC();
                 long* id = (long*)map(memReg);
                 (*id)++;
                 const int n = snprintf(NULL, 0, "%lu", *id);
@@ -70,4 +71,31 @@ pid_t registerer(int registroIn, int registroOut) {
     } else {
         return reg;
     }
+}
+
+
+int getRegisteringFromRPC() {
+    CLIENT *clnt;
+    int *result;
+    char *server;
+    long message;
+
+    strcpy(server, "127.0.0.1");
+    clnt = clnt_create(server, REGISTERERSERV, GETIDVERS, "tcp");
+    if (clnt == (CLIENT *) NULL) {
+        clnt_pcreateerror(server);
+        return -1;
+    }
+    result = getid_1(&message, clnt);
+    if (result == (int *) NULL) {
+        clnt_perror(clnt, server);
+        return -1;
+    }
+    if (*result == 1) {
+        fprintf(stderr, "Register: could get id\n");
+        return -1;
+    }
+    printf("ID obtenido es: %ld\n", message);
+    clnt_destroy(clnt);
+    return message;
 }

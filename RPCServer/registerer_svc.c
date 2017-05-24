@@ -20,7 +20,7 @@ static void
 registererserv_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		int fill;
+		long getid_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -32,7 +32,7 @@ registererserv_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		return;
 
 	case GETID:
-		_xdr_argument = (xdrproc_t) xdr_void;
+		_xdr_argument = (xdrproc_t) xdr_long;
 		_xdr_result = (xdrproc_t) xdr_int;
 		local = (char *(*)(char *, struct svc_req *)) getid_1_svc;
 		break;
