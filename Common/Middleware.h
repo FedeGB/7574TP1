@@ -19,6 +19,6 @@ pid_t work(int, int, bool);
 
 pid_t registerer(int, int);
 
-int getRegisteringFromRPC();
+long getRegisteringFromRPC();
 
 #endif //INC_7574TP1_MIDDLEWARE_H

@@ -19,14 +19,14 @@ extern "C" {
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define GETID 1
-extern  int * getid_1(long *, CLIENT *);
-extern  int * getid_1_svc(long *, struct svc_req *);
+extern  long * getid_1(void *, CLIENT *);
+extern  long * getid_1_svc(void *, struct svc_req *);
 extern int registererserv_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define GETID 1
-extern  int * getid_1();
-extern  int * getid_1_svc();
+extern  long * getid_1();
+extern  long * getid_1_svc();
 extern int registererserv_1_freeresult ();
 #endif /* K&R C */
 

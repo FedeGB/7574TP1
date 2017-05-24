@@ -6,8 +6,8 @@
 #include "registerer.h"
 #include <unistd.h>
 
-int* getid_1_svc(long* msg, struct svc_req* req) {
-    static int result;
+long* getid_1_svc(void* msg, struct svc_req* req) {
+    static long result;
     FILE* f = NULL;
     if( access( "registering", F_OK ) == -1 ) {
         // file doesn't exist
@@ -25,10 +25,8 @@ int* getid_1_svc(long* msg, struct svc_req* req) {
             result = 0;
             return (&result);
         }
-        msg = firstNumber;
+        result = *firstNumber;
         fclose(f);
-        result = 1;
-        return (&result);
     } else {
         f = fopen("registering", "r+");
         if (f == (FILE *) NULL) {
@@ -37,11 +35,10 @@ int* getid_1_svc(long* msg, struct svc_req* req) {
         }
         long* readNumber;
         fscanf(f, "%ld", readNumber);
-        msg = readNumber;
         *readNumber +=1;
+        result = *readNumber;
         fprintf(f, "%ld", *readNumber);
         fclose(f);
-        result = 1;
     }
     return (&result);
 }
