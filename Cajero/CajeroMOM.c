@@ -18,16 +18,16 @@ pid_t startCajeroMOM(int* queues) {
         }
         std::vector<pid_t> trabajadores;
         pid_t working;
-        int clientePort = 8081;
-        const char* clienteIP = "127.0.0.1";
+        int clientePort = CLIENTEPORT;
+        const char* clienteIP = CLIENTEIP;
         int toClfd = connectTo(queues[1], clientePort, clienteIP);
         if(toClfd < 0) {
             printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);
         } else {
             printf("Me conecte a %s con puerto %d\n", clienteIP, clientePort);
         }
-        int heladeroPort = 8083;
-        const char* heladeroIP = "127.0.0.1";
+        int heladeroPort = HELADEROPORT;
+        const char* heladeroIP = HELADEROIP;
         int toHlfd = connectTo(queues[5], heladeroPort, heladeroIP);
         if(toHlfd  < 0) {
             printf("No se pudo conectar a %s con puerto %d\n", heladeroIP, heladeroPort);

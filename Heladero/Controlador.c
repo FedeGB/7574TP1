@@ -17,7 +17,7 @@ int start(int* queues, int* semaforos, pid_t* heladeros, pid_t* middleware) {
 
 
 void iniciarIPCs(int* queues, int* semaforos) {
-        queues[0] = createSocket("127.0.0.1", 8083, true);
+        queues[0] = createSocket(HELADEROIP, HELADEROPORT, true);
         queues[1] = creamsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
         queues[2] = creamsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
         queues[3] = createSocket("", 0, false);

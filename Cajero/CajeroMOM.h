@@ -6,6 +6,7 @@
 #define INC_7574TP1_CAJEROMOM_H
 
 #include "../Common/Middleware.h"
+#include "Constantes.h"
 
 pid_t startCajeroMOM(int*);
 

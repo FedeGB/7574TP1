@@ -9,7 +9,6 @@
 #include <sys/wait.h>
 #include "../IPC/ColaMensajes.h"
 #include "../IPC/Semaforo.h"
-#include "../Constantes.h"
 #include "../IPC/MemoriaCompartida.h"
 #include <vector>
 #include "../IPC/Socket.h"

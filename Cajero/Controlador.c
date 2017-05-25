@@ -18,7 +18,7 @@ int start(int* queues, pid_t* cajero, pid_t* middleware) {
 
 void iniciarIPCs(int* queues) {
     queues[0] = creamsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
-    queues[1] = createSocket("127.0.0.1", 8082, false);
+    queues[1] = createSocket(CAJEROIP, CAJEROPORT, false);
     queues[2] = queues[1];
     queues[3] = creamsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
     queues[4] = creamsg(QTOHELADEROCJID, QTOHELADEROCJPATH);

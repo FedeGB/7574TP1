@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
-#include "../Constantes.h"
 #include "../IPC/Semaforo.h"
 #include "../IPC/ColaMensajes.h"
 #include "../IPC/MemoriaCompartida.h"

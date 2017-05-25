@@ -6,6 +6,7 @@
 #define INC_7574TP1_CLIENTEMOM_H
 
 #include "../Common/Middleware.h"
+#include "Constantes.h"
 
 pid_t startClienteMOM(int*);
 

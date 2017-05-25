@@ -26,8 +26,8 @@ pid_t startHeladeroMOM(int* queues) {
         } else {
             perror("Fallo en recibir nueva conexión");
         }
-        int clientePort = 8081;
-        const char* clienteIP = "127.0.0.1";
+        int clientePort = CLIENTEPORT;
+        const char* clienteIP = CLIENTEIP;
         int toClfd = connectTo(queues[3], clientePort, clienteIP);
         if(toClfd < 0) {
             printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);

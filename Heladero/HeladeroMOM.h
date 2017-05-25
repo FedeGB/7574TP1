@@ -6,6 +6,8 @@
 #define INC_7574TP1_HELADEROMOM_H
 
 #include "../Common/Middleware.h"
+#include "Constantes.h"
+
 
 pid_t startHeladeroMOM(int*);
 

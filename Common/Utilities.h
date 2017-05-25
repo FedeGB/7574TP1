@@ -7,7 +7,6 @@
 
 #include "../IPC/Semaforo.h"
 #include "../IPC/MemoriaCompartida.h"
-#include "../Constantes.h"
 #include <time.h>
 #include <unistd.h>
 #include <string>

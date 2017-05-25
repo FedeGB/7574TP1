@@ -18,7 +18,7 @@ int start(int* queues, int* sharedMem, int* semaforos, pid_t* middleware) {
 
 
 void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
-    int listener = createSocket("127.0.0.1", 8081, true);
+    int listener = createSocket(CLIENTEIP, CLIENTEPORT, true);
     queues[0] = listener;
     queues[1] = listener;
     queues[2] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
