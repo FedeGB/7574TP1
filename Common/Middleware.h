@@ -13,6 +13,7 @@
 #include <vector>
 #include "../IPC/Socket.h"
 #include "../RPCServer/registerer.h"
+#include "Constantes.h"
 
 pid_t work(int, int, bool);
 

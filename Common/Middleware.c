@@ -71,7 +71,7 @@ long getRegisteringFromRPC() {
     char server[50];
     long message;
 
-    strcpy(server, "127.0.0.1");
+    strcpy(server, RPCSERVERIP);
     clnt = clnt_create(server, REGISTERERSERV, GETIDVERS, "tcp");
     if (clnt == (CLIENT *) NULL) {
         clnt_pcreateerror(server);

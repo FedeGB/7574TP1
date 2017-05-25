@@ -1,0 +1,14 @@
+Para la compilación y ejecución del tp:
+
+1- Cambiar variables de direcciones IP y Puerto para cada entidad (cliente, cajero, heladero)
+	* En cada carpeta de cada entidad hay un archivo 'Constantes.h'.
+	* A su vez para indicar a donde esta el servidor de RPC hay que indicar la IP en el 'Constantes.h' dentro de Common
+2- En cada carpeta (Cliente, Cajero, Heladero) compilar con $make
+	* Se obitnen ejecutables para 'cliente', 'heladero', y 'cajero'
+3- Para compilar el server de RPC entrar a RPCServer y correr el script: $./makeRPC.sh
+	* Fijarse que este corriendo el rpcbind antes de lanzar el rpc server
+	* Para lanzar el rpc server: $./registererserver
+4- Iniciar las ejecuciones en el siguiente orden:
+	* Heladero -> Cliente -> Cajero
+5- Para lanzar clientes a la heladeria hay que hacerlo en la ejecucion del mismo enviando el caracter 'c' como input
+6- Se puede terminar el proceso ingresando el caracter 'x', no queda del todo cerrado correctamente
