@@ -20,7 +20,7 @@ pid_t startClienteMOM(int* queues) {
         struct sockaddr_in clientAddr;
         socklen_t longitudCliente = sizeof(clientAddr);
         printf("Estoy esperando a recibir conexion...\n");
-        int newCjfd = receiveConnection(queues[1], (struct sockaddr*)&clientAddr, &longitudCliente);
+        int newCjfd = receiveConnection(queues[0], (struct sockaddr*)&clientAddr, &longitudCliente);
         if(newCjfd > 0) {
             printf("Recibi nueva conexión\n");
         } else {
@@ -29,7 +29,7 @@ pid_t startClienteMOM(int* queues) {
         struct sockaddr_in clientAddr2;
         socklen_t longitudCliente2 = sizeof(clientAddr2);
         printf("Estoy esperando a recibir conexion...\n");
-        int newHlfd = receiveConnection(queues[10],  (struct sockaddr*)&clientAddr2, &longitudCliente2);
+        int newHlfd = receiveConnection(queues[1],  (struct sockaddr*)&clientAddr2, &longitudCliente2);
         if(newHlfd > 0) {
             printf("Recibi nueva conexión\n");
         } else {

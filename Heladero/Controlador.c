@@ -5,7 +5,7 @@
 #include "Controlador.h"
 
 
-int start(int* queues, int* semaforos, pid_t* heladeros, pid_t middleware) {
+int start(int* queues, int* semaforos, pid_t* heladeros, pid_t* middleware) {
     iniciarIPCs(queues, semaforos);
     bool trabajador = iniciarTrabajadores(heladeros, middleware, queues);
     if(trabajador) {
@@ -33,12 +33,12 @@ void iniciarIPCs(int* queues, int* semaforos) {
     printf("Se generaron ipcs.\n");
 }
 
-bool iniciarTrabajadores(pid_t* heladeros, pid_t middleware, int* queues) {
+bool iniciarTrabajadores(pid_t* heladeros, pid_t* middleware, int* queues) {
     pid_t middleHeladeros = startHeladeroMOM(queues);
     if (middleHeladeros == 0) {
         return false;
     }
-    middleware = middleHeladeros;
+    *middleware = middleHeladeros;
     printf("Inicio Middle heladeros\n");
     for (int hel = 0; hel < 2; hel++) {
         pid_t helade = crearHeladero();

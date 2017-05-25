@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     pid_t heladeros[2];
     pid_t middleware;
 
-    int controlador = start(queues, semaforos,  heladeros, middleware);
+    int controlador = start(queues, semaforos,  heladeros, &middleware);
     if(controlador == 0) {
         return 0;
     }
