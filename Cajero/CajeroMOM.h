@@ -5,7 +5,7 @@
 #ifndef INC_7574TP1_CAJEROMOM_H
 #define INC_7574TP1_CAJEROMOM_H
 
-#include "Common/Middleware.h"
+#include "../Common/Middleware.h"
 
 pid_t startCajeroMOM(int*);
 
