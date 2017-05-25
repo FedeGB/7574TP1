@@ -6,44 +6,30 @@
 #include "registerer.h"
 #include <unistd.h>
 #include <string>
+#include <fstream>
 
 long* getid_2_svc(void* msg, struct svc_req* req) {
     static long result;
     printf("Recibi una llamda.\n");
-    FILE* f = NULL;
-    if( access( "registering", F_OK ) == -1 ) {
-        // file doesn't exist
-        f = fopen("registering", "a+");
-        if (f == (FILE *) NULL) {
-            result = 0;
-            return (&result);
-        }
-        long* firstNumber;
-        *firstNumber = 1;
-        int status;
-        status = fprintf(f, "%ld", *firstNumber);
-        if(status < 0) {
-            perror("No pudo escribir registro");
-            result = 0;
-            return (&result);
-        }
-        result = *firstNumber;
-        fclose(f);
-    } else {
-        f = fopen("registering", "r+");
-        if (f == (FILE *) NULL) {
-            result = 0;
-            return (&result);
-        }
-        long* readNumber;
-        char number[6];
-        fscanf(f, "%s", number);
-        std::string numberStr(number);
-        *readNumber = stol(numberStr);
-        *readNumber += 1;
-        result = *readNumber;
-        fprintf(f, "%ld", *readNumber);
-        fclose(f);
-    }
+    std::ifstream infile ("registro",std::ifstream::binary);
+
+    infile.seekg (0,infile.end);
+    long size = infile.tellg();
+    infile.seekg (0);
+
+    char* buffer = new char[size];
+
+    infile.read (buffer,size);
+    std::string number(buffer);
+    long num = std::stol(number);
+    result = num;
+    num += 1;
+    std::string numStore = std::to_string(num);
+    infile.close();
+    std::ofstream outfile ("registro",std::ofstream::binary);
+    outfile.write (numStore.c_str(), numStore.size());
+
+    delete[] buffer;
+    outfile.close();
     return (&result);
 }
