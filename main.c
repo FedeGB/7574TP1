@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     }
     int init = num;
     printf("Comienza heladeria\n");
-    int queues[18], sharedMem[4], semaforos[12];
+    int queues[18], sharedMem[3], semaforos[11];
     pid_t cajero;
     pid_t heladeros[2];
     pid_t middlewares[3];

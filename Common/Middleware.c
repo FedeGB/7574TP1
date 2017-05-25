@@ -40,7 +40,6 @@ pid_t work(int input, int output, bool sendSocket) {
 
 pid_t registerer(int registroIn, int registroOut) {
     pid_t reg = fork();
-    int registerSem = getSemaforo(SEMREGISTERID, SEMREGISTERPATH);
     if(reg == 0) {
         int status;
         while (true) {
@@ -49,20 +48,12 @@ pid_t registerer(int registroIn, int registroOut) {
             if (status >= 0) {
                 Message msgSnd;
                 msgSnd.mtype = msgRcv.mtype;
-                int memReg = getshm(REGISTERHANDLERID, REGISTERHANDLERPATH);
-                if(memReg < 0) {
-                    return 0;
-                }
-                p(registerSem);
-                long val = getRegisteringFromRPC();
-                long* id = (long*)map(memReg);
-                (*id)++;
-                const int n = snprintf(NULL, 0, "%lu", *id);
+                long id = getRegisteringFromRPC();
+                id++;
+                const int n = snprintf(NULL, 0, "%lu", id);
                 char buf[n+1];
-                snprintf(buf, n+1, "%lu", *id);
+                snprintf(buf, n+1, "%lu", id);
                 strcpy(msgSnd.data, buf);
-                unmap(id);
-                v(registerSem);
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));
             } else {
                 return 0;
@@ -95,7 +86,6 @@ long getRegisteringFromRPC() {
         fprintf(stderr, "Register: could get id\n");
         return -1;
     }
-    printf("ID obtenido es: %ld\n", *result);
     clnt_destroy(clnt);
     return *result;
 }

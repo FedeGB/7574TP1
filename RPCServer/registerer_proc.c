@@ -10,7 +10,6 @@
 
 long* getid_2_svc(void* msg, struct svc_req* req) {
     static long result;
-    printf("Recibi una llamda.\n");
     std::ifstream infile ("registro",std::ifstream::binary);
 
     infile.seekg (0,infile.end);

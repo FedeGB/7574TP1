@@ -56,8 +56,6 @@
 #define SEMLUGARESCAJID 3
 #define SEMENTRADAPATH "/bin/sh"
 #define SEMENTRADAID 4
-#define SEMREGISTERPATH "/bin/sh"
-#define SEMREGISTERID 5
 #define SEMGUSTOS "/bin/ls"
 
 // Gustos
@@ -76,8 +74,6 @@
 #define LUGARESID 2
 #define LUGARESCAJEROPATH "/bin/dir"
 #define LUGARESCAJEROID 3
-#define REGISTERHANDLERPATH "/bin/dir"
-#define REGISTERHANDLERID 4
 
 // TIPO ÞEDIDO
 #define LLEVAR '1'
