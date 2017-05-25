@@ -13,7 +13,7 @@ pid_t generarCliente() {
         time_t t;
         srand((unsigned)time(&t));
         long idCliente = registrarCliente();
-        printf("Mi id de registro es: %d\n",idCliente);
+        printf("Mi id de registro es: %ld\n",idCliente);
         realizarPedido(idCliente);
         retirarPedido(idCliente);
         return 0;
