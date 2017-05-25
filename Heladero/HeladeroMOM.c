@@ -20,7 +20,7 @@ pid_t startHeladeroMOM(int* queues) {
         struct sockaddr_in clientAddr;
         socklen_t longitudCliente = sizeof(clientAddr);
         printf("Estoy esperando a recibir conexion...\n");
-        int newCjfd = receiveConnection(queues[5], (struct sockaddr*)&clientAddr, &longitudCliente);
+        int newCjfd = receiveConnection(queues[0], (struct sockaddr*)&clientAddr, &longitudCliente);
         if(newCjfd > 0) {
             printf("Recibi nueva conexión\n");
         } else {
@@ -28,7 +28,7 @@ pid_t startHeladeroMOM(int* queues) {
         }
         int clientePort = 8081;
         const char* clienteIP = "127.0.0.1";
-        int toClfd = connectTo(queues[10], clientePort, clienteIP);
+        int toClfd = connectTo(queues[3], clientePort, clienteIP);
         if(toClfd < 0) {
             printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);
         } else {
@@ -41,7 +41,7 @@ pid_t startHeladeroMOM(int* queues) {
             return 0;
         }
         trabajadores.push_back(working);
-        working = work(toCl, queues[10], true);
+        working = work(toCl, queues[3], true);
         if(working == 0) {
             return 0;
         }
