@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include "registerer.h"
 #include <unistd.h>
+#include <string>
 
-long* getid_1_svc(void* msg, struct svc_req* req) {
+long* getid_2_svc(void* msg, struct svc_req* req) {
     static long result;
+    printf("Recibi una llamda.\n");
     FILE* f = NULL;
     if( access( "registering", F_OK ) == -1 ) {
         // file doesn't exist
@@ -34,8 +36,11 @@ long* getid_1_svc(void* msg, struct svc_req* req) {
             return (&result);
         }
         long* readNumber;
-        fscanf(f, "%ld", readNumber);
-        *readNumber +=1;
+        char number[6];
+        fscanf(f, "%s", number);
+        std::string numberStr(number);
+        *readNumber = stol(numberStr);
+        *readNumber += 1;
         result = *readNumber;
         fprintf(f, "%ld", *readNumber);
         fclose(f);

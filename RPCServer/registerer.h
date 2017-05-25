@@ -14,20 +14,20 @@ extern "C" {
 #endif
 
 
-#define REGISTERERSERV 0x20000001
-#define GETIDVERS 1
+#define REGISTERERSERV 0x20000002
+#define GETIDVERS 2
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define GETID 1
-extern  long * getid_1(void *, CLIENT *);
-extern  long * getid_1_svc(void *, struct svc_req *);
-extern int registererserv_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+extern  long * getid_2(void *, CLIENT *);
+extern  long * getid_2_svc(void *, struct svc_req *);
+extern int registererserv_2_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define GETID 1
-extern  long * getid_1();
-extern  long * getid_1_svc();
-extern int registererserv_1_freeresult ();
+extern  long * getid_2();
+extern  long * getid_2_svc();
+extern int registererserv_2_freeresult ();
 #endif /* K&R C */
 
 #ifdef __cplusplus

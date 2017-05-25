@@ -77,7 +77,7 @@ pid_t registerer(int registroIn, int registroOut) {
 long getRegisteringFromRPC() {
     CLIENT *clnt;
     long *result;
-    char *server;
+    char server[50];
     long message;
 
     strcpy(server, "127.0.0.1");
@@ -86,7 +86,7 @@ long getRegisteringFromRPC() {
         clnt_pcreateerror(server);
         return -1;
     }
-    result = getid_1(NULL, clnt);
+    result = getid_2(NULL, clnt);
     if (result == (long *) NULL) {
         clnt_perror(clnt, server);
         return -1;

@@ -17,7 +17,7 @@
 #endif
 
 static void
-registererserv_1(struct svc_req *rqstp, register SVCXPRT *transp)
+registererserv_2(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
 		int fill;
@@ -34,7 +34,7 @@ registererserv_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	case GETID:
 		_xdr_argument = (xdrproc_t) xdr_void;
 		_xdr_result = (xdrproc_t) xdr_long;
-		local = (char *(*)(char *, struct svc_req *)) getid_1_svc;
+		local = (char *(*)(char *, struct svc_req *)) getid_2_svc;
 		break;
 
 	default:
@@ -69,7 +69,7 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "cannot create udp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, REGISTERERSERV, GETIDVERS, registererserv_1, IPPROTO_UDP)) {
+	if (!svc_register(transp, REGISTERERSERV, GETIDVERS, registererserv_2, IPPROTO_UDP)) {
 		fprintf (stderr, "%s", "unable to register (REGISTERERSERV, GETIDVERS, udp).");
 		exit(1);
 	}
@@ -79,7 +79,7 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "cannot create tcp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, REGISTERERSERV, GETIDVERS, registererserv_1, IPPROTO_TCP)) {
+	if (!svc_register(transp, REGISTERERSERV, GETIDVERS, registererserv_2, IPPROTO_TCP)) {
 		fprintf (stderr, "%s", "unable to register (REGISTERERSERV, GETIDVERS, tcp).");
 		exit(1);
 	}

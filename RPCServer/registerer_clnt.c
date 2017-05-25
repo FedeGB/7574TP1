@@ -10,7 +10,7 @@
 static struct timeval TIMEOUT = { 25, 0 };
 
 long *
-getid_1(void *argp, CLIENT *clnt)
+getid_2(void *argp, CLIENT *clnt)
 {
 	static long clnt_res;
 
