@@ -27,7 +27,7 @@ int createSocket(const char* ip, int puerto, bool bind) {
             close(sfd);
             return -1;
         }
-        int listener = listen(sfd, 5);
+        int listener = listen(sfd, 20);
 
         if(listener < 0) {
             perror("Error en el listener");

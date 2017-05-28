@@ -6,6 +6,14 @@
 #define INC_7574TP1_CONTROLADOR_H
 
 #include "Broker.h"
+#include "Constantes.h"
 
+pid_t initBroker(int*, pid_t*, pid_t*);
+
+void inicializarIPCS(int*);
+
+bool inicializarTrabajadores(int*, pid_t*, pid_t*);
+
+void cerrarIPCs(int*);
 
 #endif //INC_7574TP1_CONTROLADOR_H

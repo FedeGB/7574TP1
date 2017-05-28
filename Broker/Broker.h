@@ -9,6 +9,13 @@
 #include <unistd.h>
 #include "../IPC/Socket.h"
 #include "../IPC/ColaMensajes.h"
+#include "Constantes.h"
 
+
+pid_t startListener(int);
+
+pid_t atenderConexion(int);
+
+pid_t startRouter(int, int);
 
 #endif //INC_7574TP1_BROKER_H
