@@ -30,10 +30,13 @@
 #define MENTAGRANIZADA '7'
 
 // Socket
-#define CLIENTEIP "127.0.0.1"
-#define CLIENTEPORT 8081
+//#define CLIENTEIP "127.0.0.1"
+//#define CLIENTEPORT 8081
+//
+//#define HELADEROIP "127.0.0.1"
+//#define HELADEROPORT 8083
 
-#define HELADEROIP "127.0.0.1"
-#define HELADEROPORT 8083
+#define BROKERIP "127.0.0.1"
+#define BROKERPORT 8085
 
 #endif //INC_7574TP1_CONSTANTES_H

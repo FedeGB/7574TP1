@@ -17,31 +17,22 @@ pid_t startHeladeroMOM(int* queues) {
         }
         std::vector<pid_t> trabajadores;
         pid_t working;
-        struct sockaddr_in clientAddr;
-        socklen_t longitudCliente = sizeof(clientAddr);
-        printf("Estoy esperando a recibir conexion...\n");
-        int newCjfd = receiveConnection(queues[0], (struct sockaddr*)&clientAddr, &longitudCliente);
-        if(newCjfd > 0) {
-            printf("Recibi nueva conexión\n");
+        int brokerPort = BROKERPORT;
+        const char* borkerIP = BROKERIP;
+        int brfd = connectTo(queues[0], brokerPort, borkerIP);
+        if(brfd < 0) {
+            printf("No se pudo conectar a %s con puerto %d\n", borkerIP, brokerPort);
         } else {
-            perror("Fallo en recibir nueva conexión");
-        }
-        int clientePort = CLIENTEPORT;
-        const char* clienteIP = CLIENTEIP;
-        int toClfd = connectTo(queues[3], clientePort, clienteIP);
-        if(toClfd < 0) {
-            printf("No se pudo conectar a %s con puerto %d\n", clienteIP, clientePort);
-        } else {
-            printf("Me conecte a %s con puerto %d\n", clienteIP, clientePort);
+            printf("Me conecte a %s con puerto %d\n", borkerIP, brokerPort);
         }
         int fromCj = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
         int toCl = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
-        working = work(newCjfd, fromCj, false);
+        working = work(queues[0], fromCj, false);
         if(working == 0) {
             return 0;
         }
         trabajadores.push_back(working);
-        working = work(toCl, queues[3], true);
+        working = work(toCl, queues[0], true);
         if(working == 0) {
             return 0;
         }
@@ -94,4 +85,8 @@ long registrarHeladero() {
         return regRcv.mtype;
     }
     return -1;
+}
+
+bool realizarHandShake(char* entidad, long idRegistro) {
+    return devolverPedidoCliente(entidad, idRegistro);
 }

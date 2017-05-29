@@ -12,6 +12,7 @@ pid_t crearHeladero() {
         // Uso real mas adelante.
         long idHeladero = registrarHeladero();
         bool flag = true;
+
         while(flag) {
             flag = atenderPedido(idHeladero);
         }

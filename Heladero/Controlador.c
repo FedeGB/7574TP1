@@ -17,12 +17,12 @@ int start(int* queues, int* semaforos, pid_t* heladeros, pid_t* middleware) {
 
 
 void iniciarIPCs(int* queues, int* semaforos) {
-        queues[0] = createSocket(HELADEROIP, HELADEROPORT, true);
+        queues[0] = createSocket("", 0, false); // Para broker
         queues[1] = creamsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
         queues[2] = creamsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
-        queues[3] = createSocket("", 0, false);
-        queues[4] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
-        queues[5] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
+//        queues[3] = createSocket("", 0, false);
+        queues[3] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
+        queues[4] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
         semaforos[0] = crearSemaforo(SEMGUSTOS, VAINILLA, 1);
         semaforos[1] = crearSemaforo(SEMGUSTOS, FRUTILLA, 1);
         semaforos[2] = crearSemaforo(SEMGUSTOS, DULCEDELECHE, 1);
