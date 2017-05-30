@@ -5,10 +5,10 @@
 #include "Controlador.h"
 
 
-pid_t initBroker(int* queues, pid_t* listener, pid_t* router) {
+pid_t initBroker(int* queues, int* sharedmem, int* semaforo, pid_t* listener, pid_t* router) {
     pid_t initializer = fork();
     if(initializer == 0) {
-        inicializarIPCS(queues);
+        inicializarIPCS(queues, sharedmem, semaforo);
         bool workers = inicializarTrabajadores(queues, listener, router);
         if(workers) {
             return 1;
@@ -20,10 +20,18 @@ pid_t initBroker(int* queues, pid_t* listener, pid_t* router) {
 }
 
 
-void inicializarIPCS(int* queues) {
+void inicializarIPCS(int* queues, int* sharedmem, int* semaforo) {
     queues[0] = creamsg(QINCOMINGID, QINCOMINGPATH);
     queues[1] = creamsg(QOUTGOINGID, QOUTGOINGPATH);
     queues[2] = createSocket(BROKERIP, BROKERPORT, true);
+    sharedmem[0] = creashm(SHAREDTABLEID, sizeof(entity) * 1000, SHAREDTABLEPATH);
+    sharedmem[1] = creashm(SHAREDCANTID, sizeof(int), SHAREDCANTPATH);
+    *semaforo = crearSemaforo(SEMTABLEPATH,vSEMTABLEID, 1);
+    p(*semaforo);
+    int* cantidad = (int*)map(sharedmem[1]);
+    cantidad = 0;
+    unmap(cantidad);
+    v(*semaforo);
     printf("Se iniciaron IPCS.\n");
 }
 
@@ -44,8 +52,11 @@ bool inicializarTrabajadores(int* queues, pid_t* listener, pid_t* router) {
 }
 
 
-void cerrarIPCs(int* queues) {
+void cerrarIPCs(int* queues, int* sharedmem, int* semaforo) {
     elimsg(queues[0]);
     elimsg(queues[1]);
     close(queues[2]);
+    eliminarSemaforo(*semaforo);
+    elishm(sharedmem[0]);
+    elishm(sharedmem[1]);
 }

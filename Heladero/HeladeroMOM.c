@@ -60,6 +60,13 @@ bool devolverPedidoCliente(char* pedido, long idCliente) {
 }
 
 bool recibirPedidoCajero(char* pedido, long* idCliente) {
+    int queueAviso = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+    if(queueAviso < 0) {
+        return false;
+    }
+    Message msgWar;
+    msgWar.mtype = *idCliente;
+    msgWar.data = "r000";
     int queue = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
     if(queue < 0) {
         return false;

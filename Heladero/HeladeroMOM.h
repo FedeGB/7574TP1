@@ -17,4 +17,6 @@ bool recibirPedidoCajero(char*, long*);
 
 long registrarHeladero();
 
+bool realizarHandShake(char*, long);
+
 #endif //INC_7574TP1_HELADEROMOM_H

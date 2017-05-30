@@ -17,6 +17,11 @@ typedef struct Message {
     char data[4];
 } Message;
 
+typedef struct MessageInternal {
+    long mtype;
+    char data[10];
+};
+
 int creamsg(int, const char*);
 
 int getmsg(int, const char*);
