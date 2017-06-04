@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv) {
     printf("Comienza cajero en heladeria\n");
-    int queues[8];
+    int queues[6];
     pid_t cajero;
     pid_t middleware;
 

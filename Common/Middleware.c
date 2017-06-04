@@ -13,7 +13,7 @@ pid_t work(int input, int output, bool sendSocket) {
             Message msgRcv;
             if(sendSocket) {
                 status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
-                printf("Recibi mensaje de cola: %s\n", msgRcv.data);
+                printf("Recibi mensaje de cola: %s, mtype: %ld\n", msgRcv.data, msgRcv.mtype);
             } else {
                 status = receiveFrom(input, &msgRcv); // Socket
                 printf("Recibi mensaje de socket: %s\n", msgRcv.data);
@@ -21,13 +21,12 @@ pid_t work(int input, int output, bool sendSocket) {
             if (status >= 0) {
                 if(sendSocket) {
                     sndSts = sendTo(output, &msgRcv, 10); // Socket
-                    printf("Envie mensaje por socket: %s\n", msgRcv.data);
                     if(sndSts < 0){
                         return 0;
                     }
                 } else {
                     enviarmsg(output, &msgRcv, sizeof(msgRcv));
-                    printf("Envie mensaje por cola: %s\n", msgRcv.data);
+                    printf("Envie mensaje por cola: %s con mtype: %ld\n", msgRcv.data, msgRcv.mtype);
                 }
             } else {
                 return 0;
@@ -49,11 +48,11 @@ pid_t registerer(int registroIn, int registroOut) {
                 Message msgSnd;
                 msgSnd.mtype = msgRcv.mtype;
                 long id = getRegisteringFromRPC();
-                id++;
+                printf("Recibi id de RPC: %ld\n", id);
                 const int n = snprintf(NULL, 0, "%lu", id);
                 char buf[n+1];
                 snprintf(buf, n+1, "%lu", id);
-                strcpy(msgSnd.data, buf);
+                strncpy(msgSnd.data, buf, 5);
                 enviarmsg(registroOut, &msgSnd, sizeof(msgSnd));
             } else {
                 return 0;

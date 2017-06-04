@@ -55,6 +55,7 @@ bool devolverPedidoCliente(char* pedido, long idCliente) {
     Message msgSend;
     msgSend.mtype = idCliente;
     strncpy(msgSend.data, pedido, 4);
+    msgSend.data[4] = 'l';
     enviarmsg(queue, &msgSend, sizeof(msgSend));
     return true;
 }
@@ -65,8 +66,9 @@ bool recibirPedidoCajero(char* pedido, long* idCliente) {
         return false;
     }
     Message msgWar;
-    msgWar.mtype = *idCliente;
-    msgWar.data = "r000";
+    msgWar.mtype = 1;
+    strncpy(msgWar.data, "r0000", 5);
+    enviarmsg(queueAviso, &msgWar, sizeof(msgWar));
     int queue = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
     if(queue < 0) {
         return false;
@@ -85,11 +87,11 @@ long registrarHeladero() {
     int regOut = getmsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
     Message regMsg;
     regMsg.mtype = getpid();
-    strncpy(regMsg.data, "rrrr", 4);
+    strncpy(regMsg.data, "rrrrr", 5);
     enviarmsg(regIn, &regMsg, sizeof(regMsg));
     Message regRcv;
     if(recibirmsg(regOut, &regRcv, sizeof(regRcv), getpid()) >= 0) {
-        return regRcv.mtype;
+        return atol(regRcv.data);
     }
     return -1;
 }

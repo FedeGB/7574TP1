@@ -11,7 +11,7 @@ typedef struct entity {
     long id;
     long fishPid;
     int weight;
-};
+} entity;
 
 
 #define QINCOMINGID 1

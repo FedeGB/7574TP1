@@ -79,9 +79,9 @@ int receiveFrom(int sfd, Message* message) {
         buffer += tmpString;
         strcpy(bufferTmp, "");
     }
-    strncpy(message->data, buffer.c_str(), 4);
+    strncpy(message->data, buffer.c_str(), 5);
     std::string StrTmp(buffer);
-    std::string number = StrTmp.substr(4, StrTmp.find(".") - 4);
+    std::string number = StrTmp.substr(5, StrTmp.find(".") - 5);
     message->mtype = std::stol(number);
     return lectura;
 }
@@ -96,5 +96,6 @@ int sendTo(int sfd, Message* message, int size) {
     if (writeStatus < 0) {
         return -1;
     }
+    printf("Envio via socket: %s\n", buffer);
     return 0;
 }

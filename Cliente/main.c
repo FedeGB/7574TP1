@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv) {
     printf("Comienza cliente de heladeria\n");
-    int queues[7], sharedMem[3], semaforos[3];
+    int queues[6], sharedMem[3], semaforos[3];
     pid_t middleware;
 
     int controlador = start(queues, sharedMem, semaforos, &middleware);

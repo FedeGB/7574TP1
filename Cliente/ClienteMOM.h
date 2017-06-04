@@ -18,4 +18,6 @@ bool recibirHelado(char*, long);
 
 long registrarCliente();
 
+bool handshake(char*, long);
+
 #endif //INC_7574TP1_CLIENTEMOM_H

@@ -18,13 +18,11 @@ int start(int* queues, pid_t* cajero, pid_t* middleware) {
 
 void iniciarIPCs(int* queues) {
     queues[0] = creamsg(QTOCLIENTECJID, QTOCLIENTECJPATH);
-    queues[1] = createSocket(CAJEROIP, CAJEROPORT, false);
-    queues[2] = queues[1];
-    queues[3] = creamsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
-    queues[4] = creamsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
-    queues[5] = createSocket("", 0, false);
-    queues[6] = creamsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
-    queues[7] = creamsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
+    queues[1] = createSocket("", 0, false);
+    queues[2] = creamsg(QFROMCLIENTECJID, QFROMCLIENTECJPATH);
+    queues[3] = creamsg(QTOHELADEROCJID, QTOHELADEROCJPATH);
+    queues[4] = creamsg(QREGISTROCAJINID, QREGISTROCAJINPATH);
+    queues[5] = creamsg(QREGISTROCAJOUTID, QREGISTROCAJOUTPATH);
     printf("Se generaron ipcs.\n");
 }
 
@@ -62,8 +60,8 @@ pid_t simular() {
 }
 
 void cerrarIPCs(int* queues) {
-    for(int q = 0; q < 8; q++) {
-        if(q == 1 || q == 2 || q == 5) {
+    for(int q = 0; q < 6; q++) {
+        if(q == 1) {
             close(queues[q]);
         }
         if(queues[q] != 0) {

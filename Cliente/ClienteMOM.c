@@ -17,38 +17,26 @@ pid_t startClienteMOM(int* queues) {
         }
         std::vector<pid_t> trabajadores;
         pid_t working;
-        struct sockaddr_in clientAddr;
-        socklen_t longitudCliente = sizeof(clientAddr);
-        printf("Estoy esperando a recibir conexion...\n");
-        int newCjfd = receiveConnection(queues[0], (struct sockaddr*)&clientAddr, &longitudCliente);
-        if(newCjfd > 0) {
-            printf("Recibi nueva conexión\n");
+        int newCjfd = connectTo(queues[0], BROKERPORT, BROKERIP);
+        if(newCjfd >= 0) {
+            printf("Me conecte a %s en el puerto %i\n", BROKERIP, BROKERPORT);
         } else {
-            perror("Fallo en recibir nueva conexión");
-        }
-        struct sockaddr_in clientAddr2;
-        socklen_t longitudCliente2 = sizeof(clientAddr2);
-        printf("Estoy esperando a recibir conexion...\n");
-        int newHlfd = receiveConnection(queues[1],  (struct sockaddr*)&clientAddr2, &longitudCliente2);
-        if(newHlfd > 0) {
-            printf("Recibi nueva conexión\n");
-        } else {
-            perror("Fallo en recibir nueva conexión");
+            printf("No me pude conectar a %s en el puerto %i\n", BROKERIP, BROKERPORT);
         }
         int fromCj = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
         int toCj = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
         int fromHl = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
-        working = work(newCjfd, fromCj, false);
+        working = work(queues[0], fromCj, false);
         if(working == 0) {
             return 0;
         }
         trabajadores.push_back(working);
-        working = work(toCj, newCjfd, true);
+        working = work(toCj, queues[0], true);
         if(working == 0) {
             return 0;
         }
         trabajadores.push_back(working);
-        working = work(newHlfd, fromHl, false);
+        working = work(queues[0], fromHl, false);
         if(working == 0) {
             return 0;
         }
@@ -70,12 +58,21 @@ bool enviarPedidoCajero(char* pedido, long idCliente) {
     }
     Message msgSend;
     msgSend.mtype = idCliente;
-    strncpy(msgSend.data, pedido, 4);
+    strncpy(msgSend.data, pedido, 5);
+    msgSend.data[4] = 'j';
     enviarmsg(queue, &msgSend, sizeof(msgSend));
     return true;
 }
 
 bool recibirTicket(char* ticket, long idCliente) {
+    int queueAviso = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queueAviso < 0) {
+        return false;
+    }
+    Message msgWar;
+    msgWar.mtype = 1;
+    strncpy(msgWar.data, "r0000", 5);
+    enviarmsg(queueAviso, &msgWar, sizeof(msgWar));
     int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
     if(queue < 0) {
         return false;
@@ -84,11 +81,19 @@ bool recibirTicket(char* ticket, long idCliente) {
     if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
         return false;
     }
-    strncpy(ticket, msgRcv.data, 4);
+    strncpy(ticket, msgRcv.data, 5);
     return true;
 }
 
 bool recibirHelado(char* pedido, long idCliente) {
+    int queueAviso = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queueAviso < 0) {
+        return false;
+    }
+    Message msgWar;
+    msgWar.mtype = 1;
+    strncpy(msgWar.data, "r0000", 5);
+    enviarmsg(queueAviso, &msgWar, sizeof(msgWar));
     int queue = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
     if(queue < 0) {
         return false;
@@ -97,7 +102,7 @@ bool recibirHelado(char* pedido, long idCliente) {
     if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
         return false;
     }
-    strncpy(pedido, msgRcv.data, 4);
+    strncpy(pedido, msgRcv.data, 5);
     return true;
 }
 
@@ -106,11 +111,15 @@ long registrarCliente() {
     int regOut = getmsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
     Message regMsg;
     regMsg.mtype = getpid();
-    strncpy(regMsg.data, "rrrr", 4);
+    strncpy(regMsg.data, "rrrrr", 5);
     enviarmsg(regIn, &regMsg, sizeof(regMsg));
     Message regRcv;
     if(recibirmsg(regOut, &regRcv, sizeof(regRcv), getpid()) >= 0) {
         return atol(regRcv.data);
     }
     return -1;
+}
+
+bool handshake(char* registering, long idRegister) {
+    return enviarPedidoCajero(registering, idRegister);
 }

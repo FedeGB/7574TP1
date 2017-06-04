@@ -13,6 +13,9 @@ pid_t generarCliente() {
         time_t t;
         srand((unsigned)time(&t));
         long idCliente = registrarCliente();
+        char hand[5];
+        strncpy(hand, "l0000", 5);
+        handshake(hand, idCliente);
         realizarPedido(idCliente);
         retirarPedido(idCliente);
         return 0;

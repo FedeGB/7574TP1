@@ -14,13 +14,13 @@
 
 typedef struct Message {
     long mtype;
-    char data[4];
+    char data[5];
 } Message;
 
 typedef struct MessageInternal {
     long mtype;
     char data[10];
-};
+} MessageInternal;
 
 int creamsg(int, const char*);
 

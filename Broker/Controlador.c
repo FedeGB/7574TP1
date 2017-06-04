@@ -26,10 +26,10 @@ void inicializarIPCS(int* queues, int* sharedmem, int* semaforo) {
     queues[2] = createSocket(BROKERIP, BROKERPORT, true);
     sharedmem[0] = creashm(SHAREDTABLEID, sizeof(entity) * 1000, SHAREDTABLEPATH);
     sharedmem[1] = creashm(SHAREDCANTID, sizeof(int), SHAREDCANTPATH);
-    *semaforo = crearSemaforo(SEMTABLEPATH,vSEMTABLEID, 1);
+    *semaforo = crearSemaforo(SEMTABLEPATH, SEMTABLEID, 1);
     p(*semaforo);
     int* cantidad = (int*)map(sharedmem[1]);
-    cantidad = 0;
+    *cantidad = 0;
     unmap(cantidad);
     v(*semaforo);
     printf("Se iniciaron IPCS.\n");

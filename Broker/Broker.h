@@ -18,4 +18,8 @@ pid_t atenderConexion(int);
 
 pid_t startRouter(int, int);
 
+bool registrarEntidad(MessageInternal);
+
+bool routearMensaje(MessageInternal, int);
+
 #endif //INC_7574TP1_BROKER_H

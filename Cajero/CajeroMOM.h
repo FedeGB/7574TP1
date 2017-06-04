@@ -18,4 +18,6 @@ bool recibirPedidoCliente(char*, long*);
 
 long registrarCajero();
 
+bool realizarHandShake(char*, long);
+
 #endif //INC_7574TP1_CAJEROMOM_H

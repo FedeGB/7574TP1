@@ -11,7 +11,9 @@ pid_t crearHeladero() {
         srand((unsigned)time(&t));
         // Uso real mas adelante.
         long idHeladero = registrarHeladero();
-        realizarHandShake("h000", idHeladero);
+        char hand[5];
+        strncpy(hand, "h0000", 5);
+        realizarHandShake(hand, idHeladero);
         bool flag = true;
         while(flag) {
             flag = atenderPedido(idHeladero);
@@ -26,7 +28,7 @@ pid_t crearHeladero() {
 bool atenderPedido(long idHeladero) {
     printf("Heladero %ld: Espero pedido.\n", idHeladero);
     char pedido[4];
-    long idCliente = idHeladero;
+    long idCliente/* = idHeladero*/;
     if(!recibirPedidoCajero(pedido, &idCliente)) {
         return false;
     }

@@ -32,20 +32,24 @@ pid_t startListener(int socket) {
 pid_t atenderConexion(int fish) {
     pid_t newFish = fork();
     if(newFish == 0) {
+        printf("Atiendo conexion..\n");
         Message handShake;
         if(receiveFrom(fish, &handShake) < 0) {
             printf("No se pudo recibir nada en handshake.\n");
             return 0;
         }
+        printf("Recibi handshake con data: %s\n", handShake.data);
         int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
         int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
+        char type;
         if(handShake.data[1] == '0' && handShake.data[2] == '0' && handShake.data[3] == '0') {
             MessageInternal registering;
-            strncpy(registering.data, handShake.data, 1); // First char is h, j or l
+            strncpy(registering.data, handShake.data, 5); // First char is h, j or l
             char buffer[10];
             std::string number = std::to_string(handShake.mtype);
             appendString(registering.data, number.c_str(), buffer, 10);
             registering.mtype = getpid();
+            strncpy(registering.data, buffer, 10);
             enviarmsg(inputQ, &registering, sizeof(registering));
         }
         // En este primer receive tiene que ver si el clientSocket esta esperando que le devuelvan algo
@@ -53,11 +57,31 @@ pid_t atenderConexion(int fish) {
         // recibido por el clientSocket al 'inputQ' o que se quede esperando algo en el 'outputQ'
         while(true) {
             Message rcvMsg;
+            printf("Espero nuevo pedido\n");
             if(receiveFrom(fish, &rcvMsg) < 0) {
                 printf("No se pudo recibir mensaje de cliente.\n");
                 return 0;
             }
-
+            if(rcvMsg.data[0] == 'r') {
+                printf("Recibi pedido para recibir dato en endpoint\n");
+                MessageInternal receivingMessage;
+                if(recibirmsg(outputQ, &receivingMessage, sizeof(receivingMessage), getpid()) < 0) {
+                    printf("No se pudo obtener mensaje de cola output\n");
+                    return 0;
+                }
+                Message returningMessage;
+                strncpy(returningMessage.data, receivingMessage.data, 5);
+                std::string dataStr(receivingMessage.data);
+                std::string mtype = dataStr.substr(5, dataStr.find('.') - 5);
+                returningMessage.mtype = std::stol(mtype);
+                sendTo(fish, &returningMessage, 10);
+            } else {
+                MessageInternal internal;
+                internal.mtype = getpid();
+                std::string number = std::to_string(rcvMsg.mtype);
+                appendString(rcvMsg.data, number.c_str(), internal.data, 10);
+                enviarmsg(inputQ, &internal, sizeof(internal));
+            }
         }
     } else {
         return newFish;
@@ -71,7 +95,7 @@ pid_t startRouter(int input, int output) {
         int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
         while(true) {
             MessageInternal internalRcv;
-            if (recibirmsg(inputQ, &internalRcv, sizeof(internalRcv)) < 0) {
+            if (recibirmsg(inputQ, &internalRcv, sizeof(internalRcv), 0) < 0) {
                 printf("No se pudo obtener mensaje de cola input\n");
                 return 0;
             }
@@ -80,8 +104,7 @@ pid_t startRouter(int input, int output) {
                     printf("No se pudo registar a %s\n", internalRcv.data);
                     return 0;
                 }
-            }
-            if(!routearMensaje(internalRcv, outputQ)) {
+            } else if(!routearMensaje(internalRcv, outputQ)) {
                 printf("No se pudo routear el mensaje %s", internalRcv.data);
                 return 0;
             }
@@ -93,9 +116,10 @@ pid_t startRouter(int input, int output) {
 
 
 bool registrarEntidad(MessageInternal msg) {
+    printf("Recibi entidad para registrar data: %s\n", msg.data);
     char type = msg.data[0];
     std::string datos(msg.data);
-    std::string idStr = datos.substr(1, datos.find(".") - 1);
+    std::string idStr = datos.substr(5, datos.find(".") - 5);
     long id = std::stol(idStr);
     int sem = getSemaforo(SEMTABLEID, SEMTABLEPATH);
     if(sem > 0) {
@@ -111,23 +135,62 @@ bool registrarEntidad(MessageInternal msg) {
             nuevaEntidad.id = id;
             nuevaEntidad.type = type;
             nuevaEntidad.weight = 0;
+            printf("Guardando entidad de tipo %c con id %ld en en pos %i\n", type, id, *cant);
             entidades[*cant] = nuevaEntidad;
-            *cant++;
+            (*cant)++;
             unmap(cant);
             unmap(entidades);
             v(sem);
+            printf("Entidad registrada.\n");
+            return true;
         } else {
             return false;
         }
     } else {
         return false;
-    };
-    printf("Entidad registrada.");
-    return true;
+    }
 }
 
 
 bool routearMensaje(MessageInternal msg, int output) {
-
+    MessageInternal routedMsg;
+    int cantTable = getshm(SHAREDCANTID, SHAREDCANTPATH);
+    int table = getshm(SHAREDTABLEID, SHAREDTABLEPATH);
+    int sem = getSemaforo(SEMTABLEID, SEMTABLEPATH);
+    if (cantTable > 0 && table > 0) {
+        std::string dataStr(msg.data);
+        std::string mtype = dataStr.substr(5, dataStr.find('.') - 5);
+        long id = std::stol(mtype);
+        long dest = 1;
+        p(sem);
+        int *cant = (int *) map(cantTable);
+        entity *entidades = (entity *) map(table);
+        if(msg.data[4] == 'l') {
+            for(int i = 0; i < *cant; i++) {
+                entity entidad = entidades[i];
+                if(entidad.type == msg.data[4] && id == entidad.id) {
+                    dest = entidad.fishPid;
+                    printf("Encontre nodo destino para cliente.\n");
+                    break;
+                }
+            }
+        } else if(msg.data[4] == 'j' || msg.data[4] == 'h') {
+            int minWeight = 10000;
+            long minWeightDest = 1;
+            for(int i = 0; i < *cant; i++) {
+                entity entidad = entidades[i];
+                if(entidad.type == msg.data[4] && entidad.weight < minWeight) {
+                    minWeightDest = entidad.fishPid;
+                    minWeight = entidad.weight;
+                }
+            }
+            dest = minWeightDest;
+        }
+//            unmap(cant);
+        unmap(entidades);
+        v(sem);
+        msg.mtype = dest;
+        enviarmsg(output, &msg, sizeof(msg));
+    }
     return true;
 }

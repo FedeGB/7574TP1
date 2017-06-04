@@ -13,6 +13,9 @@ pid_t crearCajero() {
         srand((unsigned)time(&t));
         // Uso real mas adelante
         long idCajero = registrarCajero();
+        char hand[5];
+        strncpy(hand, "j0000", 5);
+        realizarHandShake(hand, idCajero);
         atenderCajero();
         printf("Cajero: Termine de atender\n");
         return 0;
@@ -25,13 +28,13 @@ void atenderCajero() {
     while(true) {
         printf("Cajero: Atiendo cliente.\n");
         esperarAleatorio();
-        char pedido[4];
+        char pedido[5];
         long idCliente;
         if(!recibirPedidoCliente(pedido, &idCliente)) {
             break;
         }
-        char ticket[4];
-        strncpy(ticket, "tick", 4);
+        char ticket[5];
+        strncpy(ticket, "ticke", 5);
         if(!enviarTicketCliente(ticket, idCliente)) {
             break;
         }

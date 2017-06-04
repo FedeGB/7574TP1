@@ -40,13 +40,11 @@ bool iniciarTrabajadores(pid_t* heladeros, pid_t* middleware, int* queues) {
     }
     *middleware = middleHeladeros;
     printf("Inicio Middle heladeros\n");
-    for (int hel = 0; hel < 2; hel++) {
-        pid_t helade = crearHeladero();
-        if (helade == 0) {
-            return false;
-        }
-        heladeros[hel] = helade;
+    pid_t helade = crearHeladero();
+    if (helade == 0) {
+        return false;
     }
+    *heladeros = helade;
     printf("Se crearon 2 heladeros.\n");
 
     return true;
