@@ -186,6 +186,7 @@ bool routearMensaje(MessageInternal msg, int output) {
                 entity entidad = entidades[i];
                 if(entidad.type == msg.data[4] && id == entidad.id) {
                     dest = entidad.fishPid;
+                    entidad.weight++;
                     printf("Encontre nodo destino para cliente.\n");
                     break;
                 }
@@ -193,14 +194,17 @@ bool routearMensaje(MessageInternal msg, int output) {
         } else if(msg.data[4] == 'j' || msg.data[4] == 'h') {
             int minWeight = 10000;
             long minWeightDest = 1;
+            int postSelected = 0;
             for(int i = 0; i < *cant; i++) {
                 entity entidad = entidades[i];
                 if(entidad.type == msg.data[4] && entidad.weight < minWeight) {
                     minWeightDest = entidad.fishPid;
                     minWeight = entidad.weight;
+                    postSelected = i;
                 }
             }
             dest = minWeightDest;
+            entidades[postSelected].weight++;
         }
 //            unmap(cant);
         unmap(entidades);
