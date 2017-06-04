@@ -8,12 +8,13 @@
 #include <sys/wait.h>
 
 int main(int argc, char** argv){
-    int queues[3];
+    int queues[5];
     int sharedmem[2];
-    int semaforo;
+    int semaforos[8];
     pid_t listener;
     pid_t router;
-    pid_t init = initBroker(queues, sharedmem, &semaforo, &listener, &router);
+    pid_t adminPotes;
+    pid_t init = initBroker(queues, sharedmem, semaforos, &listener, &router, &adminPotes);
     if(init == 0) {
         return 0;
     }
@@ -22,7 +23,8 @@ int main(int argc, char** argv){
     // TODO: Necesito esperar por estos dos ultimos realmente?
     waitpid(listener, NULL, 0);
     waitpid(router, NULL, 0);
-    cerrarIPCs(queues, sharedmem, &semaforo);
+    waitpid(adminPotes, NULL, 0);
+    cerrarIPCs(queues, sharedmem, semaforos);
 
     return 0;
 }

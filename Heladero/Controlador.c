@@ -5,8 +5,8 @@
 #include "Controlador.h"
 
 
-int start(int* queues, int* semaforos, pid_t* heladeros, pid_t* middleware) {
-    iniciarIPCs(queues, semaforos);
+int start(int* queues, pid_t* heladeros, pid_t* middleware) {
+    iniciarIPCs(queues);
     bool trabajador = iniciarTrabajadores(heladeros, middleware, queues);
     if(trabajador) {
         return 1;
@@ -16,20 +16,13 @@ int start(int* queues, int* semaforos, pid_t* heladeros, pid_t* middleware) {
 }
 
 
-void iniciarIPCs(int* queues, int* semaforos) {
+void iniciarIPCs(int* queues) {
         queues[0] = createSocket("", 0, false); // Para broker
         queues[1] = creamsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
         queues[2] = creamsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
 //        queues[3] = createSocket("", 0, false);
         queues[3] = creamsg(QREGISTROHELINID, QREGISTROHELINPATH);
         queues[4] = creamsg(QREGISTROHELOUTID, QREGISTROHELOUTPATH);
-        semaforos[0] = crearSemaforo(SEMGUSTOS, VAINILLA, 1);
-        semaforos[1] = crearSemaforo(SEMGUSTOS, FRUTILLA, 1);
-        semaforos[2] = crearSemaforo(SEMGUSTOS, DULCEDELECHE, 1);
-        semaforos[3] = crearSemaforo(SEMGUSTOS, LIMON, 1);
-        semaforos[4] = crearSemaforo(SEMGUSTOS, SAMBAYON, 1);
-        semaforos[5] = crearSemaforo(SEMGUSTOS, CREMAAMERICANA, 1);
-        semaforos[6] = crearSemaforo(SEMGUSTOS, MENTAGRANIZADA, 1);
     printf("Se generaron ipcs.\n");
 }
 
@@ -66,16 +59,12 @@ pid_t simular() {
     }
 }
 
-void cerrarIPCs(int* queues, int* semaforos) {
+void cerrarIPCs(int* queues) {
     for(int q = 0; q < 6; q++) {
         if(q == 0 || q == 3) {
             close(queues[q]);
         } else {
             elimsg(queues[q]);
         }
-    }
-    for(int sem = 0; sem < 7; sem++) {
-        eliminarSemaforo(semaforos[sem]);
-
     }
 }

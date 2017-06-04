@@ -15,6 +15,8 @@ bool devolverPedidoCliente(char*, long);
 
 bool recibirPedidoCajero(char*, long*);
 
+bool pedirPoteHelado(char, long);
+
 long registrarHeladero();
 
 bool realizarHandShake(char*, long);

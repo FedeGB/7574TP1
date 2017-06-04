@@ -41,6 +41,8 @@ pid_t atenderConexion(int fish) {
         printf("Recibi handshake con data: %s\n", handShake.data);
         int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
         int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
+        int gustosIn = getmsg(QINGUSTOSID, QINGUSTOSPATH);
+        int gustosOut = getmsg(QOUTGUSTOSID, QOUTGUSTOSPATH);
         char type;
         if(handShake.data[1] == '0' && handShake.data[2] == '0' && handShake.data[3] == '0') {
             MessageInternal registering;
@@ -75,6 +77,21 @@ pid_t atenderConexion(int fish) {
                 std::string mtype = dataStr.substr(5, dataStr.find('.') - 5);
                 returningMessage.mtype = std::stol(mtype);
                 sendTo(fish, &returningMessage, 10);
+            } else if(rcvMsg.data[0] == 'g') {
+                MessageInternal gustoRecibido;
+                gustoRecibido.mtype = getpid();
+                std::string number = std::to_string(rcvMsg.mtype);
+                appendString(rcvMsg.data, number.c_str(), gustoRecibido.data, 10);
+                enviarmsg(gustosIn, &gustoRecibido, sizeof(gustoRecibido));
+                MessageInternal gustoDeVuelta;
+                if(recibirmsg(gustosOut, &gustoDeVuelta, sizeof(gustoDeVuelta), getpid()) < 0) {
+                    printf("No se pudo volver a recibir el gusto\n");
+                    return 0;
+                }
+                Message returningMessage;
+                strncpy(returningMessage.data, "done0", 5);
+                returningMessage.mtype = rcvMsg.mtype;
+                sendTo(fish, &returningMessage, 10);
             } else {
                 MessageInternal internal;
                 internal.mtype = getpid();
@@ -88,11 +105,11 @@ pid_t atenderConexion(int fish) {
     }
 }
 
-pid_t startRouter(int input, int output) {
+pid_t startRouter(int inputQ, int outputQ) {
     pid_t router = fork();
     if(router == 0) {
-        int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
-        int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
+//        int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
+//        int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
         while(true) {
             MessageInternal internalRcv;
             if (recibirmsg(inputQ, &internalRcv, sizeof(internalRcv), 0) < 0) {
@@ -153,7 +170,6 @@ bool registrarEntidad(MessageInternal msg) {
 
 
 bool routearMensaje(MessageInternal msg, int output) {
-    MessageInternal routedMsg;
     int cantTable = getshm(SHAREDCANTID, SHAREDCANTPATH);
     int table = getshm(SHAREDTABLEID, SHAREDTABLEPATH);
     int sem = getSemaforo(SEMTABLEID, SEMTABLEPATH);
@@ -193,4 +209,43 @@ bool routearMensaje(MessageInternal msg, int output) {
         enviarmsg(output, &msg, sizeof(msg));
     }
     return true;
+}
+
+pid_t startPoteAdmin(int input, int output) {
+    pid_t poteAdmin = fork();
+    if(poteAdmin == 0) {
+        while(true) {
+            MessageInternal internalRcv;
+            if (recibirmsg(input, &internalRcv, sizeof(internalRcv), 0) < 0) {
+                printf("No se pudo obtener mensaje de cola input\n");
+                return 0;
+            }
+            if(internalRcv.data[0] == 'g') {
+                pid_t gusto = atenderGusto(internalRcv, output);
+                if(gusto == 0) {
+                    return 0;
+                }
+            }
+        }
+    } else {
+        return poteAdmin;
+    }
+}
+
+
+pid_t atenderGusto(MessageInternal internalRcv, int output) {
+    pid_t atender = fork();
+    int semGusto;
+    if(atender == 0) {
+        char gusto = internalRcv.data[1];
+        semGusto = getSemaforo(gusto, SEMGUSTOS);
+        printf("Se esta usando pote de gusto  %c\n", gusto);
+        p(semGusto);
+        esperarAleatorio();
+        v(semGusto);
+        enviarmsg(output, &internalRcv, sizeof(internalRcv));
+        return 0;
+    } else {
+        return atender;
+    }
 }

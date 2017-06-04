@@ -15,6 +15,6 @@ pid_t crearHeladero();
 
 bool atenderPedido(long);
 
-void prepararHelado(char*);
+void prepararHelado(char*, long);
 
 #endif //INC_7574TP1_HELADERO_H

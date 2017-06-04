@@ -22,4 +22,8 @@ bool registrarEntidad(MessageInternal);
 
 bool routearMensaje(MessageInternal, int);
 
+pid_t atenderGusto(MessageInternal, int);
+
+pid_t startPoteAdmin(int, int);
+
 #endif //INC_7574TP1_BROKER_H

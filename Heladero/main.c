@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     pid_t heladeros;
     pid_t middleware;
 
-    int controlador = start(queues, semaforos,  &heladeros, &middleware);
+    int controlador = start(queues,  &heladeros, &middleware);
     if(controlador == 0) {
         return 0;
     }
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     }
     waitpid(sim, NULL, 0);
 
-    cerrarIPCs(queues, semaforos);
+    cerrarIPCs(queues);
     waitpid(heladeros, NULL, 0);
 
     return 0;

@@ -60,6 +60,32 @@ bool devolverPedidoCliente(char* pedido, long idCliente) {
     return true;
 }
 
+bool pedirPoteHelado(char gusto, long idHeladero) {
+    int queue = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
+    if(queue < 0) {
+        return false;
+    }
+    Message msgSend;
+    msgSend.mtype = idHeladero;
+    msgSend.data[0] = 'g';
+    msgSend.data[1] = gusto;
+    msgSend.data[2] = '0';
+    msgSend.data[3] = '0';
+    msgSend.data[4] = '0';
+    enviarmsg(queue, &msgSend, sizeof(msgSend));
+    printf("Pedi pote de gusto %c\n", gusto);
+    int queueB = getmsg(QFROMCAJEROHELID, QFROMCAJEROHELPATH);
+    if(queue < 0) {
+        return false;
+    }
+    Message rcvMsg;
+    if(recibirmsg(queueB, &rcvMsg, sizeof(rcvMsg), idHeladero) < 0) {
+        return false;
+    }
+    printf("Termine de poner gusto %c\n", gusto);
+    return true;
+}
+
 bool recibirPedidoCajero(char* pedido, long* idCliente) {
     int queueAviso = getmsg(QTOCLIENTEHELID, QTOCLIENTEHELPATH);
     if(queueAviso < 0) {

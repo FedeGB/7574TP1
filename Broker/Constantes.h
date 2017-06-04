@@ -18,7 +18,10 @@ typedef struct entity {
 #define QINCOMINGPATH "/bin/grep"
 #define QOUTGOINGID 2
 #define QOUTGOINGPATH "/bin/grep"
-
+#define QINGUSTOSID 3
+#define QINGUSTOSPATH "/bin/grep"
+#define QOUTGUSTOSID 4
+#define QOUTGUSTOSPATH "/bin/grep"
 
 #define SHAREDTABLEID 1
 #define SHAREDTABLEPATH "/bin/gunzip"
@@ -26,6 +29,18 @@ typedef struct entity {
 #define SHAREDCANTPATH "/bin/gunzip"
 #define SEMTABLEID 2
 #define SEMTABLEPATH "/bin/gunzip"
+
+// Semaforos
+#define SEMGUSTOS "/bin/ls"
+
+// Gustos
+#define VAINILLA '1'
+#define FRUTILLA '2'
+#define DULCEDELECHE '3'
+#define LIMON '4'
+#define SAMBAYON '5'
+#define CREMAAMERICANA '6'
+#define MENTAGRANIZADA '7'
 
 #define BROKERIP "127.0.0.1"
 #define BROKERPORT 8085

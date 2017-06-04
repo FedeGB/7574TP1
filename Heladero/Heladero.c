@@ -33,7 +33,7 @@ bool atenderPedido(long idHeladero) {
         return false;
     }
     printf("Heladero %ld: Recibi pedido.\n", idHeladero);
-    prepararHelado(pedido);
+    prepararHelado(pedido, idHeladero);
     printf("Heladero %ld: Devuelvo helado a cliente.\n", idHeladero);
     if(!devolverPedidoCliente(pedido, idCliente)) {
         return false;
@@ -41,16 +41,12 @@ bool atenderPedido(long idHeladero) {
     return true;
 }
 
-void prepararHelado(char* gustos) {
-    int semGusto = 0;
+void prepararHelado(char* gustos, long idHeladero) {
     printf("Heladero %d: Preparo helado.\n", getpid());
     char gusto;
     for(int i = 0; i < 3; i++) {
         gusto = gustos[i];
-        semGusto = getSemaforo(gusto, SEMGUSTOS);
         printf("Pongo %c\n", gusto);
-        p(semGusto);
-        esperarAleatorio();
-        v(semGusto);
+        pedirPoteHelado(gusto, idHeladero);
     }
 }
