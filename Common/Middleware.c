@@ -26,7 +26,7 @@ pid_t work(int input, int output, bool sendSocket) {
                     }
                 } else {
                     enviarmsg(output, &msgRcv, sizeof(msgRcv));
-                    printf("Envie mensaje por cola: %s con mtype: %ld\n", msgRcv.data, msgRcv.mtype);
+                    printf("Envie mensaje por cola: %s con mtype: %ld a %i\n", msgRcv.data, msgRcv.mtype, output);
                 }
             } else {
                 return 0;

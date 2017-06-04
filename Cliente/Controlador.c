@@ -22,9 +22,8 @@ void iniciarIPCs(int* queues, int* sharedMem, int* semaforos) {
     queues[0] = listener;
     queues[1] = creamsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
     queues[2] = creamsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
-    queues[3] = creamsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
-    queues[4] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
-    queues[5] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
+    queues[3] = creamsg(QREGISTROCLINID, QREGISTROCLINPATH);
+    queues[4] = creamsg(QREGISTROCLOUTID, QREGISTROCLOUTPATH);
     sharedMem[0] = creashm(LUGARESID, sizeof(int), LUGARESPATH);
     sharedMem[1] = creashm(LUGARESCAJEROID, sizeof(int), LUGARESCAJEROPATH);
     sharedMem[2] = creashm(ENTRADAID, sizeof(bool), ENTRADAPATH);
@@ -120,7 +119,7 @@ pid_t simular(int* queues, int* sharedMem, int* semaforos, pid_t* middle) {
 }
 
 void cerrarIPCs(int* queues, int* sharedMem, int* semaforos) {
-    for(int q = 0; q < 6; q++) {
+    for(int q = 0; q < 5; q++) {
         if(q == 0) {
             close(queues[q]);
         } else {

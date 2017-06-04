@@ -25,18 +25,12 @@ pid_t startClienteMOM(int* queues) {
         }
         int fromCj = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
         int toCj = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
-        int fromHl = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
         working = work(queues[0], fromCj, false);
         if(working == 0) {
             return 0;
         }
         trabajadores.push_back(working);
         working = work(toCj, queues[0], true);
-        if(working == 0) {
-            return 0;
-        }
-        trabajadores.push_back(working);
-        working = work(queues[0], fromHl, false);
         if(working == 0) {
             return 0;
         }
@@ -78,9 +72,11 @@ bool recibirTicket(char* ticket, long idCliente) {
         return false;
     }
     Message msgRcv;
+    printf("Esperando devolucion ticket en %i..\n", queue);
     if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
         return false;
     }
+    printf("Tengo ticket %s\n", msgRcv.data);
     strncpy(ticket, msgRcv.data, 5);
     return true;
 }
@@ -94,7 +90,7 @@ bool recibirHelado(char* pedido, long idCliente) {
     msgWar.mtype = 1;
     strncpy(msgWar.data, "r0000", 5);
     enviarmsg(queueAviso, &msgWar, sizeof(msgWar));
-    int queue = getmsg(QFROMHELADEROCLID, QFROMHELADEROCLPATH);
+    int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
     if(queue < 0) {
         return false;
     }
