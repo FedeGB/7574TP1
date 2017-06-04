@@ -33,12 +33,13 @@ void atenderCajero() {
         if(!recibirPedidoCliente(pedido, &idCliente)) {
             break;
         }
+        printf("Recibi pedido de cliente.\n");
         char ticket[5];
         strncpy(ticket, "ticke", 5);
         if(!enviarTicketCliente(ticket, idCliente)) {
             break;
         }
-        printf("Cajero: Atiendo pedido %s.\n", pedido);
+        printf("Cajero: Atiendi pedido %s.\n", pedido);
         Message msgRcv;
         enviarPedidoHeladero(pedido, idCliente);
         printf("Cajero: Envie mensaje a heladeros.\n");

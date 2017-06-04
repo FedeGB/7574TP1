@@ -32,13 +32,13 @@ pid_t startListener(int socket) {
 pid_t atenderConexion(int fish) {
     pid_t newFish = fork();
     if(newFish == 0) {
-        printf("Atiendo conexion..\n");
+        printf("Atiendo conexion...\n");
         Message handShake;
         if(receiveFrom(fish, &handShake) < 0) {
             printf("No se pudo recibir nada en handshake.\n");
             return 0;
         }
-        printf("Recibi handshake con data: %s\n", handShake.data);
+        printf("Recibi handshake.\n");
         int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
         int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
         int gustosIn = getmsg(QINGUSTOSID, QINGUSTOSPATH);
@@ -54,9 +54,6 @@ pid_t atenderConexion(int fish) {
             strncpy(registering.data, buffer, 10);
             enviarmsg(inputQ, &registering, sizeof(registering));
         }
-        // En este primer receive tiene que ver si el clientSocket esta esperando que le devuelvan algo
-        // o si esta enviando algo para otro, lo cual condiciona a que este proceso envie el mensaje
-        // recibido por el clientSocket al 'inputQ' o que se quede esperando algo en el 'outputQ'
         while(true) {
             Message rcvMsg;
             printf("Espero nuevo pedido\n");
@@ -65,7 +62,7 @@ pid_t atenderConexion(int fish) {
                 return 0;
             }
             if(rcvMsg.data[0] == 'r') {
-                printf("Recibi pedido para recibir dato en endpoint\n");
+                printf("End-point esta esperando respuesta.\n");
                 MessageInternal receivingMessage;
                 if(recibirmsg(outputQ, &receivingMessage, sizeof(receivingMessage), getpid()) < 0) {
                     printf("No se pudo obtener mensaje de cola output\n");
@@ -108,8 +105,6 @@ pid_t atenderConexion(int fish) {
 pid_t startRouter(int inputQ, int outputQ) {
     pid_t router = fork();
     if(router == 0) {
-//        int inputQ = getmsg(QINCOMINGID, QINCOMINGPATH);
-//        int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
         while(true) {
             MessageInternal internalRcv;
             if (recibirmsg(inputQ, &internalRcv, sizeof(internalRcv), 0) < 0) {
@@ -133,7 +128,6 @@ pid_t startRouter(int inputQ, int outputQ) {
 
 
 bool registrarEntidad(MessageInternal msg) {
-    printf("Recibi entidad para registrar data: %s\n", msg.data);
     char type = msg.data[0];
     std::string datos(msg.data);
     std::string idStr = datos.substr(5, datos.find(".") - 5);
@@ -158,7 +152,6 @@ bool registrarEntidad(MessageInternal msg) {
             unmap(cant);
             unmap(entidades);
             v(sem);
-            printf("Entidad registrada.\n");
             return true;
         } else {
             return false;
@@ -187,7 +180,6 @@ bool routearMensaje(MessageInternal msg, int output) {
                 if(entidad.type == msg.data[4] && id == entidad.id) {
                     dest = entidad.fishPid;
                     entidad.weight++;
-                    printf("Encontre nodo destino para cliente.\n");
                     break;
                 }
             }
@@ -235,7 +227,6 @@ pid_t startPoteAdmin(int input, int output) {
         return poteAdmin;
     }
 }
-
 
 pid_t atenderGusto(MessageInternal internalRcv, int output) {
     pid_t atender = fork();
