@@ -206,7 +206,7 @@ bool routearMensaje(MessageInternal msg, int output) {
             dest = minWeightDest;
             entidades[postSelected].weight++;
         }
-//            unmap(cant);
+        unmap(cant);
         unmap(entidades);
         v(sem);
         msg.mtype = dest;
