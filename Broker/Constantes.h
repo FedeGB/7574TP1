@@ -13,7 +13,7 @@ typedef struct entity {
     int weight;
 } entity;
 
-
+// Queues
 #define QINCOMINGID 1
 #define QINCOMINGPATH "/bin/grep"
 #define QOUTGOINGID 2
@@ -22,7 +22,12 @@ typedef struct entity {
 #define QINGUSTOSPATH "/bin/grep"
 #define QOUTGUSTOSID 4
 #define QOUTGUSTOSPATH "/bin/grep"
+#define QINHELADERIAID 5
+#define QINHELADERIAPATH "/bin/grep"
+#define QOUTHELADERIAID 6
+#define QOUTHELADERIAPATH "/bin/grep"
 
+// Shared Memory
 #define SHAREDTABLEID 1
 #define SHAREDTABLEPATH "/bin/gunzip"
 #define SHAREDCANTID 3
@@ -30,7 +35,21 @@ typedef struct entity {
 #define SEMTABLEID 2
 #define SEMTABLEPATH "/bin/gunzip"
 
+#define ENTRADAPATH "/bin/dir"
+#define ENTRADAID 1
+#define LUGARESPATH "/bin/dir"
+#define LUGARESID 2
+#define LUGARESCAJEROPATH "/bin/dir"
+#define LUGARESCAJEROID 3
+
 // Semaforos
+#define SEMLUGARESPATH "/bin/sh"
+#define SEMLUGARESID 2
+#define SEMLUGARESCAJPATH "/bin/sh"
+#define SEMLUGARESCAJID 3
+#define SEMENTRADAPATH "/bin/sh"
+#define SEMENTRADAID 4
+
 #define SEMGUSTOS "/bin/ls"
 
 // Gustos
@@ -41,6 +60,10 @@ typedef struct entity {
 #define SAMBAYON '5'
 #define CREMAAMERICANA '6'
 #define MENTAGRANIZADA '7'
+
+// Variables heladeria
+#define ESPACIOHELADERIA 10
+#define MAXCOLACAJER 4
 
 #define BROKERIP "127.0.0.1"
 #define BROKERPORT 8085

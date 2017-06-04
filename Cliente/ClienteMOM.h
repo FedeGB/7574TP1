@@ -20,4 +20,10 @@ long registrarCliente();
 
 bool handshake(char*, long);
 
+bool consultarOcupacionHeladeria(long);
+
+bool enviarDesocupacionHeladeria(long);
+
+bool enviarDesocupacionCaja(long);
+
 #endif //INC_7574TP1_CLIENTEMOM_H

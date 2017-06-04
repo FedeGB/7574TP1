@@ -26,4 +26,8 @@ pid_t atenderGusto(MessageInternal, int);
 
 pid_t startPoteAdmin(int, int);
 
+pid_t startHeladeriaAdmin(int, int);
+
+bool ocupacionHeladeria();
+
 #endif //INC_7574TP1_BROKER_H

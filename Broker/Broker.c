@@ -43,6 +43,8 @@ pid_t atenderConexion(int fish) {
         int outputQ = getmsg(QOUTGOINGID, QOUTGOINGPATH);
         int gustosIn = getmsg(QINGUSTOSID, QINGUSTOSPATH);
         int gustosOut = getmsg(QOUTGUSTOSID, QOUTGUSTOSPATH);
+        int heladeriaIn = getmsg(QINHELADERIAID, QINHELADERIAPATH);
+        int heladeriaOut = getmsg(QOUTHELADERIAID, QOUTHELADERIAPATH);
         char type;
         if(handShake.data[1] == '0' && handShake.data[2] == '0' && handShake.data[3] == '0') {
             MessageInternal registering;
@@ -89,6 +91,23 @@ pid_t atenderConexion(int fish) {
                 strncpy(returningMessage.data, "done0", 5);
                 returningMessage.mtype = rcvMsg.mtype;
                 sendTo(fish, &returningMessage, 10);
+            } else if(rcvMsg.data[0] == 'a') {
+                MessageInternal adminHeladeria;
+                adminHeladeria.mtype = getpid();
+                std::string number = std::to_string(rcvMsg.mtype);
+                appendString(rcvMsg.data, number.c_str(), adminHeladeria.data, 10);
+                enviarmsg(heladeriaIn, &adminHeladeria, sizeof(adminHeladeria));
+                if(rcvMsg.data[1] == 'o') {
+                    MessageInternal ocupado;
+                    if(recibirmsg(heladeriaOut, &ocupado, sizeof(ocupado), getpid()) < 0) {
+                        printf("No se pudo volver a recibir la respuesta de admin Heladeria\n");
+                        return 0;
+                    }
+                    Message returningMessage;
+                    strncpy(returningMessage.data, ocupado.data, 5);
+                    returningMessage.mtype = rcvMsg.mtype;
+                    sendTo(fish, &returningMessage, 10);
+                }
             } else {
                 MessageInternal internal;
                 internal.mtype = getpid();
@@ -243,4 +262,92 @@ pid_t atenderGusto(MessageInternal internalRcv, int output) {
     } else {
         return atender;
     }
+}
+
+pid_t startHeladeriaAdmin(int input, int output) {
+    pid_t heladeria = fork();
+    if(heladeria == 0) {
+        int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+        int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
+        int lugaresMem = getshm(LUGARESID, LUGARESPATH);
+        int lugaresSem = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
+        while(true) {
+            MessageInternal internalRcv;
+            if (recibirmsg(input, &internalRcv, sizeof(internalRcv), 0) < 0) {
+                printf("No se pudo obtener mensaje de cola input\n");
+                return 0;
+            }
+            if(internalRcv.data[1] == 'o') {
+                bool ocupado = ocupacionHeladeria();
+                MessageInternal devolucion;
+                if(!ocupado) {
+                    printf("Esta libre para que entre el cliente\n");
+                    strncpy(devolucion.data, "f000000000", 10);
+                } else {
+                    printf("Esta ocupado no entra nadie mas\n");
+                    strncpy(devolucion.data, "n000000000", 10);
+                }
+                devolucion.mtype = internalRcv.mtype;
+                enviarmsg(output, &devolucion, sizeof(devolucion));
+            } else if(internalRcv.data[1] == 'c') {
+                p(semLugaresCaj);
+                int* queue = (int*)map(lugaresCajero);
+                (*queue)--;
+                printf("Se libero lugar en cola.\n");
+                unmap(queue);
+                v(semLugaresCaj);
+            } else if(internalRcv.data[1] == 'i') {
+                printf("Se libera lugar en la heladeria.\n");
+                p(lugaresSem);
+                int* lugares = (int*)map(lugaresMem);
+                (*lugares)++;
+                unmap(lugares);
+                v(lugaresSem);
+            }
+        }
+    } else {
+        return heladeria;
+    }
+}
+
+bool ocupacionHeladeria() {
+    int semEntrada = getSemaforo(SEMENTRADAID, SEMENTRADAPATH);
+    int entradaShm = getshm(ENTRADAID,ENTRADAPATH);
+    p(semEntrada);
+    bool* entrada = (bool*)map(entradaShm);
+    if(!*entrada) {
+        unmap(entrada);
+        v(semEntrada);
+        return true;
+    }
+    unmap(entrada);
+    v(semEntrada);
+
+    bool ocupadoHeladeria = false;
+    int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
+    if(lugaresCajero > 0) {
+        int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
+        p(semLugaresCaj);
+        int* queue = (int*)map(lugaresCajero);
+        if((*queue) >= MAXCOLACAJER) {
+            unmap(queue);
+            v(semLugaresCaj);
+            return true;
+        }
+        (*queue)++;
+        unmap(queue);
+        v(semLugaresCaj);
+        int lugaresHeladeria = getshm(LUGARESID,LUGARESPATH);
+        int semLugares = getSemaforo(SEMLUGARESID, SEMLUGARESPATH);
+        p(semLugares);
+        int* lugares = (int*)map(lugaresHeladeria);
+        if(*lugares <= 0) {
+            ocupadoHeladeria = true;
+        } else {
+            (*lugares)--;
+        }
+        unmap(lugares);
+        v(semLugares);
+    }
+    return ocupadoHeladeria;
 }

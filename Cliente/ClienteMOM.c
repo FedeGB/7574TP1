@@ -72,11 +72,9 @@ bool recibirTicket(char* ticket, long idCliente) {
         return false;
     }
     Message msgRcv;
-    printf("Esperando devolucion ticket en %i..\n", queue);
     if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
         return false;
     }
-    printf("Tengo ticket %s\n", msgRcv.data);
     strncpy(ticket, msgRcv.data, 5);
     return true;
 }
@@ -118,4 +116,54 @@ long registrarCliente() {
 
 bool handshake(char* registering, long idRegister) {
     return enviarPedidoCajero(registering, idRegister);
+}
+
+bool consultarOcupacionHeladeria(long idCliente) {
+    int queueAviso = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queueAviso < 0) {
+        return false;
+    }
+    Message msgWar;
+    msgWar.mtype = idCliente;
+    strncpy(msgWar.data, "ao000", 5);
+    enviarmsg(queueAviso, &msgWar, sizeof(msgWar));
+    int queue = getmsg(QFROMCAJEROCLID, QFROMCAJEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
+    Message msgRcv;
+    if(recibirmsg(queue, &msgRcv, sizeof(msgRcv), idCliente) < 0) {
+        return false;
+    }
+    if(msgRcv.data[0] == 'f') {
+        return false;
+    } else if(msgRcv.data[0] == 'n') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool enviarDesocupacionCaja(long idCliente) {
+    int queue = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
+    Message msgSend;
+    msgSend.mtype = idCliente;
+    strncpy(msgSend.data, "ac000", 5);
+    enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
+}
+
+bool enviarDesocupacionHeladeria(long idCliente) {
+    int queue = getmsg(QTOCAJEROCLID, QTOCAJEROCLPATH);
+    if(queue < 0) {
+        return false;
+    }
+    Message msgSend;
+    msgSend.mtype = idCliente;
+    strncpy(msgSend.data, "ai000", 5);
+    enviarmsg(queue, &msgSend, sizeof(msgSend));
+    return true;
 }

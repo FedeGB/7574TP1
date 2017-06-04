@@ -27,6 +27,4 @@ void retirarPedido(long);
 
 void getPedido(char*);
 
-bool todoOcupado();
-
 #endif //INC_7574TP1_CLIENTE_H

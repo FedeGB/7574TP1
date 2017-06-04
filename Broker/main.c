@@ -8,13 +8,14 @@
 #include <sys/wait.h>
 
 int main(int argc, char** argv){
-    int queues[5];
-    int sharedmem[2];
-    int semaforos[8];
+    int queues[7];
+    int sharedmem[5];
+    int semaforos[11];
     pid_t listener;
     pid_t router;
     pid_t adminPotes;
-    pid_t init = initBroker(queues, sharedmem, semaforos, &listener, &router, &adminPotes);
+    pid_t adminHel;
+    pid_t init = initBroker(queues, sharedmem, semaforos, &listener, &router, &adminPotes, &adminHel);
     if(init == 0) {
         return 0;
     }
@@ -24,6 +25,7 @@ int main(int argc, char** argv){
     waitpid(listener, NULL, 0);
     waitpid(router, NULL, 0);
     waitpid(adminPotes, NULL, 0);
+    waitpid(adminHel, NULL, 0);
     cerrarIPCs(queues, sharedmem, semaforos);
 
     return 0;
