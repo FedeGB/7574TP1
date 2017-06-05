@@ -14,6 +14,7 @@ pid_t generarCliente() {
         strncpy(hand, "l0000", 5);
         handshake(hand, idCliente);
         if(consultarOcupacionHeladeria(idCliente)) {
+            printf("Cliente %ld: Hay demasiada gente, me voy\n", idCliente);
             return 0;
         }
         realizarPedido(idCliente);

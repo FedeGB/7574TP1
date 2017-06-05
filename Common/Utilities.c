@@ -17,7 +17,9 @@ int numeroAleatorioRango(int min, int max) {
 
 
 void appendString(const char* stringOriginal, const char* append, char* final, int finalSize){
-    std::string newString(stringOriginal);
+    char buffer[5];
+    strncpy(buffer, stringOriginal, 5);
+    std::string newString(buffer);
     newString.insert(5, append);
     while(newString.size() < finalSize) {
         newString.insert(newString.size(), ".");
