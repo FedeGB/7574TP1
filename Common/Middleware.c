@@ -13,10 +13,8 @@ pid_t work(int input, int output, bool sendSocket) {
             Message msgRcv;
             if(sendSocket) {
                 status = recibirmsg(input, &msgRcv, sizeof(msgRcv), 0);
-                printf("Recibi mensaje de cola: %s, mtype: %ld\n", msgRcv.data, msgRcv.mtype);
             } else {
                 status = receiveFrom(input, &msgRcv); // Socket
-                printf("Recibi mensaje de socket: %s\n", msgRcv.data);
             }
             if (status >= 0) {
                 if(sendSocket) {
@@ -26,7 +24,6 @@ pid_t work(int input, int output, bool sendSocket) {
                     }
                 } else {
                     enviarmsg(output, &msgRcv, sizeof(msgRcv));
-                    printf("Envie mensaje por cola: %s con mtype: %ld a %i\n", msgRcv.data, msgRcv.mtype, output);
                 }
             } else {
                 return 0;

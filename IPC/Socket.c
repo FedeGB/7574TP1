@@ -96,6 +96,5 @@ int sendTo(int sfd, Message* message, int size) {
     if (writeStatus < 0) {
         return -1;
     }
-    printf("Envio via socket: %s\n", buffer);
     return 0;
 }

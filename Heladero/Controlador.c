@@ -38,7 +38,7 @@ bool iniciarTrabajadores(pid_t* heladeros, pid_t* middleware, int* queues) {
         return false;
     }
     *heladeros = helade;
-    printf("Se crearon 2 heladeros.\n");
+    printf("Se creo heladero.\n");
 
     return true;
 }

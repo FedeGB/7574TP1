@@ -52,7 +52,7 @@ pid_t simular(int* queues, pid_t* middle) {
                 if(cliente == 0) {
                     return 0;
                 } else if (cliente > 0) {
-                    printf("Se creo cliente %d.\n", cliente);
+                    printf("Se creo cliente.\n");
                     pid_clientes.push_back(cliente);
                 }
             }
