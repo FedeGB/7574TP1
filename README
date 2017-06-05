@@ -1,14 +1,43 @@
 Para la compilación y ejecución del tp:
 
-1- Cambiar variables de direcciones IP y Puerto para cada entidad (cliente, cajero, heladero)
-	* En cada carpeta de cada entidad hay un archivo 'Constantes.h'.
-	* A su vez para indicar a donde esta el servidor de RPC hay que indicar la IP en el 'Constantes.h' dentro de Common
-2- En cada carpeta (Cliente, Cajero, Heladero) compilar con $make
-	* Se obitnen ejecutables para 'cliente', 'heladero', y 'cajero'
+1- Cambiar variables de direcciones IP y Puerto a donde se encuentra el Broken para cada entidad (cliente, cajero, heladero)
+	* En cada carpeta de cada entidad hay un archivo 'Constantes.h' que tiene estos valores de IP y puerto al Broker.
+	* A su vez para indicar a donde esta el servidor de RPC hay que indicar la IP en el 'Constantes.h' dentro del directorio Common
+
+2- En cada carpeta (Broker, Cliente, Cajero, Heladero) compilar con $make
+	* Se obitnen ejecutables para 'broker', 'cliente', 'heladero', y 'cajero'
+
 3- Para compilar el server de RPC entrar a RPCServer y correr el script: $./makeRPC.sh
-	* Fijarse que este corriendo el rpcbind antes de lanzar el rpc server
+	* Fijarse que este corriendo el 'rpcbind' antes de lanzar el rpc server (correr $rpcbind para asegurarse)
 	* Para lanzar el rpc server: $./registererserver
-4- Iniciar las ejecuciones en el siguiente orden:
-	* Heladero -> Cliente -> Cajero
-5- Para lanzar clientes a la heladeria hay que hacerlo en la ejecucion del mismo enviando el caracter 'c' como input
+
+4- Iniciar el broker primero antes que el resto de las entidades, despues las otras en cualquier orden.
+
+5- Para lanzar clientes a la heladeria hay que hacerlo en la ejecucion del mismo enviando el caracter 'c' como input.
+
 6- Se puede terminar el proceso ingresando el caracter 'x', no queda del todo cerrado correctamente
+
+Especificaciones:
+
+* El broker consiste de 4 procesos principales, los cuales tiene una cola de entrada y una de salida para procesar requests (menos el listener que acepta conexiones del Socket).
+	- "Listener": Recibe conexiones nuevas y las atiende generando nuevos procesos que las manejan
+	- "Router": Recibe requests de los procesos que estan atendiendo y los routea a destino.
+	- "Admin Gustos": Es el que administra los potes de los gustos de helado. Cuando un heladero pide un pote este atiende este tipo de llamados para evitar cargar el Router. Usa al igual que para las entregas anteriores semaforos para simular la toma del pote, pero esta vez todo del lado del broker. Tambien genera procesos para cada intento de tome de pote para no bloquear a otros requests.
+	- "Admin Heladeria": Administra la ocupacion de la heladeria. Si hay lugar en la cola del cajero y en la heladeria en si. Acá tambien se paso lo de la parte de los tp anteriores que estaba en el cliente, ahora lo maneja el broker, con memoria compartida.
+
+* Siempre se realiza en primer instancia un "handshake" con el broker para registrar a la entidad con su tipo, id y que proceso en el broker la esta atendiendo.
+  El registro se maneja por el momento en memoria compartida. No hay persistencia de los datos para continuar si hay que levantar nuevamente el broker.
+
+
+* Los mensajes que se envian por el Socket tienen un maximo de 10 caracteres. Los 5 primeros son datos y los 5 ultimos representan el id de la entidad que realiza el request o a la que le tiene que llegar el request (id único pedido en un principio al RPC Server).
+  Esto quiere decir que el máximo de ids que se soporta por el momento seria de 1 a 99999.
+  Mantuve simple el protocolo y la serialización se hace directo a char*. Una optimiazación evidente sería mandar con otra serialización.
+
+* Protocolo de mensajes:
+	- Mensaje de registro (handshake): arranca con 'l' (cliente), 'j' (cajero) o 'h' (heladero) para indicar tipo de entidad (los otros 4 son relleno).
+	- Mensaje para esperar mensaje de broker: arramca con 'r' los otros 4 son relleno. Esto es para que el broker sepa que la entidad a la que esta atendiendo esta esperando algo y por ende tiene que esperar algo también.
+	- Mensaje dirigido a cierta entidad: Estos en general son los mensajes con el pedido entre ellos (o el ticket de vuelta de cajero a cliente). Los primeros 4 caracteres son del pedido o ticket y el último indica a que entidad esta apuntado con los identificadores antes mencionados ('l', 'j', 'h')
+	- Mensaje para pedir gusto de helado: arranca con 'g' y el segundo caracter indica el gusto con numeros como lo vine usando en los tps anteriores, el resto es relleno para llegar a 5.
+	- Mensaje para preguntar estado heladeria: arranca con 'a' y el segundo caracter es 'o'. El mensaje devuelto arranca con 'f' (free) o 'n' (not free). Si esa libre el cliente continua con el flow, si no se va.
+	- Mensaje para liberar lugar en cola cajero: arranca con 'a' y el segundo caracter es 'c'. No hay respuesta en este mensaje, solo genera un cambio en el broker administrando la cantidad
+	- Mensaje para liberar lugar en heladeria: arranca con 'a' y el segundo caracter es 'i'. No envia respuesta, como el punto anterior. 
