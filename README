@@ -17,6 +17,8 @@ Para la compilación y ejecución del tp:
 
 6- Se puede terminar el proceso ingresando el caracter 'x', no queda del todo cerrado correctamente
 
+7- Las variables de cuantos pueden esperar en la fila del cajero y cuantos entran en la heladeria esta en el Constantes.h del 'Broker'
+
 Especificaciones:
 
 * El broker consiste de 4 procesos principales, los cuales tiene una cola de entrada y una de salida para procesar requests (menos el listener que acepta conexiones del Socket).

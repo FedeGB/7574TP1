@@ -152,10 +152,10 @@ bool registrarEntidad(MessageInternal msg) {
     std::string idStr = datos.substr(5, datos.find(".") - 5);
     long id = std::stol(idStr);
     int sem = getSemaforo(SEMTABLEID, SEMTABLEPATH);
-    if(sem > 0) {
+    if(sem >= 0) {
         int cantTable = getshm(SHAREDCANTID, SHAREDCANTPATH);
         int table = getshm(SHAREDTABLEID, SHAREDTABLEPATH);
-        if (cantTable > 0 && table > 0) {
+        if (cantTable >= 0 && table >= 0) {
             p(sem);
             int *cant = (int *) map(cantTable);
             entity *entidades = (entity *) map(table);
@@ -185,7 +185,7 @@ bool routearMensaje(MessageInternal msg, int output) {
     int cantTable = getshm(SHAREDCANTID, SHAREDCANTPATH);
     int table = getshm(SHAREDTABLEID, SHAREDTABLEPATH);
     int sem = getSemaforo(SEMTABLEID, SEMTABLEPATH);
-    if (cantTable > 0 && table > 0) {
+    if (cantTable >= 0 && table >= 0) {
         std::string dataStr(msg.data);
         std::string mtype = dataStr.substr(5, dataStr.find('.') - 5);
         long id = std::stol(mtype);
@@ -325,7 +325,7 @@ bool ocupacionHeladeria() {
 
     bool ocupadoHeladeria = false;
     int lugaresCajero = getshm(LUGARESCAJEROID, LUGARESCAJEROPATH);
-    if(lugaresCajero > 0) {
+    if(lugaresCajero >= 0) {
         int semLugaresCaj = getSemaforo(SEMLUGARESCAJID, SEMLUGARESCAJPATH);
         p(semLugaresCaj);
         int* queue = (int*)map(lugaresCajero);
